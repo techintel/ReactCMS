@@ -1,0 +1,28 @@
+.App {
+  //
+
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+    height: 80px;
+  }
+
+  .App-header {
+    padding: 20px 20px 0;
+  }
+
+  // .App-title {
+  // }
+
+  .App-intro {
+    font-size: large;
+  }
+
+  .App-footer {
+    margin: 80px 8% 10px;
+  }
+}
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

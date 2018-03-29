@@ -1,0 +1,70 @@
+{
+  "_id": {
+    "domain": "",
+    "collectionPrefix": ""
+  },
+  "title": "ReactCMS App",
+  "description": "A ReactCMS site.",
+  "footer": [
+    {
+      "type": "Markdown",
+      "body": {
+        "variant": "caption",
+        "align": "center",
+        "content": "©2018 ReactCMS App"
+      },
+      "order": 1
+    },
+    {
+      "type": "HTML",
+      "body": {
+        "variant": "body1",
+        "align": "center",
+        "content": "Powered by <a href='https://github.com/5TechCenter/ReactCMS' target='_blank'>ReactCMS</a>"
+      },
+      "order": 2
+    }
+  ]
+}
+{
+  "_id": {
+    "domain": "news",
+    "collectionPrefix": "news_"
+  },
+  "title": "ReactCMS News",
+  "description": "Another ReactCMS site.",
+  "footer": [
+    {
+      "type": "Markdown",
+      "title": {
+        "variant": "body2",
+        "content": "Copyright"
+      },
+      "body": {
+        "variant": "caption",
+        "align": "center",
+        "content": "©2018 ReactCMS App"
+      },
+      "order": 1
+    },
+    {
+      "type": "HTML",
+      "title": {
+        "variant": "body2",
+        "content": "Attribution"
+      },
+      "body": {
+        "variant": "caption",
+        "align": "center",
+        "content": "Powered by <a href='https://github.com/5TechCenter/ReactCMS' target='_blank'>ReactCMS</a>"
+      },
+      "order": 2
+    }
+  ]
+}
+{
+  "_id": {
+    "domain": "test",
+    "collectionPrefix": "test_"
+  }
+}
