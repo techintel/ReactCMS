@@ -4,15 +4,15 @@ ReactCMS is a free and open-source content management system *(CMS)* based on Re
 
 |   |   |
 |---|---|
-| [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7CKXRHMTRVSZC) | This option is for those who are willing to support me to continue building this software.
-  I really appreciate your donations! |
+| [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7CKXRHMTRVSZC) | This option is for those who are willing to support me to continue building this software.<br />
+I really appreciate your donations! |
 
 To use ReactCMS, you must first checkout this repository, or download the .ZIP file and extract its contents, and proceed to the following server and client-side installations:
 
 ### Installing back-end with Node.js, Express and MongoDB
 
-The "server" directory contains the source code for your app's backend Express server.
-  *(You can build your own custom backend server using other programming language if you want.)*
+The "server" directory contains the source code for your app's backend Express server.<br />
+*(You can build your own custom backend server using other programming language if you want.)*
 
  - First, you must have a `mongod` running version 3.2.x of MongoDB or above.
  - In the "server" directory, run `npm install` to install its dependencies.
