@@ -3,9 +3,9 @@ ReactCMS is a free and open-source content management system *(CMS)* based on Re
 **This software is still in development**
 
 |   |   |
-|---|---|
-| [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7CKXRHMTRVSZC) | This option is for those who are willing to support me to continue building this software.<br />
-I really appreciate your donations! |
+|:-:|---|
+| [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7CKXRHMTRVSZC) | This option is for those who are willing to support me to continue building this software.<br />I really appreciate your donations! |
+|   |   |
 
 To use ReactCMS, you must first checkout this repository, or download the .ZIP file and extract its contents, and proceed to the following server and client-side installations:
 
