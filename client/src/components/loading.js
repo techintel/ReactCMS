@@ -7,7 +7,7 @@ import fetchSite from '../actions/fetchSite';
 import store from '..';
 
 const styles = theme => ({
-  progress: {
+  progressFetch: {
     position: 'absolute',
     top: 0,
     bottom: theme.spacing.unit * 10,
@@ -15,18 +15,26 @@ const styles = theme => ({
     right: 0,
     margin: 'auto',
   },
+  progressLoad: {
+    display: 'block',
+    margin: '10% auto 20%',
+  },
 });
 
 class Loading extends Component {
-  componentWillMount() {
-    store.dispatch(fetchSite(this.props.location.pathname));
+  constructor(props) {
+    super(props);
+
+    if (props.fetchSite) {
+      store.dispatch(fetchSite(props.location.pathname));
+    }
   }
 
   render() {
-    const { classes } = this.props;
+    const { classes, fetchSite } = this.props;
 
     // return <img src={logo} className={`App-logo ${classes.progress}`} alt="logo" />;
-    return <CircularProgress className={classes.progress} />;
+    return <CircularProgress className={fetchSite ? classes.progressFetch : classes.progressLoad} />;
   }
 }
 

@@ -97,8 +97,10 @@ Site.find().then((sites) => {
 
                   if (isMatched) { // Password and stored hash are matched.
                     const token = jwt.sign({
+                      collectionPrefix,
                       id: doc._id,
-                      username: doc.username
+                      username: doc.username,
+                      role: doc.role
                     }, JWT_SECRET);
 
                     res.json({ token });
@@ -228,8 +230,10 @@ Site.find().then((sites) => {
                             assert.ifError(err);
 
                             const token = jwt.sign({
+                              collectionPrefix,
                               id: createdUser._id,
-                              username: createdUser.username
+                              username: createdUser.username,
+                              role: createdUser.role
                             }, JWT_SECRET);
 
                             res.json({ token });

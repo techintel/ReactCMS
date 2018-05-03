@@ -5,6 +5,11 @@
   },
   "title": "ReactCMS App",
   "description": "A ReactCMS site.",
+  "front_page": {
+    "show_on_front": "posts",
+    "page_on_front": 0,
+    "page_for_posts": 0
+  },
   "footer": [
     {
       "type": "Markdown",

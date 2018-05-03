@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash';
 
 import './App.css';
 import 'typeface-roboto';
-import Reboot from 'material-ui/Reboot';
+import CssBaseline from 'material-ui/CssBaseline';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
 
 import Loading from './components/loading';
@@ -22,10 +22,10 @@ class App extends Component {
     return (
       <MuiThemeProvider theme={theme}>
         <div className="App">
-          <Reboot />
+          <CssBaseline />
           <BrowserRouter>
             {isEmpty(this.props.sites) ?
-              <Route component={Loading} /> :
+              <Route component={props => <Loading fetchSite={true} {...props} />} /> :
               <Site />
             }
           </BrowserRouter>

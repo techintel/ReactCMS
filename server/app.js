@@ -12,6 +12,8 @@ const config = require('./config');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var site = require('./routes/site');
+var categories = require('./routes/categories');
+var posts = require('./routes/posts');
 
 var app = express();
 
@@ -40,10 +42,10 @@ app.use(function (req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', config.CLIENT_ROOT_URL);
 
   // Request methods you wish to allow
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, DELETE');
 
   // Request headers you wish to allow
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type,authorization');
 
   // Set to true if you need the website to include cookies in the requests sent
   // to the API (e.g. in case you use sessions)
@@ -53,13 +55,13 @@ app.use(function (req, res, next) {
   next();
 });
 
-mongoose.connect(`${config.MONGODB_URI}/${config.DATABASE_NAME}`, {
-  useMongoClient: true
-});
+mongoose.connect(`${config.MONGODB_URI}/${config.DATABASE_NAME}`);
 
 app.use('/', index);
 app.use('/users', users);
 app.use('/site', site);
+app.use('/categories', categories);
+app.use('/posts', posts);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -6,7 +6,7 @@ router.get('/:site?', (req, res, next) => {
   const { site } = req.params;
 
   Site.findOne({ '_id.domain': (site ? site : "") })
-  .then((doc) => {
+  .then(doc => {
     if (doc) {
       res.send(doc);
     } else {

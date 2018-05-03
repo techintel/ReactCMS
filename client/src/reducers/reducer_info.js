@@ -2,7 +2,7 @@ import {
   FETCH_SITE
 } from '../actions/types';
 
-export default function(state = {}, action) {
+export default (state = {}, action) => {
   switch (action.type) {
     case FETCH_SITE:
       const _id = action.payload.data._id;

@@ -1,7 +1,12 @@
 const nodemailer = require('nodemailer');
 const { TRANSPORT } = require('../config');
 
-const sendMail = (email, subject, content, site, callback) => {
+const { includes } = require('lodash');
+
+const { Schema } = require('mongoose');
+
+
+function sendMail(email, subject, content, site, onSend) {
   const { title, mail } = site;
 
   const mailHeader = (mail !== undefined && mail.header) ? mail.header
@@ -38,7 +43,7 @@ const sendMail = (email, subject, content, site, callback) => {
         console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
       }
 
-      callback(!error);
+      onSend(!error);
     });
   }
 
@@ -50,7 +55,7 @@ const sendMail = (email, subject, content, site, callback) => {
     nodemailer.createTestAccount((err, account) => {
       if (err) {
         console.error('Failed to create a testing account. ' + err.message);
-        return callback(false);
+        return onSend(false);
       }
 
       TRANSPORT.auth.user = account.user;
@@ -60,6 +65,30 @@ const sendMail = (email, subject, content, site, callback) => {
   }
 };
 
+function havePermission(user, capability, res) {
+  if ( !includes(capability, user.role) ) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+function toSlug(text) {
+  let slug = text.replace(/[^\w\s-]/gi, '');
+  slug = slug.replace(/\s+/g, '-');
+  slug = slug.toLowerCase();
+  return slug;
+}
+
+function authorFieldRef(userRef) {
+  return {
+    author: { type: Schema.ObjectId, ref: userRef, required: true }
+  };
+}
+
 module.exports = {
-  sendMail
+  sendMail,
+  havePermission,
+  toSlug,
+  authorFieldRef
 };

@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { Field, reduxForm } from 'redux-form';
 import { connect } from 'react-redux';
+import { Field, reduxForm } from 'redux-form';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import { Paper, Button, Typography } from 'material-ui';
-import Input, { InputLabel } from 'material-ui/Input';
-import { FormControl, FormHelperText } from 'material-ui/Form';
-import { Email, Security, VerifiedUser, AccountCircle } from 'material-ui-icons';
+import { Paper, Button, Typography, Input } from 'material-ui';
+import { Email, Security, VerifiedUser, AccountCircle } from '@material-ui/icons';
 import { signinWithEmail, signinAsyncValidate as asyncValidate, setCurrentUserByToken } from '../../actions/signin';
+import { renderComposedTextField } from '../../utils';
 
 const styles = theme => ({
   header: {
@@ -63,18 +62,6 @@ const Submit = (
   );
 }
 
-const renderTextField = (
-  { input, label, type, meta: { touched, error, submitting }, ...custom }
-) => {
-  return (
-    <FormControl error={touched && error !== undefined} aria-describedby={`${input.name}-text`} disabled={submitting} required {...custom}>
-      <InputLabel htmlFor={input.name}>{label}</InputLabel>
-      <Input id={input.name} type={type} {...input} />
-      <FormHelperText id={`${input.name}-text`}>{touched ? error : ""}</FormHelperText>
-    </FormControl>
-  );
-};
-
 class Signin extends Component {
   state = {
     email: null,
@@ -121,7 +108,8 @@ class Signin extends Component {
             description={`Sign in with your email: ${email}`}
             form={
               <form className={classes.form} onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-                <Field name="password" type="password" component={renderTextField} label="Password" className={classes.textField} />
+                <Input defaultValue={email} autoComplete="email" style={{display: 'none'}} />
+                <Field name="password" type="password" component={renderComposedTextField} label="Password" className={classes.textField} autoComplete="new-password" required />
                 <Submit label="Sign in" props={this.props} />
               </form>
             }
@@ -137,7 +125,7 @@ class Signin extends Component {
             form={
               <form className={classes.form} onSubmit={handleSubmit(this.onSubmit.bind(this))}>
                 <Field name="collectionPrefix" type="hidden" component={Input} />
-                <Field name="email" component={renderTextField} label="Email" className={classes.textField} />
+                <Field name="email" component={renderComposedTextField} label="Email" className={classes.textField} required />
                 <Submit label="Next" props={this.props} />
               </form>
             }
@@ -154,7 +142,7 @@ class Signin extends Component {
             description={`Please enter the 4 digit code sent to: ${email}`}
             form={
               <form className={classes.form} onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-                <Field name="code" component={renderTextField} label="Verification code" className={classes.textField} />
+                <Field name="code" component={renderComposedTextField} label="Verification code" className={classes.textField} required />
                 <Submit label="Confirm" props={this.props} />
               </form>
             }
@@ -169,8 +157,8 @@ class Signin extends Component {
             description={`Complete your registration by filling up this form.`}
             form={
               <form className={classes.form} onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-                <Field name="username" component={renderTextField} label="Username" className={classes.textField} />
-                <Field name="password" type="password" component={renderTextField} label="Password" className={classes.textField} />
+                <Field name="username" component={renderComposedTextField} label="Username" className={classes.textField} autoComplete="username" required />
+                <Field name="password" type="password" component={renderComposedTextField} label="Password" className={classes.textField} autoComplete="current-password" required />
                 <Submit label="Register" props={this.props} />
               </form>
             }
@@ -206,11 +194,8 @@ function validate(values) {
   return errors;
 }
 
-function mapStateToProps({ info, sites }) {
-  return {
-    info,
-    site: sites[info.domain]
-  };
+function mapStateToProps({ info }) {
+  return { info };
 }
 
 export default reduxForm({

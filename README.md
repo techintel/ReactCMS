@@ -1,11 +1,19 @@
 ReactCMS is a free and open-source content management system *(CMS)* based on ReactJS, Node.js, Express and MongoDB.
 
-**This software is still in development**
+## Supporting ReactCMS
+
+There are many ways to support ReactCMS:
 
 |   |   |
 |:-:|:-:|
-| [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7CKXRHMTRVSZC) | This option is for those who are willing to support me to continue building this software.<br />I really appreciate your donations! |
+| **Spreed the word** | Tell, share or tweet about ReactCMS to your friends. |
+| [**via Patreon**](https://www.patreon.com/5ervant) | Become a backer or sponsor on Patreon. |
+| [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7CKXRHMTRVSZC) | For those who are willing to do a one-time donation. |
 |   |   |
+
+Thanks for any love and support!
+
+## Installation
 
 To use ReactCMS, you must first checkout this repository, or download the .ZIP file and extract its contents, and proceed to the following server and client-side installations:
 
@@ -27,3 +35,35 @@ The "client" directory contains the source code for your React app.
  - Open */client/src/config.js* and configure it for your app.
  - In the "client" directory, run `npm install` to install its dependencies.
  - In the "client" directory, run `npm start` to start your ReactCMS app.
+
+### How to register the first administrator?
+
+You need to manually modify the created user's data in the database 'users' collection. Here's a few guide about it:
+
+ - A user data document contains these properties:
+~~~~
+{
+  email: CREATED_USER_EMAIL
+  username: CREATED_USER_NAME,
+  hash: CREATED_USER_HASH,
+  role: 'subscriber',
+  ...
+}
+~~~~
+ - You just need to `$set` its role from `'subscriber'` to `'admin'` like the following:
+~~~~
+{
+  email: CREATED_USER_EMAIL
+  username: CREATED_USER_NAME,
+  hash: CREATED_USER_HASH,
+  role: 'admin';
+}
+~~~~
+ - Here are terminal commands that you may need to run if you're hosting your `mongod` on your local server:
+~~~~
+mongo
+use reactcms
+db.users.updateOne({ username: 'CREATED_USER_NAME' },{ $set: { role: 'admin' } })
+~~~~
+
+That all the things that you need to accomplish, you may now post a new content using your admin account.

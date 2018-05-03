@@ -8,21 +8,19 @@ import {
   SET_CURRENT_USER
 } from './types';
 
-const signinWithEmail = (formData, callback) => {
+export function signinWithEmail(formData, onSignin) {
   const request = axios.post(`${SERVER_ROOT_URL}/users`, formData)
-  .then(res => callback(res.data))
+  .then(res => onSignin(res.data))
   .catch(err => {
     const { data: { errors } } = err.response;
 
-    throw new SubmissionError({
-      ...errors
-    });
+    throw new SubmissionError(errors);
   });
 
   return request;
 }
 
-const signinAsyncValidate = (values /*, dispatch */) => {
+export function signinAsyncValidate(values /*, dispatch */) {
   return axios.post(`${SERVER_ROOT_URL}/users`, {
     ...values,
     validate: true
@@ -35,7 +33,7 @@ const signinAsyncValidate = (values /*, dispatch */) => {
   });
 }
 
-const setCurrentUserByToken = (domain, token) => {
+export function setCurrentUserByToken(domain, token) {
   setAuthorizationToken(token);
 
   const user = (token !== false) ? jwt_decode(token) : {};
@@ -44,9 +42,3 @@ const setCurrentUserByToken = (domain, token) => {
     user
   };
 }
-
-export {
-  signinWithEmail,
-  signinAsyncValidate,
-  setCurrentUserByToken
-};

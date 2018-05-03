@@ -2,7 +2,7 @@ import axios from 'axios';
 import { SERVER_ROOT_URL } from '../config';
 
 import {
-  FETCH_SITE,
+  FETCH_SITE
 } from './types';
 
 export default function fetchSite(pathname) {
