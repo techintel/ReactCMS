@@ -1,8 +1,5 @@
-import { includes } from 'lodash';
-import { POST_STATUSES } from './';
-import store from '../';
-
-import {
+const { includes } = require('lodash');
+const {
   MANAGE_CATEGORIES,
 
   PUBLISH_POSTS,
@@ -22,11 +19,13 @@ import {
   DELETE_PAGES,
   DELETE_OTHERS_PAGES,
   DELETE_PUBLISHED_PAGES,
-} from '../containers/capabilities';
+} = require('../routes/capabilities');
 
 function isCapable(user, post, capability, capability_others, capability_published) {
   if ( post ) {
-    if ( post.author._id === user.id ) {
+    // post.author(._id) is typeof object while user.id is string.
+    if ( post.author._id !== undefined ?
+      post.author._id == user.id : post.author == user.id ) {
       return ( post.status === 'publish' ) ?
         includes(capability_published, user.role) :
         includes(capability, user.role);
@@ -38,7 +37,7 @@ function isCapable(user, post, capability, capability_others, capability_publish
   }
 }
 
-export function isUserCapable(action, postType, user, post) {
+function isUserCapable(action, postType, user, post) {
   switch (`${action}_${postType}`) {
     case 'manage_category':
       return isCapable(user, null, MANAGE_CATEGORIES);
@@ -62,27 +61,6 @@ export function isUserCapable(action, postType, user, post) {
   }
 }
 
-export function onEditPost(type, _id, history, domain) {
-  history.push(`${domain ? '/' : ''}${domain}/admin/${type}/${_id}`);
-}
-
-export function getPostStatuses(type, user, post) {
-  let filtered = POST_STATUSES;
-
-  if ( !isUserCapable('publish', type, user, post) )
-    filtered = filtered.filter(o => o.value !== 'publish');
-  if ( !isUserCapable('edit', type, user, post) )
-    filtered = filtered.filter(o => o.value !== 'draft');
-  if ( !isUserCapable('delete', type, user, post) )
-    filtered = filtered.filter(o => o.value !== 'trash');
-
-  return filtered;
-}
-
-export function documentTitle(name) {
-  const { sites, info: { domain } } = store.getState();
-  const title = sites[domain].title;
-  if (name) name = name.charAt(0).toUpperCase() + name.slice(1);
-
-  document.title = name ? `${name} - ${title}` : title;
+module.exports = {
+  isUserCapable
 };

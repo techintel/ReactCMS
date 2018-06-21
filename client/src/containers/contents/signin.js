@@ -2,11 +2,31 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import { Paper, Button, Typography, Input } from 'material-ui';
+import { withStyles } from '@material-ui/core/styles';
+import { Paper, Button, Typography, Input } from '@material-ui/core';
 import { Email, Security, VerifiedUser, AccountCircle } from '@material-ui/icons';
 import { signinWithEmail, signinAsyncValidate as asyncValidate, setCurrentUserByToken } from '../../actions/signin';
-import { renderComposedTextField } from '../../utils';
+import { renderTextField } from '../../utils';
+
+function validate(values) {
+  const { email, username, password, code } = values;
+  const errors = {};
+
+  if ( !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email) ) {
+    errors.email = 'Invalid email address';
+  }
+  if ( !username || !/^[A-Z0-9_-]+$/i.test(username) ) {
+    errors.username = 'Invalid username';
+  }
+  if (!password) {
+    errors.password = 'Invalid password';
+  }
+  if (!code) {
+    errors.code = 'Invalid verification code';
+  }
+
+  return errors;
+}
 
 const styles = theme => ({
   header: {
@@ -22,12 +42,8 @@ const styles = theme => ({
     display: 'flex',
     flexWrap: 'wrap',
   },
-  textField: {
-    width: '100%',
-  },
   button: {
     margin: theme.spacing.unit,
-    width: '100%',
   },
 });
 
@@ -56,7 +72,7 @@ const Submit = (
   { label, props: { pristine, submitting, invalid, classes } }
 ) => {
   return (
-    <Button type="submit" disabled={pristine || submitting || invalid} variant="raised" size="large" color="primary" className={classes.button}>
+    <Button type="submit" disabled={pristine || submitting || invalid} variant="raised" size="large" color="primary" className={classes.button} fullWidth>
       {label}
     </Button>
   );
@@ -78,10 +94,10 @@ class Signin extends Component {
     });
   }
 
-  onSubmit(formData) {
+  onSubmit(values) {
     const { info } = this.props;
 
-    return signinWithEmail(formData, data => {
+    return signinWithEmail(values, data => {
       const { state, token } = data;
 
       if (state) {
@@ -95,7 +111,7 @@ class Signin extends Component {
     });
   }
 
-  render () {
+  render() {
     const { handleSubmit, classes } = this.props;
     const { email, isEmailUsed, isVerificationSent, isVerified } = this.state;
 
@@ -109,7 +125,7 @@ class Signin extends Component {
             form={
               <form className={classes.form} onSubmit={handleSubmit(this.onSubmit.bind(this))}>
                 <Input defaultValue={email} autoComplete="email" style={{display: 'none'}} />
-                <Field name="password" type="password" component={renderComposedTextField} label="Password" className={classes.textField} autoComplete="new-password" required />
+                <Field name="password" type="password" component={renderTextField} label="Password" autoComplete="new-password" fullWidth required />
                 <Submit label="Sign in" props={this.props} />
               </form>
             }
@@ -125,7 +141,7 @@ class Signin extends Component {
             form={
               <form className={classes.form} onSubmit={handleSubmit(this.onSubmit.bind(this))}>
                 <Field name="collectionPrefix" type="hidden" component={Input} />
-                <Field name="email" component={renderComposedTextField} label="Email" className={classes.textField} required />
+                <Field name="email" component={renderTextField} label="Email" fullWidth required />
                 <Submit label="Next" props={this.props} />
               </form>
             }
@@ -142,7 +158,7 @@ class Signin extends Component {
             description={`Please enter the 4 digit code sent to: ${email}`}
             form={
               <form className={classes.form} onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-                <Field name="code" component={renderComposedTextField} label="Verification code" className={classes.textField} required />
+                <Field name="code" component={renderTextField} label="Verification code" fullWidth required />
                 <Submit label="Confirm" props={this.props} />
               </form>
             }
@@ -157,8 +173,8 @@ class Signin extends Component {
             description={`Complete your registration by filling up this form.`}
             form={
               <form className={classes.form} onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-                <Field name="username" component={renderComposedTextField} label="Username" className={classes.textField} autoComplete="username" required />
-                <Field name="password" type="password" component={renderComposedTextField} label="Password" className={classes.textField} autoComplete="current-password" required />
+                <Field name="username" component={renderTextField} label="Username" autoComplete="username" fullWidth required />
+                <Field name="password" type="password" component={renderTextField} label="Password" autoComplete="current-password" fullWidth required />
                 <Submit label="Register" props={this.props} />
               </form>
             }
@@ -174,32 +190,12 @@ Signin.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-function validate(values) {
-  const { email, username, password, code } = values;
-  const errors = {};
-
-  if ( !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email) ) {
-    errors.email = 'Invalid email address';
-  }
-  if ( !username || !/^[A-Z0-9_-]+$/i.test(username) ) {
-    errors.username = 'Invalid username';
-  }
-  if (!password) {
-    errors.password = 'Invalid password';
-  }
-  if (!code) {
-    errors.code = 'Invalid verification code';
-  }
-
-  return errors;
-}
-
 function mapStateToProps({ info }) {
   return { info };
 }
 
 export default reduxForm({
-  form: 'signin',
+  form: 'Signin',
   validate,
   asyncValidate
 })(

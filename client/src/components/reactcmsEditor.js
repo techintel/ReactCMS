@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import { withStyles } from 'material-ui/styles';
+import { withStyles } from '@material-ui/core/styles';
 
 import '../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
@@ -43,7 +44,7 @@ class ReactCmsEditor extends Component {
     this.props.onChange(content);
   }
 
-  render () {
+  render() {
     const { editorState } = this.state;
     const { classes } = this.props;
 
@@ -59,5 +60,11 @@ class ReactCmsEditor extends Component {
     );
   }
 }
+
+ReactCmsEditor.propTypes = {
+  classes: PropTypes.object.isRequired,
+  content: PropTypes.string,
+  onChange: PropTypes.func.isRequired,
+};
 
 export default withStyles(styles)(ReactCmsEditor);

@@ -1,10 +1,9 @@
 const nodemailer = require('nodemailer');
 const { TRANSPORT } = require('../config');
 
-const { includes } = require('lodash');
-
 const { Schema } = require('mongoose');
-
+const assert = require('assert');
+const _ = require('lodash');
 
 function sendMail(email, subject, content, site, onSend) {
   const { title, mail } = site;
@@ -65,14 +64,6 @@ function sendMail(email, subject, content, site, onSend) {
   }
 };
 
-function havePermission(user, capability, res) {
-  if ( !includes(capability, user.role) ) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
 function toSlug(text) {
   let slug = text.replace(/[^\w\s-]/gi, '');
   slug = slug.replace(/\s+/g, '-');
@@ -86,9 +77,101 @@ function authorFieldRef(userRef) {
   };
 }
 
+function tagsFieldRef(collectionPrefix) {
+  return {
+    categories: [{ type: Schema.ObjectId, ref: `${collectionPrefix}Category` }],
+    tags: [{ type: Schema.ObjectId, ref: `${collectionPrefix}Tag` }]
+  };
+}
+
+function ancestorsFieldRef(pageRef) {
+  return {
+    parent: { type: Schema.ObjectId, ref: pageRef },
+    ancestors: [{ type: Schema.ObjectId, ref: pageRef }]
+  };
+}
+
+function retrieveAncestors(model, nextParent, post, res, onFind, ancestors = []) {
+  if (!ancestors.length)
+    post.parent = nextParent ? nextParent : null;
+
+  if (nextParent) {
+    model.findOne(
+      { _id: nextParent },
+      (err, parentPost) => {
+        assert.ifError(err);
+
+        if ( post._id && post._id.equals(parentPost.parent) ) {
+          return res.status(409).json({ errors: { parent: "Can't select the parent of any ancestors." } });
+        } else if (parentPost) {
+          ancestors.unshift(nextParent);
+        }
+
+        nextParent = parentPost ? parentPost.parent : false;
+        nextParent ?
+          retrieveAncestors(model, nextParent, post, res, onFind, ancestors) :
+          onFind( Object.assign(post, { ancestors }) );
+      }
+    );
+  } else {
+    onFind( Object.assign(post, { ancestors }) );
+  }
+}
+
+function populateSort(docQuery, sort, callback) {
+  const params = {
+    path: 'author categories tags',
+    select: '-hash -email'
+  };
+
+  if ( !docQuery.populate().exec ) { // docQuery is a doc
+    docQuery.populate( _.merge(
+      params, { options: { sort } }
+    ), (err, doc) => {
+      assert.ifError(err);
+      callback(doc);
+    });
+  } else { // docQuery is a query
+    docQuery.populate( params )
+    .sort( sort )
+    .exec( (err, result) => {
+      assert.ifError(err);
+      callback(result);
+    });
+  }
+}
+
+function tagsCount(models) {
+  _.forEach({
+    Category: 'categories',
+    Tag: 'tags'
+  }, (value, key) => {
+    models[key].find( {},
+      (err, tags) => {
+        assert.ifError(err);
+
+        tags.forEach( tag => {
+          models.Post.find( { [value]: tag._id },
+            (err, posts) => {
+              assert.ifError(err);
+
+              tag.count = posts.length;
+              tag.save(err => assert.ifError(err));
+            }
+          );
+        });
+      }
+    );
+  });
+}
+
 module.exports = {
   sendMail,
-  havePermission,
   toSlug,
-  authorFieldRef
+  authorFieldRef,
+  tagsFieldRef,
+  ancestorsFieldRef,
+  retrieveAncestors,
+  populateSort,
+  tagsCount,
 };

@@ -1,8 +1,9 @@
 import React from 'react';
-import { Typography } from 'material-ui';
+import { Typography } from '@material-ui/core';
+import { documentTitle } from '../utils/reactcms';
 
 const NotFound = () => {
-  document.title = 'Page not found';
+  documentTitle('Page not found');
 
   return (
     <div>

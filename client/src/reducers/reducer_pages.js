@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
 import {
-  FETCH_POST, FETCH_POSTS,
-  DELETE_POST, DELETE_POSTS,
+  FETCH_PAGES,
+  DELETE_PAGE, DELETE_PAGES,
 } from '../actions/types';
 
 export default (state = {}, action) => {
@@ -10,22 +10,16 @@ export default (state = {}, action) => {
   const { data } = payload ? payload : { data: null };
 
   switch (action.type) {
-    case FETCH_POSTS:
+    case FETCH_PAGES:
       const mapped = _.mapKeys(data, '_id');
-      const uniquePost = _.find( mapped, o => !state[o._id] );
-      return uniquePost ? { ...mapped, ...state } : { ...state, ...mapped };
+      return { ...state, ...mapped };
 
-    case FETCH_POST:
-      return (payload !== undefined) ?
-        { ...state, [data._id]: data } :
-        state;
-
-    case DELETE_POST:
+    case DELETE_PAGE:
       return (data.status === 'delete') ?
         _.omit(state, data._id) :
         { ...state, [data._id]: data };
 
-    case DELETE_POSTS:
+    case DELETE_PAGES:
       const { params: { ids } } = payload.config;
 
       return (data.status === 'delete') ?

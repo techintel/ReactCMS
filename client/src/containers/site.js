@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Route, Switch, withRouter } from 'react-router-dom';
-import { setCurrentUserByToken } from '../actions/signin';
-import { withStyles } from 'material-ui/styles';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { Route, Switch, withRouter } from 'react-router-dom';
+import { withStyles } from '@material-ui/core/styles';
+import { Snackbar } from '@material-ui/core';
+import { setCurrentUserByToken } from '../actions/signin';
+import { openSnackbar } from '../actions/openSnackbar';
 
-import Header from './parts/header/';
-import Footer from './parts/footer';
+import Header from './Parts/Header';
+import Footer from './Parts/Footer';
 
-import Signin from './contents/signin';
-import FrontPage from './contents/frontPage';
-import Blog from './contents/blog';
+import Signin from './Contents/Signin';
+import FrontPage from './Contents/FrontPage';
+import Blog from './Contents/Blog';
+import Admin from './Admin';
 
-import Admin from './templates/admin';
-import NotFound from '../components/notFound';
+import NotFound from '../components/NotFound';
+import SnackbarContentWrapper from '../components/SnackbarContentWrapper';
 
 import { drawerStyle } from '../assets/jss/styles';
 
@@ -37,15 +41,11 @@ const styles = theme => ({
 class Site extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      drawerOpen: false
-    };
+    this.state = { drawerOpen: false };
 
-    const { domain } = props.info;
-    const token = localStorage[`jwtToken/${domain}`];
-
+    const token = localStorage[`jwtToken/${props.domain}`];
     if (token !== undefined) {
-      props.setCurrentUserByToken(domain, token);
+      props.setCurrentUserByToken(props.domain, token);
     }
   }
 
@@ -54,11 +54,7 @@ class Site extends Component {
   };
 
   render() {
-    const {
-      classes,
-      info: { domain },
-      auth: { isAuthenticated }
-    } = this.props;
+    const { classes, snackbar, isAuthenticated, domain } = this.props;
     const { drawerOpen } = this.state;
 
     return (
@@ -77,17 +73,36 @@ class Site extends Component {
 
           <Footer />
         </main>
+
+        <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}
+          open={snackbar.open}
+          onClose={() => this.props.openSnackbar(false)}
+        >
+          <SnackbarContentWrapper
+            onClose={() => this.props.openSnackbar(false)}
+            variant={snackbar.variant}
+            message={snackbar.message}
+          />
+        </Snackbar>
       </div>
     );
   }
 }
 
-function mapStateToProps({ info, auth }) {
-  return { info, auth };
+Site.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+function mapStateToProps({ snackbar, auth: { isAuthenticated }, info: { domain } }) {
+  return { snackbar, isAuthenticated, domain };
 }
 
 export default withRouter(
-  connect(mapStateToProps, { setCurrentUserByToken })(
+  connect(mapStateToProps, { setCurrentUserByToken, openSnackbar })(
     withStyles(styles)(Site)
   )
 );

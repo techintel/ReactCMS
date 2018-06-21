@@ -5,11 +5,11 @@ import { isEmpty } from 'lodash';
 
 import './App.css';
 import 'typeface-roboto';
-import CssBaseline from 'material-ui/CssBaseline';
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
-import Loading from './components/loading';
-import Site from './containers/site';
+import Loading from './components/Loading';
+import Site from './containers/Site';
 
 const theme = createMuiTheme({
   palette: {

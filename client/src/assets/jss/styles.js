@@ -59,3 +59,9 @@ export const textFieldButtonStyle = theme => ({
     },
   },
 });
+
+export const textFieldStyle = theme => ({
+  textField: {
+    padding: theme.spacing.unit,
+  },
+});

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { map } from 'lodash';
-import { Chip, Avatar } from 'material-ui';
+import { Chip, Avatar } from '@material-ui/core';
 
 class CategoryChips extends Component {
-  render () {
-    const { categories, history, className, info: { domain } } = this.props;
+  render() {
+    const { categories, history, domain, className } = this.props;
 
     return map(categories, category => {
       return (
@@ -25,8 +25,11 @@ class CategoryChips extends Component {
   }
 }
 
-function mapStateToProps({ info }) {
-  return { info };
-}
+CategoryChips.propTypes = {
+  categories: PropTypes.array,
+  history: PropTypes.object.isRequired,
+  domain: PropTypes.string,
+  className: PropTypes.string,
+};
 
-export default connect(mapStateToProps)(CategoryChips);
+export default CategoryChips;

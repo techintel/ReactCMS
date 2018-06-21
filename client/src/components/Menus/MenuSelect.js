@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import Menu, { MenuItem } from 'material-ui/Menu';
+import PropTypes from 'prop-types';
+import { Menu, MenuItem } from '@material-ui/core';
 
-import { MENU_ITEM_HEIGHT } from '../assets/jss/styles';
+import { MENU_ITEM_HEIGHT } from '../../assets/jss/styles';
 
 class MenuSelect extends Component {
   state = { selected: null };
@@ -19,11 +20,10 @@ class MenuSelect extends Component {
     this.setState({ selected: value });
     this.handleClose();
 
-    const { onSelect } = this.props;
-    if ( onSelect ) onSelect(value);
+    this.props.onSelect(value);
   };
 
-  render () {
+  render() {
     const { id, options } = this.props;
     const { anchorEl, selected } = this.state;
 
@@ -53,5 +53,13 @@ class MenuSelect extends Component {
     );
   }
 }
+
+MenuSelect.propTypes = {
+  id: PropTypes.string,
+  anchorEl: PropTypes.object,
+  options: PropTypes.array.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
+};
 
 export default MenuSelect;

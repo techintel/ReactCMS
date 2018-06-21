@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { fetchPost, deletePost } from '../../actions/fetchPosts';
 import { find } from 'lodash';
-import NotFound from '../../components/notFound';
-import Loading from  '../../components/loading';
 
-import { withStyles } from 'material-ui/styles';
-import { Typography, Avatar, IconButton } from 'material-ui';
-import { CardHeader } from 'material-ui/Card';
-import Menu, { MenuItem } from 'material-ui/Menu';
-import { MoreVert } from '@material-ui/icons';
+import { withStyles } from '@material-ui/core/styles';
+import { Typography, Avatar, IconButton, CardHeader, Menu, MenuItem } from '@material-ui/core';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import { EditorState, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { isUserCapable, onEditPost } from '../../utils/reactcms';
 import moment from 'moment';
 
-import CategoryChips from '../parts/content/categoryChips';
+import NotFound from '../../components/NotFound';
+import Loading from '../../components/Loading';
+import CategoryChips from '../../components/Lists/CategoryChips';
 
 const styles = theme => ({
   chip: {
@@ -31,6 +30,7 @@ const styles = theme => ({
 });
 
 class Blog extends Component {
+  mounted = false;
   state = {
     isNotFound: null,
     anchorEl: null,
@@ -38,20 +38,28 @@ class Blog extends Component {
   }
 
   componentDidMount() {
+    this.mounted = true;
+
     const {
       match: { params },
       info: { collectionPrefix }
     } = this.props;
 
-    this.props.fetchPost({ ...params, collectionPrefix }, post => {
-      if (post) {
-        this.setState({
-          editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(post.content)))
-        });
-      } else {
-        this.setState({ isNotFound: true });
+    this.props.fetchPost( 'post', { ...params, collectionPrefix }, post => {
+      if ( this.mounted ) {
+        if (post) {
+          this.setState({
+            editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(post.content)))
+          });
+        } else {
+          this.setState({ isNotFound: true });
+        }
       }
     });
+  }
+
+  componentWillUnmount() {
+    this.mounted = false;
   }
 
   handleOpenMenu = event => {
@@ -63,14 +71,14 @@ class Blog extends Component {
   };
 
   onDeleteClick = post_id => {
-    this.props.deletePost(post_id, () => {
+    this.props.deletePost('post', post_id, () => {
       const { history, info: { domain } } = this.props;
       history.push(`${domain ? '/' : ''}${domain}/`);
     });
   }
 
-  render () {
-    const { post } = this.props;
+  render() {
+    const { post, info: { domain } } = this.props;
     const { isNotFound } = this.state;
 
     if (isNotFound) {
@@ -78,11 +86,11 @@ class Blog extends Component {
     } else if (post === undefined) {
       return <Loading />;
     } else {
-      const { auth, history, classes } = this.props;
+      const { user, history, classes } = this.props;
       const { anchorEl, editorState } = this.state;
 
-      const isDeleteEnabled = isUserCapable('deletePost', auth, post.author);
-      const isEditEnabled = isUserCapable('editPost', auth, post.author);
+      const isDeleteEnabled = isUserCapable('delete', 'post', user, post);
+      const isEditEnabled = isUserCapable('edit', 'post', user, post);
 
       return (
         <div>
@@ -103,7 +111,7 @@ class Blog extends Component {
                   aria-haspopup="true"
                   onClick={this.handleOpenMenu}
                 >
-                  <MoreVert />
+                  <MoreVertIcon />
                 </IconButton>
                 <Menu
                   id={post._id}
@@ -111,17 +119,17 @@ class Blog extends Component {
                   open={Boolean(anchorEl)}
                   onClose={this.handleCloseMenu}
                 >
-                  {isEditEnabled ?
-                    <MenuItem onClick={() => onEditPost(post._id, this.props)}>Edit Post</MenuItem>
-                  : null}
-                  {isDeleteEnabled ?
-                    <MenuItem onClick={() => this.onDeleteClick(post._id)}>Delete</MenuItem>
-                  : null}
+                  {isEditEnabled &&
+                    <MenuItem onClick={() => onEditPost('post', post._id, history, domain)}>Edit Post</MenuItem>
+                  }
+                  {isDeleteEnabled &&
+                    <MenuItem onClick={() => this.onDeleteClick(post._id)}>Bin</MenuItem>
+                  }
                 </Menu>
               </div>
             ) : null}
             title={
-              <CategoryChips categories={post.categories} history={history} className={classes.chip} />
+              <CategoryChips categories={post.categories} history={history} domain={domain} className={classes.chip} />
             }
             subheader={moment(post.date).format("dddd, MMMM D, YYYY")}
           />
@@ -138,16 +146,20 @@ class Blog extends Component {
   }
 }
 
-function mapStateToProps({ info, posts, auth }, ownProps) {
+Blog.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+function mapStateToProps({ info, posts, auth: { user } }, ownProps) {
   const { match: { params } } = ownProps;
 
   return {
-    info, auth,
+    info, user,
     post: find(posts, o => {
-      const dateObj = new Date(o.date);
-      const year = dateObj.getUTCFullYear();
-      const month = dateObj.getUTCMonth() + 1;
-      const day = dateObj.getUTCDate();
+      const date = new Date(o.date);
+      const year = date.getUTCFullYear();
+      const month = date.getUTCMonth() + 1;
+      const day = date.getUTCDate();
 
       return (
         o.slug === params.slug &&

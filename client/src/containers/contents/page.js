@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 class Page extends Component {
-  render () {
+  render() {
     const { id } = this.props;
 
     return (
@@ -11,5 +12,9 @@ class Page extends Component {
     );
   }
 }
+
+Page.propTypes = {
+  id: PropTypes.string.isRequired,
+};
 
 export default Page;

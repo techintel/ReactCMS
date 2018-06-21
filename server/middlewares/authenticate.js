@@ -1,18 +1,15 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
-const { userSchema } = require('../models/schemas');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config');
-
-const compiledModels = [];
+const { compiledModels } = require('../models');
 
 function authenticate(req, res, next) {
   const authorizationHeader = req.headers['authorization'];
   let token;
 
-  if (authorizationHeader) {
+  if (authorizationHeader)
     token = authorizationHeader.split(' ')[1];
-  }
 
   if (token) {
     jwt.verify(token, JWT_SECRET, (err, decoded) => {
@@ -20,23 +17,16 @@ function authenticate(req, res, next) {
         res.status(401).json({ error: 'Failed to authenticate' });
       } else {
 
-        if ( !(decoded.collectionPrefix in compiledModels) ) {
-          const User = mongoose.model(`${decoded.collectionPrefix}User`, userSchema);
-          compiledModels[decoded.collectionPrefix] = { User };
-        }
-
         compiledModels[decoded.collectionPrefix].User.findOne({
           _id: ObjectId(decoded.id)
         }, '-hash',
         (err, user) => {
-
           if (!user) {
             res.status(404).json({ error: 'No such user' });
           } else {
             req.currentUser = Object.assign(user, { collectionPrefix: decoded.collectionPrefix });
             next();
           }
-
         });
 
       }
@@ -46,7 +36,6 @@ function authenticate(req, res, next) {
       error: 'No token provided'
     });
   }
-
 }
 
 module.exports = authenticate;

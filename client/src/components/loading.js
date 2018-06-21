@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 // import logo from '../logo.svg';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import { CircularProgress } from 'material-ui/Progress';
+import { withStyles } from '@material-ui/core/styles';
+import { CircularProgress } from '@material-ui/core';
 import fetchSite from '../actions/fetchSite';
 import store from '..';
 
@@ -40,6 +40,8 @@ class Loading extends Component {
 
 Loading.propTypes = {
   classes: PropTypes.object.isRequired,
+  fetchSite: PropTypes.bool,
+  location: PropTypes.object,
 };
 
 export default withStyles(styles)(Loading);

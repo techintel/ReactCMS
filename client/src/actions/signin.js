@@ -8,8 +8,8 @@ import {
   SET_CURRENT_USER
 } from './types';
 
-export function signinWithEmail(formData, onSignin) {
-  const request = axios.post(`${SERVER_ROOT_URL}/users`, formData)
+export function signinWithEmail(values, onSignin) {
+  const request = axios.post(`${SERVER_ROOT_URL}/users`, values)
   .then(res => onSignin(res.data))
   .catch(err => {
     const { data: { errors } } = err.response;

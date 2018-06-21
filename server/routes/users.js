@@ -1,70 +1,42 @@
 const express = require('express');
 const router = express.Router();
-
-const mongoose = require('mongoose');
-const assert = require('assert');
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-
 const { sendMail } = require('../utils');
 const { SALT_ROUNDS, JWT_SECRET } = require('../config');
 
-const compiledModels = [];
-const { Site } = require('../models');
-const { userSchema, unverifiedSchema } = require('../models/schemas');
+const { Site, compiledModels } = require('../models');
+const assert = require('assert');
 
 Site.find().then((sites) => {
 
   router.post('/', (req, res, next) => {
     const { collectionPrefix, username, password, code, validate } = req.body;
     const email = req.body.email.toLowerCase();
+    const site = _.find(sites, { _id: { collectionPrefix } });
     const errors = {};
 
-    if (
-      collectionPrefix !== "" &&
-      !/^\w+$/.test(collectionPrefix)
-    ) {
+    if ( collectionPrefix !== "" && !/^\w+$/.test(collectionPrefix) )
       errors.collectionPrefix = 'Only empty string or a combination of letters, numbers and an underscore are allowed!';
-    }
-
-    const site = _.find(sites, { _id: { collectionPrefix } });
-
-    if (site === undefined) {
+    else if ( site === undefined )
       errors.collectionPrefix = 'The site with the requested collectionPrefix didn\'t exist!';
-    }
-    if ( !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email) ) {
+
+    if ( !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email) )
       errors.email = 'Invalid email address';
-    }
-    if ( !/^[A-Z0-9_-]+$/i.test(username) ) {
+    if ( !/^[A-Z0-9_-]+$/i.test(username) )
       errors.username = 'Invalid username';
-    }
-    if (password === "") {
+    if ( password === "" )
       errors.password = 'Invalid password';
-    }
-    if (code === "") {
+    if ( code === "" )
       errors.code = 'Invalid verification code';
-    }
-    if ( !_.isEmpty(errors) ) {
+    if ( !_.isEmpty(errors) )
       return res.status(401).json({ errors });
-    }
 
-    // If the models for the requested `collectionPrefix` are not yet compiled.
-    if ( !(collectionPrefix in compiledModels) ) {
-      const User = mongoose.model(`${collectionPrefix}User`, userSchema);
-
-      unverifiedSchema.set('collection', `${collectionPrefix}unverified`); // Set collection name.
-      const Unverified = mongoose.model(`${collectionPrefix}Unverified`, unverifiedSchema);
-
-      compiledModels[collectionPrefix] = { User, Unverified };
-    }
-
-    if (validate) {
-      // For asynchronous validation.
+    if (validate) { // For asynchronous validation.
 
       compiledModels[collectionPrefix].User
-      .findOne(
-        { username },
+      .findOne( { username },
         (err, doc) => {
           assert.ifError(err);
 
@@ -72,20 +44,17 @@ Site.find().then((sites) => {
             errors.username = 'Username is not available';
             res.status(401);
           }
-
           res.json({ errors });
         }
       );
 
-    } else {
-      // For form submission.
+    } else { // For form submission.
 
       if (!code) {
-        if (password) {
-          // Login
+        if (password) { // Login
 
           compiledModels[collectionPrefix].User
-          .findOne({ email },
+          .findOne( { email },
             (err, doc) => {
               assert.ifError(err);
 
@@ -114,29 +83,22 @@ Site.find().then((sites) => {
                 });
 
               }
-
             }
           );
 
-        } else {
-          // Check if the requested email is used.
+        } else { // Check if the requested email is used.
 
-          const query = {
-            email: {
-              $regex: new RegExp(`^${email}$`, 'i')
-            }
-          };
+          const query = { email: {
+            $regex: new RegExp(`^${email}$`, 'i')
+          } };
 
           compiledModels[collectionPrefix].User
-          .findOne(query,
+          .findOne( query,
             (err, doc) => {
               assert.ifError(err);
 
               const isEmailUsed = (doc !== null);
-              const state = {
-                email,
-                isEmailUsed
-              };
+              const state = { email, isEmailUsed };
 
               if (!isEmailUsed) {
                 const generatedCode = (Math.floor(Math.random() * 10000) + 10000).toString().substring(1);
@@ -144,13 +106,13 @@ Site.find().then((sites) => {
                 tomorrow.setDate(tomorrow.getDate() + 1);
 
                 compiledModels[collectionPrefix].Unverified
-                .updateOne({ email },
+                .updateOne( { email },
                   {
                     email,
                     code: generatedCode,
                     expires: tomorrow
                   },
-                  {upsert: true, setDefaultsOnInsert: true},
+                  { upsert: true, setDefaultsOnInsert: true },
                   (err, doc) => {
                     assert.ifError(err);
 
@@ -163,7 +125,6 @@ Site.find().then((sites) => {
 
                     sendMail(email, subject, content, site, (isSent) => {
                       state.isVerificationSent = isSent;
-
                       res.json({ state });
                     });
                   }
@@ -181,15 +142,14 @@ Site.find().then((sites) => {
         if ( username === undefined && password === undefined ) { // Confirm the requested verification code.
 
           compiledModels[collectionPrefix].Unverified
-          .findOne({ email, code,
+          .findOne({
+            email, code,
             expires: { "$gt": Date.now() }
           }, (err, doc) => {
             assert.ifError(err);
 
-            res.status((doc === null) ? 401 : 200)
-            .json({
-              state: {
-                email,
+            res.status((doc === null) ? 401 : 200).json({
+              state: { email,
                 isVerified: (doc !== null)
               },
               errors: (doc === null) ? {
@@ -201,14 +161,15 @@ Site.find().then((sites) => {
         } else { // Remove from `Unverified` and register the account.
 
           compiledModels[collectionPrefix].Unverified
-          .findOne({ email, code,
+          .findOne({
+            email, code,
             expires: { "$gt": Date.now() }
           }, (err, unverifiedUser) => {
             assert.ifError(err);
 
             if (unverifiedUser !== null) {
               compiledModels[collectionPrefix].User
-              .findOne({ username },
+              .findOne( { username },
                 (err, existingUser) => {
                   assert.ifError(err);
 
@@ -220,33 +181,28 @@ Site.find().then((sites) => {
 
                         // Store hash in the user DB.
                         compiledModels[collectionPrefix].User
-                        .create(
-                          {
-                            email: unverifiedUser.email,
-                            username,
-                            hash
-                          },
-                          (err, createdUser) => {
-                            assert.ifError(err);
+                        .create({
+                          email: unverifiedUser.email,
+                          username,
+                          hash
+                        }, (err, createdUser) => {
+                          assert.ifError(err);
 
-                            const token = jwt.sign({
-                              collectionPrefix,
-                              id: createdUser._id,
-                              username: createdUser.username,
-                              role: createdUser.role
-                            }, JWT_SECRET);
+                          const token = jwt.sign({
+                            collectionPrefix,
+                            id: createdUser._id,
+                            username: createdUser.username,
+                            role: createdUser.role
+                          }, JWT_SECRET);
 
-                            res.json({ token });
-                          }
-                        );
+                          res.json({ token });
+                        });
 
                       });
                     });
                   } else { // Username is being used.
                     res.status(401).json({
-                      errors: {
-                        username: 'Username is not available'
-                      }
+                      errors: { username: 'Username is not available' }
                     });
                   }
 
@@ -261,7 +217,6 @@ Site.find().then((sites) => {
       }
 
     }
-
   });
 
 });

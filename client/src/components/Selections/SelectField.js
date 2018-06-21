@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { TextField } from 'material-ui';
-import { MenuItem } from 'material-ui/Menu';
-import { InputAdornment } from 'material-ui/Input';
+import PropTypes from 'prop-types';
+import { TextField, MenuItem, InputAdornment } from '@material-ui/core';
 
 class SelectField extends Component {
   constructor(props) {
@@ -9,7 +8,7 @@ class SelectField extends Component {
     const { input, value } = props;
 
     this.state = {
-      selected: input.value ? input.value : value
+      selected: input ? input.value : value
     };
   }
 
@@ -25,8 +24,11 @@ class SelectField extends Component {
     if (onChange) onChange(); // Can be used as callback
   };
 
-  render () {
-    const { label, Icon, options, className, fullWidth, disabled } = this.props;
+  render() {
+    const {
+      label, icon, options, className, fullWidth,
+      meta: { submitting, error }
+    } = this.props;
 
     return (
       <TextField
@@ -35,15 +37,17 @@ class SelectField extends Component {
         value={this.state.selected}
         onChange={this.handleChange}
         InputProps={{
-          startAdornment: Icon ? (
+          startAdornment: icon ? (
             <InputAdornment position="start">
-              <Icon />
+              {icon}
             </InputAdornment>
           ) : null
         }}
         className={className}
         fullWidth={fullWidth}
-        disabled={disabled}
+        disabled={submitting}
+        error={error !== undefined}
+        helperText={error}
       >
         {options.map(option => (
           <MenuItem key={option.value} value={option.value}>
@@ -54,5 +58,17 @@ class SelectField extends Component {
     );
   }
 }
+
+SelectField.propTypes = {
+  input: PropTypes.object,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+
+  label: PropTypes.string,
+  icon: PropTypes.element,
+  options: PropTypes.array.isRequired,
+  className: PropTypes.string,
+  fullWidth: PropTypes.bool,
+};
 
 export default SelectField;

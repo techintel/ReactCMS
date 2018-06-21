@@ -2,12 +2,11 @@ import React from 'react';
 import _ from 'lodash';
 import marked from 'marked';
 import DOMPurify from 'dompurify';
-import { Typography, TextField, Grid } from 'material-ui';
-
+import { Typography,
+  FormControl, FormHelperText,
+  Input, InputLabel, InputAdornment
+} from '@material-ui/core';
 import axios from 'axios';
-
-import { FormControl, FormHelperText } from 'material-ui/Form';
-import Input, { InputLabel } from 'material-ui/Input';
 
 export function createCleanHtml(dirtyMarkupSource, markdownFormatted) {
   const cleanHtml = DOMPurify.sanitize(
@@ -29,12 +28,12 @@ function renderTypography({ type, order, title, body, ...custom }, markdownForma
 
   return (
     <Typography component="div" key={order} {...custom}>
-      {titleContent ?
+      {titleContent &&
         <Typography dangerouslySetInnerHTML={createCleanHtml(titleContent)} {...titleCustom} />
-      : null}
-      {bodyContent ?
+      }
+      {bodyContent &&
         <Typography dangerouslySetInnerHTML={createCleanHtml(bodyContent, markdownFormatted)} {...bodyCustom} />
-      : null}
+      }
     </Typography>
   );
 }
@@ -64,47 +63,25 @@ export function setAuthorizationToken(authToken) {
   }
 }
 
-export function renderComposedTextField(
-  { input, label, type, autoComplete, meta: { touched, error, submitting }, ...custom }
+export function renderTextField(
+  { input, label, startAdornment, endAdornment, multiline, rows, type, autoComplete, meta: { touched, error, submitting }, ...custom }
 ) {
   const isError = (touched && error !== undefined);
 
   return (
     <FormControl error={isError} aria-describedby={`${input.name}-text`} disabled={submitting} {...custom}>
       <InputLabel htmlFor={input.name}>{label}</InputLabel>
-      <Input id={input.name} type={type} autoComplete={autoComplete} {...input} />
+      <Input id={input.name} type={type} autoComplete={autoComplete} {...input}
+        startAdornment={startAdornment ?
+          <InputAdornment position="start">{startAdornment}</InputAdornment>
+        : null}
+        endAdornment={endAdornment ?
+          <InputAdornment position="end">{endAdornment}</InputAdornment>
+        : null}
+        multiline={multiline} rows={rows}
+      />
       <FormHelperText id={`${input.name}-text`}>{touched ? error : ""}</FormHelperText>
     </FormControl>
-  );
-};
-
-export function renderTextField(
-  { input, label, Icon, className, meta: { touched, error, submitting }, ...custom }
-) {
-  const isError = (touched && error !== undefined);
-
-  const field = style => (
-    <TextField
-      label={isError ? error : label}
-      error={isError}
-      disabled={submitting}
-      className={style}
-      {...input}
-      {...custom}
-    />
-  );
-
-  return !Icon ? field(className) : (
-    <div className={className}>
-      <Grid container spacing={8} alignItems="flex-end">
-        <Grid item xs={1}>
-          <Icon />
-        </Grid>
-        <Grid item xs={11}>
-          {field()}
-        </Grid>
-      </Grid>
-    </div>
   );
 };
 
@@ -128,6 +105,10 @@ export const POST_STATUSES = [
     value: 'draft',
     label: 'Draft',
   },
+  {
+    value: 'trash',
+    label: 'Bin',
+  },
 ];
 
 export function getPostStatusLabel(val) {
@@ -135,6 +116,15 @@ export function getPostStatusLabel(val) {
     return o.value === val;
   });
   return status.label;
+}
+
+export function idNameToValueLabel(idNames) {
+  return _.map(idNames, o => {
+    return {
+      value: o._id,
+      label: o.name
+    };
+  });
 }
 
 export function slugNameToValueLabel(slugNames) {
@@ -146,11 +136,44 @@ export function slugNameToValueLabel(slugNames) {
   });
 }
 
-export function valueLabelToSlugName(valueLabels) {
-  return _.map(valueLabels, o => {
+export function slugTitleToValueLabel(slugTitles) {
+  return _.map(slugTitles, o => {
     return {
-      name: o.label,
-      slug: o.value
+      value: o.slug,
+      label: o.title
     };
   });
+}
+
+export function getSorting(order, orderBy) {
+  return order === 'desc'
+    ? (a, b) => (b[orderBy] < a[orderBy] ? -1 : 1)
+    : (a, b) => (a[orderBy] < b[orderBy] ? -1 : 1);
+}
+
+export function getFiltering(post, type, filter) {
+  let group, isIncluded = filter ? false : true;
+
+  if ( !isIncluded ) {
+    switch (type) {
+      case 'post':
+        group = post.categories;
+        break;
+
+      case 'page':
+        group = post.ancestors;
+        break;
+
+      default: break;
+    }
+
+    group.forEach(el => {
+      if ( el.slug === filter ) {
+        isIncluded = true;
+        return;
+      }
+    });
+  }
+
+  return isIncluded;
 }

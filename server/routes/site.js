@@ -5,15 +5,13 @@ const { Site } = require('../models');
 router.get('/:site?', (req, res, next) => {
   const { site } = req.params;
 
-  Site.findOne({ '_id.domain': (site ? site : "") })
+  Site.findOne( { '_id.domain': (site ? site : "") })
   .then(doc => {
     if (doc) {
       res.send(doc);
     } else {
       Site.findOne({ '_id.domain': "" })
-      .then((doc) => {
-        res.send(doc);
-      });
+      .then(doc => res.send(doc));
     }
   });
 });

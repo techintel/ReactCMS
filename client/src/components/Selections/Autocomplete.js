@@ -1,22 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import { Typography, TextField, Chip } from 'material-ui';
-import { MenuItem } from 'material-ui/Menu';
+import { withStyles } from '@material-ui/core/styles';
+import { Typography, TextField, MenuItem, Chip } from '@material-ui/core';
 import { ArrowDropDown, Cancel, ArrowDropUp, Clear } from '@material-ui/icons';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
-import { MENU_ITEM_HEIGHT } from '../assets/jss/styles';
-
-// Guide to use as component:
-// <Autocomplete
-//   name="NAME"
-//   label="LABEL"
-//   placeholder="PLACEHOLDER"
-//   suggestions={{ value, label }}
-//   onChange={this.onSelect.bind(this)}
-// />
+import { MENU_ITEM_HEIGHT } from '../../assets/jss/styles';
 
 class Option extends Component {
   handleClick = event => {
@@ -83,7 +73,6 @@ function SelectWrapped(props) {
 
 const styles = theme => ({
   root: {
-    marginTop: theme.spacing.unit * 2,
     flexGrow: 1,
     height: 70,
   },
@@ -191,27 +180,32 @@ const styles = theme => ({
 });
 
 class Autocomplete extends Component {
-  state = {
-    multiLabel: null
+  constructor(props) {
+    super(props);
+    const { input } = props;
+    this.state = { 'multiLabel': input.value };
+  }
+
+  handleChange = () => value => {
+    this.setState({ 'multiLabel': value });
+
+    const { input } = this.props;
+    input.onChange(value.split(','));
   };
 
-  handleChange = name => value => {
-    this.setState({
-      [name]: value,
-    });
-
-    this.props.onChange(value);
-  };
-
-  render () {
-    const { suggestions, classes, name, label, placeholder } = this.props;
+  render() {
+    const {
+      placeholder, label, options, classes,
+      input: { name },
+      meta: { submitting }
+    } = this.props;
 
     return (
       <div className={classes.root}>
         <TextField
           fullWidth
           value={this.state.multiLabel}
-          onChange={this.handleChange('multiLabel')}
+          onChange={this.handleChange()}
           placeholder={placeholder}
           name={name}
           label={label}
@@ -226,9 +220,10 @@ class Autocomplete extends Component {
               instanceId: name,
               id: name,
               simpleValue: true,
-              options: suggestions,
+              options,
             },
           }}
+          disabled={submitting}
         />
       </div>
     );
@@ -236,6 +231,9 @@ class Autocomplete extends Component {
 }
 
 Autocomplete.propTypes = {
+  placeholder: PropTypes.string,
+  label: PropTypes.string,
+  options: PropTypes.array.isRequired, // [{ value, label }]
   classes: PropTypes.object.isRequired,
 };
 

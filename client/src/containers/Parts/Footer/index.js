@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { RenderWidgets } from '../../utils';
+import { RenderWidgets } from '../../../utils';
 
 class Footer extends Component {
   render() {

@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { map } from 'lodash';
-import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
-import { Domain } from '@material-ui/icons';
-import { Divider } from 'material-ui';
+import { List, ListItem, ListItemIcon, ListItemText, Divider } from '@material-ui/core';
+import DomainIcon from '@material-ui/icons/Domain';
 
 class SiteList extends Component {
   renderItems() {
@@ -13,7 +12,7 @@ class SiteList extends Component {
       return (
         <ListItem button component="a" href={`/${domain}`} key={domain}>
           <ListItemIcon>
-            <Domain />
+            <DomainIcon />
           </ListItemIcon>
           <ListItemText primary={title} />
         </ListItem>
@@ -21,7 +20,7 @@ class SiteList extends Component {
     });
   }
 
-  render () {
+  render() {
     return (
       <div>
         <Divider />

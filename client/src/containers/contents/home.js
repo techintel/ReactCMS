@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { fetchPosts, deletePost } from '../../actions/fetchPosts';
 import _ from 'lodash';
 
-import { withStyles } from 'material-ui/styles';
-import { Avatar, IconButton, Button } from 'material-ui';
-import Card, { CardHeader, CardContent, CardActions } from 'material-ui/Card';
-import Menu, { MenuItem } from 'material-ui/Menu';
+import { withStyles } from '@material-ui/core/styles';
+import {
+  Avatar, IconButton, Button,
+  Card, CardHeader, CardContent, CardActions,
+  Menu, MenuItem
+} from '@material-ui/core';
 import { MoreVert, KeyboardArrowRight } from '@material-ui/icons';
 
 import { isUserCapable, onEditPost } from '../../utils/reactcms';
@@ -16,7 +19,8 @@ import moment from 'moment';
 import { EditorState, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 
-import CategoryChips from '../parts/content/categoryChips';
+import Loading from '../../components/Loading';
+import CategoryChips from '../../components/Lists/CategoryChips';
 
 const styles = theme => ({
   categories: {
@@ -50,10 +54,13 @@ const styles = theme => ({
 class Home extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = { isInitialized: false };
 
-    const { info } = props;
-    props.fetchPosts(info.collectionPrefix, 'publish');
+    const { info: { collectionPrefix } } = props;
+    props.fetchPosts(
+      'post', collectionPrefix, 'publish',
+      () => this.setState({ isInitialized: true })
+    );
   }
 
   handleOpenMenu = (event, post_id) => {
@@ -65,7 +72,7 @@ class Home extends Component {
   };
 
   renderPosts() {
-    const { posts, auth, history, classes, info: { domain } } = this.props;
+    const { posts, user, history, classes, info: { domain } } = this.props;
 
     return _.map(posts, post => {
       const slug = toSlug(post.title);
@@ -77,8 +84,8 @@ class Home extends Component {
       const day = date.getUTCDate();
       const linkTo = `${domain ? '/' : ''}${domain}/blog/${yr}/${mo}/${day}/${slug}`;
 
-      const isDeleteEnabled = isUserCapable('deletePost', auth, post.author);
-      const isEditEnabled = isUserCapable('editPost', auth, post.author);
+      const isDeleteEnabled = isUserCapable('delete', 'post', user, post);
+      const isEditEnabled = isUserCapable('edit', 'post', user, post);
 
       return (
         <Card key={post._id}>
@@ -103,12 +110,12 @@ class Home extends Component {
                   open={Boolean(anchorEl)}
                   onClose={() => this.handleCloseMenu(post._id)}
                 >
-                  {isEditEnabled ?
-                    <MenuItem onClick={() => onEditPost(post._id, this.props)}>Edit Post</MenuItem>
-                  : null}
-                  {isDeleteEnabled ?
-                    <MenuItem onClick={() => this.props.deletePost(post._id)}>Delete</MenuItem>
-                  : null}
+                  {isEditEnabled &&
+                    <MenuItem onClick={() => onEditPost('post', post._id, history, domain)}>Edit Post</MenuItem>
+                  }
+                  {isDeleteEnabled &&
+                    <MenuItem onClick={() => this.props.deletePost('post', post._id)}>Bin</MenuItem>
+                  }
                 </Menu>
               </div>
             ) : null}
@@ -126,7 +133,7 @@ class Home extends Component {
               <div>
                 {moment(post.date).format("dddd, MMMM D, YYYY")}
                 <div className={classes.categories}>
-                  <CategoryChips categories={post.categories} history={history} className={classes.chip} />
+                  <CategoryChips categories={post.categories} history={history} domain={domain} className={classes.chip} />
                 </div>
               </div>
             }
@@ -154,8 +161,10 @@ class Home extends Component {
     });
   }
 
-  render () {
-    return (
+  render() {
+    const { isInitialized } = this.state;
+
+    return !isInitialized ? <Loading /> : (
       <div>
         {this.renderPosts()}
       </div>
@@ -163,13 +172,18 @@ class Home extends Component {
   }
 }
 
-function mapStateToProps({ info, posts, auth }) {
-  var published = _.omitBy(posts, (value, key) => {
+Home.propTypes = {
+  classes: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+};
+
+function mapStateToProps({ info, posts, auth: { user } }) {
+  const published = _.omitBy(posts, (value, key) => {
     return ( value.status !== 'publish' );
   });
 
   return {
-    info, auth,
+    info, user,
     posts: published
   };
 }

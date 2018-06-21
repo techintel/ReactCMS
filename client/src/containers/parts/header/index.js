@@ -1,21 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
 import classNames from 'classnames';
-import {
-  AppBar, Toolbar, Typography, Button, IconButton, Drawer
-} from 'material-ui';
-import {
-  AccountCircle, ChevronLeft, ChevronRight,
-  Menu as MenuIcon
+import { withStyles } from '@material-ui/core/styles';
+import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, Menu, MenuItem } from '@material-ui/core';
+import { AccountCircle,
+  Menu as MenuIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ChevronRight as ChevronRightIcon,
 } from '@material-ui/icons';
-import Menu, { MenuItem } from 'material-ui/Menu';
 import { Link } from 'react-router-dom';
 import { setCurrentUserByToken } from '../../../actions/signin';
 
-import DrawerList from './drawerList';
-import SiteList from './siteList';
+import DrawerList from './DrawerList';
+import SiteList from './SiteList';
 
 import { drawerStyle } from '../../../assets/jss/styles';
 
@@ -77,6 +75,7 @@ class Header extends React.Component {
   signout = () => {
     const { domain } = this.props.info;
 
+    this.handleDrawerClose();
     this.handleClose();
     localStorage.removeItem(`jwtToken/${domain}`);
     this.props.setCurrentUserByToken(domain, false);
@@ -96,7 +95,7 @@ class Header extends React.Component {
           className={classNames(classes.appBar, drawerOpen && classes.appBarShift)}
         >
           <Toolbar>
-            {isAuthenticated ? (
+            {isAuthenticated && (
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -105,7 +104,7 @@ class Header extends React.Component {
               >
                 <MenuIcon />
               </IconButton>
-            ) : null}
+            )}
             <Typography variant="title" color="inherit" noWrap className={classes.flex}
               component={Link} to={`/${domain}`}
             >
@@ -145,7 +144,7 @@ class Header extends React.Component {
             )}
           </Toolbar>
         </AppBar>
-        {isAuthenticated ? (
+        {isAuthenticated && (
           <Drawer
             variant="permanent"
             classes={{
@@ -155,13 +154,13 @@ class Header extends React.Component {
           >
             <div className={classes.toolbar}>
               <IconButton onClick={this.handleDrawerClose}>
-                {theme.direction === 'rtl' ? <ChevronRight /> : <ChevronLeft />}
+                {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
               </IconButton>
             </div>
             <DrawerList />
             <SiteList />
           </Drawer>
-        ) : null}
+        )}
       </div>
     );
   }
@@ -170,6 +169,8 @@ class Header extends React.Component {
 Header.propTypes = {
   classes: PropTypes.object.isRequired,
   theme: PropTypes.object.isRequired,
+  drawerOpen: PropTypes.bool,
+  onDrawerToggle: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ info, sites, auth }) {

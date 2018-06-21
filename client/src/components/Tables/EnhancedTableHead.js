@@ -1,18 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  TableCell, TableHead, TableRow, TableSortLabel
-} from 'material-ui/Table';
-import {
-  Checkbox, Tooltip
-} from 'material-ui';
-
-const columnData = [
-  { id: 'title', numeric: false, disablePadding: true, label: 'Title' },
-  { id: 'author', numeric: false, disablePadding: true, label: 'Author' },
-  { id: 'categories', numeric: false, disablePadding: true, label: 'Categories' },
-  { id: 'date', numeric: false, disablePadding: true, label: 'Date' },
-];
+  TableCell, TableHead, TableRow, TableSortLabel, Checkbox, Tooltip
+} from '@material-ui/core';
 
 class EnhancedTableHead extends Component {
   createSortHandler = property => event => {
@@ -20,7 +10,7 @@ class EnhancedTableHead extends Component {
   };
 
   render() {
-    const { onSelectAllClick, order, orderBy, numSelected, rowCount } = this.props;
+    const { onSelectAllClick, order, orderBy, numSelected, rowCount, columnData } = this.props;
 
     return (
       <TableHead>
@@ -69,6 +59,7 @@ EnhancedTableHead.propTypes = {
   order: PropTypes.string.isRequired,
   orderBy: PropTypes.string.isRequired,
   rowCount: PropTypes.number.isRequired,
+  columnData: PropTypes.array.isRequired,
 };
 
 export default EnhancedTableHead;

@@ -12,8 +12,9 @@ const config = require('./config');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var site = require('./routes/site');
-var categories = require('./routes/categories');
+var tags = require('./routes/tags');
 var posts = require('./routes/posts');
+var pages = require('./routes/pages');
 
 var app = express();
 
@@ -60,8 +61,10 @@ mongoose.connect(`${config.MONGODB_URI}/${config.DATABASE_NAME}`);
 app.use('/', index);
 app.use('/users', users);
 app.use('/site', site);
-app.use('/categories', categories);
+app.use('/categories', tags);
+app.use('/tags', tags);
 app.use('/posts', posts);
+app.use('/pages', pages);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
