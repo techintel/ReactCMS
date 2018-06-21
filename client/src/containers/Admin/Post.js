@@ -8,7 +8,7 @@ import { Grid, Button, Card, CardHeader, CardContent, CardActions } from '@mater
 import { VpnKey } from '@material-ui/icons';
 import { SERVER_ROOT_URL } from '../../config';
 
-import { renderTextField, toSlug, idNameToValueLabel } from '../../utils';
+import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText } from '../../utils';
 import { isUserCapable, getPostStatuses, documentTitle } from '../../utils/reactcms';
 import { addPost, editPost } from '../../actions/addPosts';
 import { deletePost, fetchPosts } from '../../actions/fetchPosts';
@@ -153,36 +153,59 @@ class Post extends Component {
 
   pushToList = type => {
     const { info: { domain } } = this.props;
-    this.props.history.push(`${domain ? '/' : ''}${domain}/admin/${type}s`);
+    this.props.history.push(`${slashDomain(domain)}/admin/${type}s`);
   }
 
-  onPublish(values, status) {
+  onPublish(values, status, willRedirect = false) {
     const { type, content } = this.state;
-    const { match } = this.props;
+    const { match: { params } } = this.props;
+    let snackbarActionText;
 
     values.content = content;
     if ( status )
       values.status = status;
-    if ( match.params._id )
-      values._id = match.params._id;
+    if ( params._id )
+      values._id = params._id;
 
-    return addPost( type, values, isSucceed => {
-      if (isSucceed) {
-        this.pushToList(type);
+    switch (values.status) {
+      case 'draft':
+        snackbarActionText = 'put to draft';
+        break;
 
-        const text = `${type} "${values.title}" has been ${values.status}ed.`;
-        this.props.openSnackbar( text.charAt(0).toUpperCase() + text.slice(1) );
+      case 'publish':
+        snackbarActionText = 'published';
+        break;
+
+      case 'trash':
+        snackbarActionText = 'put to bin';
+        break;
+
+      default: break;
+    }
+
+    return addPost( type, values, res => {
+      if (res) {
+        if (willRedirect) {
+          this.pushToList(type);
+        } else if (!params._id) {
+          const { info: { domain } } = this.props;
+          const { data } = res;
+          this.props.history.push(`${slashDomain(domain)}/admin/${type}/${data._id}`);
+        }
+
+        this.props.openSnackbar(hasBeenText(type, values.title, snackbarActionText));
       }
     });
   }
 
   onPublishClick = values => {
-    return this.onPublish(values, 'publish');
+    return this.onPublish(values, 'publish', true);
   }
   onSaveDraftClick = values => {
     return this.onPublish(values, 'draft');
   }
   onChangeStatusSubmit = values => {
+    this.setState({ status: values.status });
     return this.onPublish(values);
   }
 
@@ -198,9 +221,9 @@ class Post extends Component {
 
     this.props.deletePost( type, _id, () => {
       this.pushToList(type);
-      this.props.openSnackbar(
-        `"${title}" has been ${status === 'trash' ? 'deleted' : 'trashed'}.`
-      );
+
+      const action = (status === 'trash') ? 'deleted' : 'put to bin';
+      this.props.openSnackbar(hasBeenText(type, title, action));
     });
   }
 
@@ -241,7 +264,7 @@ class Post extends Component {
               name="slug"
               component={renderTextField}
               label="Slug"
-              startAdornment={`${SERVER_ROOT_URL}${domain ? '/' : ''}${domain}/${
+              startAdornment={`${SERVER_ROOT_URL}${slashDomain(domain)}/${
                 type === 'post' ? `blog/${year}/${month}/${day}/` : ''
               }`}
               className={classes.textField}

@@ -10,7 +10,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import { deletePost } from '../../actions/fetchPosts';
 import { openSnackbar } from '../../actions/openSnackbar';
-import { getPostStatusLabel, getSorting, getFiltering } from '../../utils';
+import { getPostStatusLabel, hasBeenText, getSorting, getFiltering } from '../../utils';
 import { isUserCapable, onEditPost } from '../../utils/reactcms';
 
 import EnhancedTableToolbar from '../../components/Tables/EnhancedTableToolbar';
@@ -166,7 +166,7 @@ class PostsTable extends Component {
 
                     if ( n.status !== 'trash' ) {
                       deleteLabel = 'Move to Bin';
-                      deleteSnackbarText = `${type} "${postTitle}" has been put to bin.`;
+                      deleteSnackbarText = hasBeenText(type, postTitle, 'put to bin');
                     }
                   } else {
                     postTitle = n.name;
@@ -174,9 +174,7 @@ class PostsTable extends Component {
                   }
 
                   if ( !deleteSnackbarText )
-                    deleteSnackbarText = deleteSnackbarText = `${type} "${postTitle}" is deleted.`;
-
-                  deleteSnackbarText = deleteSnackbarText.charAt(0).toUpperCase() + deleteSnackbarText.slice(1);
+                    deleteSnackbarText = deleteSnackbarText = hasBeenText(type, postTitle, 'deleted');
 
                   return (
                     <TableRow

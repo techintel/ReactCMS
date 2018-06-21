@@ -13,8 +13,8 @@ import {
 } from '@material-ui/core';
 import { MoreVert, KeyboardArrowRight } from '@material-ui/icons';
 
+import { slashDomain, toSlug } from '../../utils';
 import { isUserCapable, onEditPost } from '../../utils/reactcms';
-import { toSlug } from '../../utils';
 import moment from 'moment';
 import { EditorState, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
@@ -82,7 +82,7 @@ class Home extends Component {
       const yr = date.getFullYear();
       const mo = date.getMonth() + 1;
       const day = date.getUTCDate();
-      const linkTo = `${domain ? '/' : ''}${domain}/blog/${yr}/${mo}/${day}/${slug}`;
+      const linkTo = `${slashDomain(domain)}/blog/${yr}/${mo}/${day}/${slug}`;
 
       const isDeleteEnabled = isUserCapable('delete', 'post', user, post);
       const isEditEnabled = isUserCapable('edit', 'post', user, post);

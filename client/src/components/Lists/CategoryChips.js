@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { map } from 'lodash';
 import { Chip, Avatar } from '@material-ui/core';
+import { slashDomain } from '../../utils';
 
 class CategoryChips extends Component {
   render() {
@@ -16,7 +17,7 @@ class CategoryChips extends Component {
           }
           label={category.name}
           onClick={() => {
-            history.push(`${domain ? '/' : ''}${domain}/blog/category/${category.slug}`);
+            history.push(`${slashDomain(domain)}/blog/category/${category.slug}`);
           }}
           className={className}
         />

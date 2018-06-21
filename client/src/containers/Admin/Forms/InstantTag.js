@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import { isUserCapable } from '../../../utils/reactcms';
-import { renderTextField } from '../../../utils';
+import { renderTextField, newCreatedText } from '../../../utils';
 import { addPost } from '../../../actions/addPosts';
 import { addStateValues } from '../../../actions/fetchPosts';
 import { openSnackbar } from '../../../actions/openSnackbar';
@@ -26,9 +26,7 @@ class InstantTag extends Component {
 
     return addPost( type, values, res => {
       if (res) {
-        this.props.openSnackbar(
-          `New ${type} named "${values.name}" is created.`
-        );
+        this.props.openSnackbar(newCreatedText(type, values.name));
         this.props.addStateValues( type, res );
         this.props.reset();
       }

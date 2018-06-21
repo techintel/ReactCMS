@@ -4,7 +4,7 @@ import { Field, reduxForm } from 'redux-form';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
-import { renderTextField, toSlug, idNameToValueLabel } from '../../utils';
+import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText, newCreatedText } from '../../utils';
 import { SERVER_ROOT_URL } from '../../config';
 import { addPost, editPost } from '../../actions/addPosts';
 import { addStateValues, fetchPosts } from '../../actions/fetchPosts';
@@ -77,14 +77,14 @@ class Tag extends Component {
     return addPost( type, values, res => {
       if (res) {
         const text = values._id
-          ? `${type} "${values.name}" has been updated.`
-          : `New ${type} named "${values.name}" is created.`;
+          ? hasBeenText(type, values.name, 'updated')
+          : newCreatedText(type, values.name);
 
-        this.props.openSnackbar( text.charAt(0).toUpperCase() + text.slice(1) );
+        this.props.openSnackbar(text);
         this.props.addStateValues( type, res );
 
         if (history)
-          history.push(`${domain ? '/' : ''}${domain}/admin/${type === 'category' ? 'categorie' : type}s`);
+          history.push(`${slashDomain(domain)}/admin/${type === 'category' ? 'categorie' : type}s`);
         else
           this.props.reset();
       }
@@ -118,7 +118,7 @@ class Tag extends Component {
           name="slug"
           component={renderTextField}
           label="Slug"
-          startAdornment={`${SERVER_ROOT_URL}${domain ? '/' : ''}${domain}/blog/${type}/`}
+          startAdornment={`${SERVER_ROOT_URL}${slashDomain(domain)}/blog/${type}/`}
           className={classes.textField}
           fullWidth
           required

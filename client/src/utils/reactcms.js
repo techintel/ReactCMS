@@ -1,5 +1,5 @@
 import { includes } from 'lodash';
-import { POST_STATUSES } from './';
+import { slashDomain, POST_STATUSES, capitalizeFirstLetter } from './';
 import store from '../';
 
 import {
@@ -63,7 +63,7 @@ export function isUserCapable(action, postType, user, post) {
 }
 
 export function onEditPost(type, _id, history, domain) {
-  history.push(`${domain ? '/' : ''}${domain}/admin/${type}/${_id}`);
+  history.push(`${slashDomain(domain)}/admin/${type}/${_id}`);
 }
 
 export function getPostStatuses(type, user, post) {
@@ -82,7 +82,7 @@ export function getPostStatuses(type, user, post) {
 export function documentTitle(name) {
   const { sites, info: { domain } } = store.getState();
   const title = sites[domain].title;
-  if (name) name = name.charAt(0).toUpperCase() + name.slice(1);
+  if (name) name = capitalizeFirstLetter(name);
 
   document.title = name ? `${name} - ${title}` : title;
 };

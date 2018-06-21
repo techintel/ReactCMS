@@ -10,6 +10,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import { EditorState, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
+import { slashDomain } from '../../utils';
 import { isUserCapable, onEditPost } from '../../utils/reactcms';
 import moment from 'moment';
 
@@ -73,7 +74,7 @@ class Blog extends Component {
   onDeleteClick = post_id => {
     this.props.deletePost('post', post_id, () => {
       const { history, info: { domain } } = this.props;
-      history.push(`${domain ? '/' : ''}${domain}/`);
+      history.push(`${slashDomain(domain)}/`);
     });
   }
 

@@ -85,15 +85,15 @@ export function renderTextField(
   );
 };
 
+export function slashDomain(domain) {
+  return `${domain ? '/' : ''}${domain}`;
+}
+
 export function toSlug(text) {
   let slug = text.replace(/[^\w\s-]/gi, '');
   slug = slug.replace(/\s+/g, '-');
   slug = slug.toLowerCase();
   return slug;
-}
-
-export function getWords(str, number) {
-  return str.split(/\s+/).slice(0,number).join(" ");
 }
 
 export const POST_STATUSES = [
@@ -143,6 +143,18 @@ export function slugTitleToValueLabel(slugTitles) {
       label: o.title
     };
   });
+}
+
+export function hasBeenText(type, name, action) {
+  return capitalizeFirstLetter(`${type} "${name}" has been ${action}.`);
+}
+
+export function newCreatedText(type, name) {
+  return capitalizeFirstLetter(`New ${type} named "${name}" is created.`);
+}
+
+export function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 export function getSorting(order, orderBy) {

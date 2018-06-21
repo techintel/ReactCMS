@@ -9,6 +9,7 @@ import {
   List as ListIcon
 } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
+import { slashDomain } from '../../../utils';
 import { isUserCapable } from '../../../utils/reactcms';
 
 const styles = theme => ({
@@ -56,7 +57,7 @@ class DrawerList extends Component {
                   {canEditPosts &&
                     <ListItem button className={classes.nested}
                       component={Link}
-                      to={`${domain ? '/' : ''}${domain}/admin/posts`}
+                      to={`${slashDomain(domain)}/admin/posts`}
                     >
                       <ListItemIcon>
                         <ListIcon />
@@ -68,7 +69,7 @@ class DrawerList extends Component {
                   {canEditPosts &&
                     <ListItem button className={classes.nested}
                       component={Link}
-                      to={`${domain ? '/' : ''}${domain}/admin/post/new`}
+                      to={`${slashDomain(domain)}/admin/post/new`}
                     >
                       <ListItemIcon>
                         <Create />
@@ -80,7 +81,7 @@ class DrawerList extends Component {
                   {canManageCategories &&
                     <ListItem button className={classes.nested}
                       component={Link}
-                      to={`${domain ? '/' : ''}${domain}/admin/categories`}
+                      to={`${slashDomain(domain)}/admin/categories`}
                     >
                       <ListItemIcon>
                         <BookmarkBorder />
@@ -92,7 +93,7 @@ class DrawerList extends Component {
                   {canManageCategories &&
                     <ListItem button className={classes.nested}
                       component={Link}
-                      to={`${domain ? '/' : ''}${domain}/admin/tags`}
+                      to={`${slashDomain(domain)}/admin/tags`}
                     >
                       <ListItemIcon>
                         <Label />
@@ -121,7 +122,7 @@ class DrawerList extends Component {
                   {isUserCapable('edit', 'page', user) &&
                     <ListItem button className={classes.nested}
                       component={Link}
-                      to={`${domain ? '/' : ''}${domain}/admin/pages`}
+                      to={`${slashDomain(domain)}/admin/pages`}
                     >
                       <ListItemIcon>
                         <ListIcon />
@@ -133,7 +134,7 @@ class DrawerList extends Component {
                   {isUserCapable('edit', 'page', user) &&
                     <ListItem button className={classes.nested}
                       component={Link}
-                      to={`${domain ? '/' : ''}${domain}/admin/page/new`}
+                      to={`${slashDomain(domain)}/admin/page/new`}
                     >
                       <ListItemIcon>
                         <Create />

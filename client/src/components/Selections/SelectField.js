@@ -3,22 +3,20 @@ import PropTypes from 'prop-types';
 import { TextField, MenuItem, InputAdornment } from '@material-ui/core';
 
 class SelectField extends Component {
-  constructor(props) {
-    super(props);
-    const { input, value } = props;
+  state = { selected: null };
 
-    this.state = {
-      selected: input ? input.value : value
-    };
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { input, value } = nextProps;
+
+    prevState.selected = input ? input.value : value;
+    return prevState;
   }
 
   handleChange = event => {
     const targetVal = event.target.value;
     const { input, onChange } = this.props;
 
-    this.setState({
-      selected: targetVal
-    });
+    this.setState({ selected: targetVal });
 
     if ( input ) input.onChange(targetVal);
     if (onChange) onChange(); // Can be used as callback

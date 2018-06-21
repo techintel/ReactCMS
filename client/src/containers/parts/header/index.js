@@ -10,6 +10,7 @@ import { AccountCircle,
   ChevronRight as ChevronRightIcon,
 } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
+import { slashDomain } from '../../../utils';
 import { setCurrentUserByToken } from '../../../actions/signin';
 
 import DrawerList from './DrawerList';
@@ -139,7 +140,7 @@ class Header extends React.Component {
               </div>
             ) : (
               <Button color="inherit"
-                component={Link} to={`${domain ? '/' : ''}${domain}/signin`}
+                component={Link} to={`${slashDomain(domain)}/signin`}
               >Sign in / Sign up</Button>
             )}
           </Toolbar>
