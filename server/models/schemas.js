@@ -7,6 +7,11 @@ const siteSchema = new Schema({
   },
   title: String,
   description: String,
+  front_page: {
+    show_on_front: { type: String, default: 'posts' },
+    page_on_front: Schema.ObjectId,
+    page_for_posts: Schema.ObjectId,
+  },
 });
 
 const userSchema = new Schema({

@@ -14,6 +14,7 @@ import Footer from './Parts/Footer';
 import Signin from './Contents/Signin';
 import FrontPage from './Contents/FrontPage';
 import Blog from './Contents/Blog';
+import Page from './Contents/Page';
 import Admin from './Admin';
 
 import NotFound from '../components/NotFound';
@@ -68,6 +69,7 @@ class Site extends Component {
             <Route exact path={`${domain ? '/:domain' : ''}/`} component={FrontPage} />
             <Route path={`${domain ? '/:domain' : ''}/admin`} component={Admin} />
             <Route exact path={`${domain ? '/:domain' : ''}/blog/:year/:month/:day/:slug`} component={Blog} />
+            <Route exact path={`${domain ? '/:domain' : ''}/:slug`} component={Page} />
             <Route component={NotFound} />
           </Switch>
 

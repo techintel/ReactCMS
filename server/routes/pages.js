@@ -106,20 +106,34 @@ router.post('/add', authenticate, (req, res, next) => {
   }
 });
 
-router.get('/', (req, res, next) => {
-  const { query } = req;
-  const { slug } = query;
+router.get('/', authenticate, (req, res, next) => {
+  const { currentUser, query: { slug, collectionPrefix, status } } = req;
 
   if ( slug ) {
-    // Single page post
+    compiledModels[collectionPrefix].Page
+    .findOne( { slug } )
+    .populate({
+      path: 'author ancestors parent',
+      select: '-hash -email'
+    })
+    .exec((err, doc) => {
+      assert.ifError(err);
+
+      if ( doc.status === 'publish' ) {
+        res.json(doc);
+      } else {
+        if ( isUserCapable( 'edit', 'page', currentUser, doc ) )
+          res.json(doc);
+        else
+          res.sendStatus(404);
+      }
+    });
 
   } else {
     const q = {};
+    if ( status ) q.status = status;
 
-    if ( query.status )
-      q.status = query.status;
-
-    compiledModels[query.collectionPrefix].Page
+    compiledModels[collectionPrefix].Page
     .find( q )
     .populate({
       path: 'author ancestors parent',

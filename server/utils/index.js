@@ -91,9 +91,24 @@ function ancestorsFieldRef(pageRef) {
   };
 }
 
-function retrieveAncestors(model, nextParent, post, res, onFind, ancestors = []) {
-  if (!ancestors.length)
+function retrieveAncestors(model, nextParent, post, res, onRetrieve, willInitAncestors = true, ancestors = []) {
+  if (!ancestors.length) {
+    if (willInitAncestors) {
+      model.find( { parent: post._id },
+        (err, docs) => {
+          docs.forEach( _id => {
+            model.findOne( { _id },
+              (err, doc) => {
+                assert.ifError(err);
+                retrieveAncestors( model, doc.parent, doc, null, modified => modified.save(err => assert.ifError(err)) );
+              }
+            );
+          });
+        }
+      );
+    }
     post.parent = nextParent ? nextParent : null;
+  }
 
   if (nextParent) {
     model.findOne(
@@ -108,13 +123,28 @@ function retrieveAncestors(model, nextParent, post, res, onFind, ancestors = [])
         }
 
         nextParent = parentPost ? parentPost.parent : false;
-        nextParent ?
-          retrieveAncestors(model, nextParent, post, res, onFind, ancestors) :
-          onFind( Object.assign(post, { ancestors }) );
+        if (nextParent) {
+          retrieveAncestors(model, nextParent, post, res, onRetrieve, false, ancestors);
+        } else {
+          onRetrieve( Object.assign(post, { ancestors }) );
+
+          if (willInitAncestors) {
+            ancestors.forEach( _id => {
+              model.findOne( { _id },
+                (err, doc) => {
+                  assert.ifError(err);
+
+                  console.log(`Ancestor "${_id}" retrieving ancestors.`);
+                  retrieveAncestors( model, doc.parent, doc, null, modified => modified.save(err => assert.ifError(err)), false );
+                }
+              );
+            });
+          }
+        }
       }
     );
   } else {
-    onFind( Object.assign(post, { ancestors }) );
+    onRetrieve( Object.assign(post, { ancestors }) );
   }
 }
 

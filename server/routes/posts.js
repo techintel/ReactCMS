@@ -135,13 +135,11 @@ router.post('/add', authenticate, (req, res, next) => {
   }
 });
 
-router.get('/', (req, res, next) => {
-  const { query } = req;
-  const { slug, year, month, day } = query;
+router.get('/', authenticate, (req, res, next) => {
+  const { currentUser, query: { collectionPrefix, status, slug, year, month, day } } = req;
 
   if ( slug && year && month && day ) {
-
-    compiledModels[query.collectionPrefix].Post.aggregate([
+    compiledModels[collectionPrefix].Post.aggregate([
       { $project: {
         slug: 1,
         year: { $year: "$date" },
@@ -157,10 +155,19 @@ router.get('/', (req, res, next) => {
     ], (err, docs) => {
       assert.ifError(err);
 
-      if (docs.length > 0) {
+      if ( docs.length > 0 ) {
         populateSort(
-          compiledModels[query.collectionPrefix].Post.findOne({ _id: docs[0]._id }),
-          null, doc => res.json(doc)
+          compiledModels[collectionPrefix].Post.findOne({ _id: docs[0]._id }),
+          null, doc => {
+            if ( doc.status === 'publish' ) {
+              res.json(doc);
+            } else {
+              if ( isUserCapable( 'edit', 'post', currentUser, doc ) )
+                res.json(doc);
+              else
+                res.sendStatus(404);
+            }
+          }
         );
       } else {
         res.sendStatus(404);
@@ -169,12 +176,10 @@ router.get('/', (req, res, next) => {
 
   } else {
     const q = {};
-
-    if ( query.status )
-      q.status = query.status;
+    if ( status ) q.status = status;
 
     populateSort(
-      compiledModels[query.collectionPrefix].Post.find(q),
+      compiledModels[collectionPrefix].Post.find(q),
       { date: -1 }, docs => res.json(docs)
     );
   }
