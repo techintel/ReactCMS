@@ -11,7 +11,7 @@ import moment from 'moment';
 import { deletePost } from '../../actions/fetchPosts';
 import { openSnackbar } from '../../actions/openSnackbar';
 import { getPostStatusLabel, hasBeenText, getSorting, getFiltering } from '../../utils';
-import { isUserCapable, onEditPost } from '../../utils/reactcms';
+import { isUserCapable, onEditPost, onViewPost } from '../../utils/reactcms';
 
 import EnhancedTableToolbar from '../../components/Tables/EnhancedTableToolbar';
 import EnhancedTableHead from '../../components/Tables/EnhancedTableHead';
@@ -194,7 +194,7 @@ class PostsTable extends Component {
                         {isEditEnabled ? (
                           <Button
                             className={classes.tableCellButton}
-                            onClick={() => onEditPost(type, n._id, history, domain)}
+                            onClick={() => onEditPost(type, n._id, domain, history)}
                           >
                             {postTitle}
                           </Button>
@@ -216,6 +216,16 @@ class PostsTable extends Component {
                               }}
                             >
                               {deleteLabel}
+                            </Button>
+                          )}
+                          {isEditEnabled && (
+                            <Button
+                              size="small"
+                              color="primary"
+                              className={classes.tableCellButton}
+                              onClick={() => onViewPost(type, n, domain, history)}
+                            >
+                              View
                             </Button>
                           )}
                         </div>

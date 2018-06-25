@@ -62,8 +62,26 @@ export function isUserCapable(action, postType, user, post) {
   }
 }
 
-export function onEditPost(type, _id, history, domain) {
+export function onEditPost(type, _id, domain, history) {
   history.push(`${slashDomain(domain)}/admin/${type}/${_id}`);
+}
+
+export function onViewPost(type, post, domain, history) {
+  let Uri = `${slashDomain(domain)}/`;
+
+  if (type === 'post') {
+    const date = new Date(post.date);
+    const year = date.getUTCFullYear();
+    const month = date.getUTCMonth() + 1;
+    const day = date.getUTCDate();
+    Uri += `blog/${year}/${month}/${day}/`;
+  }
+
+  if (type === 'category') Uri += `blog/category/`;
+  if (type === 'tag') Uri += `blog/tag/`;
+
+  Uri += post.slug;
+  history.push(Uri);
 }
 
 export function getPostStatuses(type, user, post) {

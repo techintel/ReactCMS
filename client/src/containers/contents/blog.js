@@ -121,7 +121,7 @@ class Blog extends Component {
                   onClose={this.handleCloseMenu}
                 >
                   {isEditEnabled &&
-                    <MenuItem onClick={() => onEditPost('post', post._id, history, domain)}>Edit Post</MenuItem>
+                    <MenuItem onClick={() => onEditPost('post', post._id, domain, history)}>Edit Post</MenuItem>
                   }
                   {isDeleteEnabled &&
                     <MenuItem onClick={() => this.onDeleteClick(post._id)}>Bin</MenuItem>

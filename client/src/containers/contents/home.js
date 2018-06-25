@@ -111,7 +111,7 @@ class Home extends Component {
                   onClose={() => this.handleCloseMenu(post._id)}
                 >
                   {isEditEnabled &&
-                    <MenuItem onClick={() => onEditPost('post', post._id, history, domain)}>Edit Post</MenuItem>
+                    <MenuItem onClick={() => onEditPost('post', post._id, domain, history)}>Edit Post</MenuItem>
                   }
                   {isDeleteEnabled &&
                     <MenuItem onClick={() => this.props.deletePost('post', post._id)}>Bin</MenuItem>
