@@ -116,10 +116,12 @@ function retrieveAncestors(model, nextParent, post, res, onRetrieve, willInitAnc
       (err, parentPost) => {
         assert.ifError(err);
 
-        if ( post._id && post._id.equals(parentPost.parent) ) {
-          return res.status(409).json({ errors: { parent: "Can't select the parent of any ancestors." } });
-        } else if (parentPost) {
-          ancestors.unshift(nextParent);
+        if (parentPost) {
+          if ( post._id && post._id.equals(parentPost.parent) ) {
+            return res.status(409).json({ errors: { parent: "Can't select the parent of any ancestors." } });
+          } else {
+            ancestors.unshift(nextParent);
+          }
         }
 
         nextParent = parentPost ? parentPost.parent : false;
