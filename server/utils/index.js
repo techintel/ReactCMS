@@ -148,7 +148,10 @@ function retrieveAncestors(model, nextParent, post, res, onRetrieve, willInitAnc
   }
 }
 
-function populateSort(docQuery, sort, callback) {
+function populateSort(docQuery, sort, callback, limitSkip) {
+  const limit = limitSkip ? parseInt(limitSkip.limit) : 0;
+  const skip = limitSkip ? parseInt(limitSkip.skip) : 0;
+
   const params = {
     path: 'author categories tags',
     select: '-hash -email'
@@ -164,6 +167,7 @@ function populateSort(docQuery, sort, callback) {
   } else { // docQuery is a query
     docQuery.populate( params )
     .sort( sort )
+    .limit( limit ).skip( skip )
     .exec( (err, result) => {
       assert.ifError(err);
       callback(result);

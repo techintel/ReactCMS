@@ -1,37 +1,37 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { fetchPosts, deletePost } from '../../actions/fetchPosts';
 import _ from 'lodash';
-
 import { withStyles } from '@material-ui/core/styles';
 import {
-  Avatar, IconButton, Button,
+  CircularProgress, Avatar, IconButton, Button,
   Card, CardHeader, CardContent, CardActions,
   Menu, MenuItem
 } from '@material-ui/core';
 import { MoreVert, KeyboardArrowRight } from '@material-ui/icons';
 
-import { slashDomain, toSlug } from '../../utils';
+import { fetchPosts, deletePost } from '../../actions/fetchPosts';
+import { openSnackbar } from '../../actions/openSnackbar';
+import { slashDomain, toSlug, hasBeenText } from '../../utils';
 import { isUserCapable, onEditPost } from '../../utils/reactcms';
 import moment from 'moment';
 import { EditorState, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 
-import Loading from '../../components/Loading';
 import CategoryChips from '../../components/Lists/CategoryChips';
+import TagChips from '../../components/Lists/TagChips';
 
 const styles = theme => ({
-  categories: {
-    float: 'right',
-  },
-  chip: {
-    margin: `${theme.spacing.unit}px ${theme.spacing.unit}px 0`,
+  loading: {
+    padding: 50,
   },
   title: {
     display: 'inline-block',
     textTransform: 'none',
+  },
+  categoryChips: {
+    float: 'right',
   },
   readOnlyEditorWrapper: {
     color: theme.typography.body1.color,
@@ -46,21 +46,59 @@ const styles = theme => ({
     textAlign: 'right',
     display: 'block',
   },
+  tagChips: {
+    display: 'inline-block',
+  },
   readMore: {
     textTransform: 'none',
-  }
+  },
+  button: {
+    margin: theme.spacing.unit,
+  },
 });
 
 class Home extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { isInitialized: false };
+  state = {
+    itemsPerLoad: 5,
+    isLoading: null,
+    isEndResult: null,
+  };
 
-    const { info: { collectionPrefix } } = props;
-    props.fetchPosts(
-      'post', collectionPrefix, 'publish',
-      () => this.setState({ isInitialized: true })
-    );
+  componentDidMount() {
+    this.loadPosts(0);
+  }
+
+  loadPosts = postsNumber => {
+    this.setState({ isLoading: true });
+
+    const { type, tag_id, info: { collectionPrefix } } = this.props;
+    const { itemsPerLoad } = this.state;
+    const params = {
+      collectionPrefix, status: 'publish',
+      limit: itemsPerLoad, skip: postsNumber
+    };
+
+    switch (type) {
+      case 'category':
+        params.categories = tag_id;
+        break;
+      case 'tag':
+        params.tags = tag_id;
+        break;
+      default: break;
+    }
+
+    this.props.fetchPosts( 'post', params, data => {
+      this.setState({
+        isLoading: false,
+        isEndResult: (data.length < itemsPerLoad),
+      });
+    });
+  }
+
+  handleLoadMore = () => {
+    const { posts } = this.props;
+    this.loadPosts(_.size(posts));
   }
 
   handleOpenMenu = (event, post_id) => {
@@ -71,10 +109,16 @@ class Home extends Component {
     this.setState({ [post_id]: null });
   };
 
-  renderPosts() {
-    const { posts, user, history, classes, info: { domain } } = this.props;
+  onDeleteClick = post_id => {
+    this.props.deletePost( 'post', post_id,
+      data => this.props.openSnackbar( hasBeenText('post', data.title, 'put to bin') )
+    );
+  }
 
-    return _.map(posts, post => {
+  renderPosts() {
+    const { user, posts, history, classes, info: { domain } } = this.props;
+
+    return _.map( _.orderBy( posts, ['date'],['desc'] ), post => {
       const slug = toSlug(post.title);
       const anchorEl = this.state[post._id];
 
@@ -114,27 +158,20 @@ class Home extends Component {
                     <MenuItem onClick={() => onEditPost('post', post._id, domain, history)}>Edit Post</MenuItem>
                   }
                   {isDeleteEnabled &&
-                    <MenuItem onClick={() => this.props.deletePost('post', post._id)}>Bin</MenuItem>
+                    <MenuItem onClick={() => this.onDeleteClick(post._id)}>Bin</MenuItem>
                   }
                 </Menu>
               </div>
             ) : null}
             title={
-              <Button
-                component={Link}
-                to={linkTo}
-                className={classes.title}
-                fullWidth
-              >
+              <Button component={Link} to={linkTo} className={classes.title} fullWidth>
                 {post.title}
               </Button>
             }
             subheader={
               <div>
-                {moment(post.date).format("dddd, MMMM D, YYYY")}
-                <div className={classes.categories}>
-                  <CategoryChips categories={post.categories} history={history} domain={domain} className={classes.chip} />
-                </div>
+                <span>{moment(post.date).format("dddd, MMMM D, YYYY")}</span>
+                <CategoryChips categories={post.categories} domain={domain} history={history} className={classes.categoryChips} />
               </div>
             }
           />
@@ -146,12 +183,8 @@ class Home extends Component {
               toolbarClassName={classes.readOnlyEditorToolbar}
             />
             <CardActions className={classes.cardActions}>
-              <Button
-                component={Link}
-                to={linkTo}
-                color="primary"
-                className={classes.readMore}
-              >
+              <TagChips tags={post.tags} domain={domain} history={history} className={classes.tagChips} />
+              <Button component={Link} to={linkTo} color="primary" className={classes.readMore}>
                 Read More <KeyboardArrowRight />
               </Button>
             </CardActions>
@@ -162,11 +195,26 @@ class Home extends Component {
   }
 
   render() {
-    const { isInitialized } = this.state;
+    const { isLoading, isEndResult } = this.state;
+    const { classes } = this.props;
 
-    return !isInitialized ? <Loading /> : (
+    return (
       <div>
         {this.renderPosts()}
+        {isLoading && (
+          <Card className={classes.loading} align="center">
+            <CircularProgress />
+          </Card>
+        )}
+        {!isEndResult && (
+          <Card align="center">
+            <Button variant="outlined" size="large" color="primary" className={classes.button}
+              onClick={this.handleLoadMore} disabled={isLoading}
+            >
+              Load More <KeyboardArrowRight />
+            </Button>
+          </Card>
+        )}
       </div>
     );
   }
@@ -174,20 +222,38 @@ class Home extends Component {
 
 Home.propTypes = {
   classes: PropTypes.object.isRequired,
+  type: PropTypes.string,
+  tag_id: PropTypes.string,
   history: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({ info, posts, auth: { user } }) {
-  const published = _.omitBy(posts, (value, key) => {
-    return ( value.status !== 'publish' );
+const pickByTag = ( group, tag_id, posts ) => {
+  return _.pickBy( posts, (value, key) => {
+    let isIncluded = false;
+    value[group].forEach( el => {
+      if (el._id === tag_id)
+        return isIncluded = true;
+    });
+    return isIncluded;
   });
-
-  return {
-    info, user,
-    posts: published
-  };
 }
 
-export default connect(mapStateToProps, { fetchPosts, deletePost })(
+function mapStateToProps({ info, posts, auth: { user } }, { type, tag_id }) {
+  let published = _.omitBy( posts, (value, key) => ( value.status !== 'publish' ) );
+
+  switch (type) {
+    case 'category':
+      published = pickByTag('categories', tag_id, published);
+      break;
+    case 'tag':
+      published = pickByTag('tags', tag_id, published);
+      break;
+    default: break;
+  }
+
+  return { info, user, posts: published };
+}
+
+export default connect(mapStateToProps, { fetchPosts, deletePost, openSnackbar })(
   withStyles(styles)(Home)
 );

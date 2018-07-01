@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Paper, Button, Typography, Input } from '@material-ui/core';
 import { Email, Security, VerifiedUser, AccountCircle } from '@material-ui/icons';

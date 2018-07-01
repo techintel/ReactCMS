@@ -121,19 +121,28 @@ router.post('/add', authenticate, (req, res, next) => {
 });
 
 router.get('/', (req, res, next) => {
-  const { originalUrl, query } = req;
+  const { originalUrl, query: { collectionPrefix, slug } } = req;
   const appDir = originalUrl.split("/")[1].split("?")[0];
 
   const model = (appDir === 'tags')
-    ? compiledModels[query.collectionPrefix].Tag
-    : compiledModels[query.collectionPrefix].Category;
+    ? compiledModels[collectionPrefix].Tag
+    : compiledModels[collectionPrefix].Category;
 
-  model.find()
-  .populate({ path: 'ancestors' })
-  .exec((err, docs) => {
-    assert.ifError(err);
-    res.json(docs);
-  });
+  if (slug) {
+    model.findOne({ slug })
+      .populate({ path: 'ancestors' })
+      .exec((err, doc) => {
+        assert.ifError(err);
+        res.json(doc);
+      });
+  } else {
+    model.find()
+      .populate({ path: 'ancestors' })
+      .exec((err, docs) => {
+        assert.ifError(err);
+        res.json(docs);
+      });
+  }
 });
 
 router.post('/edit', authenticate, (req, res, next) => {

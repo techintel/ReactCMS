@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import {
   Table, TableBody, TableCell, TablePagination, TableRow,
@@ -48,7 +48,7 @@ class PostsTable extends Component {
       selected: [],
       data: [],
       page: 0,
-      rowsPerPage: 5,
+      rowsPerPage: 10,
       filter: null,
     };
   }

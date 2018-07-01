@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@material-ui/core": "^1.0.0",
-    "@material-ui/icons": "^1.0.0",
+    "@material-ui/icons": "^1.1.0",
     "axios": "^0.18.0",
     "dompurify": "^1.0.4",
     "draft-js": "^0.10.5",

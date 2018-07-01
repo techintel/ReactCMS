@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import Tag from './Tag';
@@ -18,7 +18,7 @@ class Tags extends Component {
   constructor(props) {
     super(props);
     const { type, collectionPrefix, title } = props;
-    props.fetchPosts(type, collectionPrefix);
+    props.fetchPosts(type, { collectionPrefix });
 
     documentTitle(title);
   }

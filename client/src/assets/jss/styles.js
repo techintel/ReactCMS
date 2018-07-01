@@ -41,6 +41,7 @@ export const drawerStyle = theme => ({
 export const boxCardStyle = theme => ({
   boxCard: {
     margin: theme.spacing.unit,
+    overflow: 'visible',
   },
   boxCardHeader: {
     backgroundColor: theme.palette.primary.dark,

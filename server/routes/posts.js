@@ -136,7 +136,10 @@ router.post('/add', authenticate, (req, res, next) => {
 });
 
 router.get('/', authenticate, (req, res, next) => {
-  const { currentUser, query: { collectionPrefix, status, slug, year, month, day } } = req;
+  const { currentUser, query: {
+    collectionPrefix, status, limit, skip, categories, tags,
+    slug, year, month, day,
+  } } = req;
 
   if ( slug && year && month && day ) {
     compiledModels[collectionPrefix].Post.aggregate([
@@ -177,10 +180,13 @@ router.get('/', authenticate, (req, res, next) => {
   } else {
     const q = {};
     if ( status ) q.status = status;
+    if ( categories ) q.categories = categories;
+    if ( tags ) q.tags = tags;
 
     populateSort(
       compiledModels[collectionPrefix].Post.find(q),
-      { date: -1 }, docs => res.json(docs)
+      { date: -1 }, docs => res.json(docs),
+      { limit, skip }
     );
   }
 });

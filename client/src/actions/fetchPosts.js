@@ -8,15 +8,12 @@ import {
   FETCH_PAGE, FETCH_PAGES, DELETE_PAGE, DELETE_PAGES, ADD_PAGE,
 } from './types';
 
-export function fetchPosts(type, collectionPrefix, status, onFetch) {
-  const params = { collectionPrefix };
-  if ( status ) params.status = status;
-
+export function fetchPosts(type, params, onFetch) {
   const request = axios.get(
     `${SERVER_ROOT_URL}/${type === 'category' ? 'categorie' : type}s`,
     { params }
   ).then(res => {
-    if ( onFetch ) onFetch();
+    if ( onFetch ) onFetch(res.data);
     return res;
   });
 
@@ -70,7 +67,7 @@ export function fetchPost( type, { collectionPrefix, slug, year, month, day }, o
 export function deletePost(type, id, onDelete) {
   const request = axios.delete(`${SERVER_ROOT_URL}/${type === 'category' ? 'categorie' : type}s/${id}`)
   .then( res => {
-    if ( onDelete ) onDelete();
+    if ( onDelete ) onDelete(res.data);
     return res;
   });
 

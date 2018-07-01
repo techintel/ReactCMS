@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
-import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import { Grid, Button, Card, CardHeader, CardContent, CardActions } from '@material-ui/core';
@@ -84,16 +84,16 @@ class Post extends Component {
 
     switch (type) {
       case 'post':
-        this.props.fetchPosts( 'category', collectionPrefix, null,
+        this.props.fetchPosts( 'category', { collectionPrefix },
           () => this.setState({ categoriesInitialized: true })
         );
-        this.props.fetchPosts( 'tag', collectionPrefix, null,
+        this.props.fetchPosts( 'tag', { collectionPrefix },
           () => this.setState({ tagsInitialized: true })
         );
         break;
 
       case 'page':
-        this.props.fetchPosts( 'page', collectionPrefix, null,
+        this.props.fetchPosts( 'page', { collectionPrefix },
           () => this.setState({ pagesInitialized: true })
         );
         break;

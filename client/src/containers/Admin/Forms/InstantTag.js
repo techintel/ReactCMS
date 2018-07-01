@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import { isUserCapable } from '../../../utils/reactcms';

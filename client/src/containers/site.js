@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import { withStyles } from '@material-ui/core/styles';
@@ -14,6 +14,7 @@ import Footer from './Parts/Footer';
 import Signin from './Contents/Signin';
 import FrontPage from './Contents/FrontPage';
 import Blog from './Contents/Blog';
+import Tag from './Contents/Tag';
 import Page from './Contents/Page';
 import Admin from './Admin';
 
@@ -57,6 +58,7 @@ class Site extends Component {
   render() {
     const { classes, snackbar, isAuthenticated, domain } = this.props;
     const { drawerOpen } = this.state;
+    const slashDomainParam = domain ? '/:domain' : '';
 
     return (
       <div className={classes.root}>
@@ -65,11 +67,19 @@ class Site extends Component {
           <div className={classes.toolbar} />
 
           <Switch>
-            <Route exact path={`${domain ? '/:domain' : ''}/signin`} component={Signin} />
-            <Route exact path={`${domain ? '/:domain' : ''}/`} component={FrontPage} />
-            <Route path={`${domain ? '/:domain' : ''}/admin`} component={Admin} />
-            <Route exact path={`${domain ? '/:domain' : ''}/blog/:year/:month/:day/:slug`} component={Blog} />
-            <Route exact path={`${domain ? '/:domain' : ''}/:slug`} component={Page} />
+            <Route exact path={`${slashDomainParam}/signin`} component={Signin} />
+            <Route exact path={`${slashDomainParam}/`} component={FrontPage} />
+            <Route path={`${slashDomainParam}/admin`} component={Admin} />
+
+            <Route exact path={`${slashDomainParam}/blog/:year/:month/:day/:slug`} component={Blog} />
+            <Route exact path={`${slashDomainParam}/blog/:type/:slug`}
+              render={props => {
+                const { match: { params: { type, slug } } } = props;
+                return <Tag type={type} key={`${type}-${slug}`} {...props} />;
+              }}
+            />
+            <Route exact path={`${slashDomainParam}/:slug`} component={Page} />
+
             <Route component={NotFound} />
           </Switch>
 

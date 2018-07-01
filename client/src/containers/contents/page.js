@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { fetchPost, deletePost } from '../../actions/fetchPosts';
 import { find } from 'lodash';
@@ -9,10 +9,6 @@ const styles = theme => ({
 });
 
 class Page extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   componentDidMount() {
     const { match: { params }, info: { collectionPrefix } } = this.props;
 

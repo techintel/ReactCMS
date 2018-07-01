@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText, newCreatedText } from '../../utils';
@@ -42,7 +42,7 @@ class Tag extends Component {
 
     if ( type === 'category' ) {
       const { info: { collectionPrefix } } = this.props;
-      this.props.fetchPosts( type, collectionPrefix, null,
+      this.props.fetchPosts( type, { collectionPrefix },
         () => this.setState({ categoriesInitialized: true })
       );
     }

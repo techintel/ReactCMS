@@ -1,6 +1,6 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import { AppBar, Toolbar, Typography, Button, IconButton, Drawer, Menu, MenuItem } from '@material-ui/core';

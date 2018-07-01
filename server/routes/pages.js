@@ -119,14 +119,11 @@ router.get('/', authenticate, (req, res, next) => {
     .exec((err, doc) => {
       assert.ifError(err);
 
-      if ( doc.status === 'publish' ) {
-        res.json(doc);
-      } else {
-        if ( isUserCapable( 'edit', 'page', currentUser, doc ) )
-          res.json(doc);
-        else
-          res.sendStatus(404);
-      }
+      if ( doc &&
+        ( doc.status === 'publish' || isUserCapable( 'edit', 'page', currentUser, doc ) )
+      ) return res.json(doc);
+
+      res.sendStatus(404);
     });
 
   } else {

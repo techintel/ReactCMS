@@ -1,36 +1,44 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { map } from 'lodash';
+import { withStyles } from '@material-ui/core/styles';
 import { Chip, Avatar } from '@material-ui/core';
+import { map } from 'lodash';
 import { slashDomain } from '../../utils';
+
+const styles = theme => ({
+  chip: {
+    margin: `0 ${theme.spacing.unit}px`,
+  },
+});
 
 class CategoryChips extends Component {
   render() {
-    const { categories, history, domain, className } = this.props;
+    const { categories, domain, history, classes, className } = this.props;
 
-    return map(categories, category => {
-      return (
-        <Chip
-          key={category.slug}
-          avatar={
-            <Avatar>{category.name.charAt(0)}</Avatar>
-          }
-          label={category.name}
-          onClick={() => {
-            history.push(`${slashDomain(domain)}/blog/category/${category.slug}`);
-          }}
-          className={className}
-        />
-      );
-    });
+    return (
+      <div className={className}>
+        {map( categories, cat =>
+          <Chip
+            key={cat.slug}
+            avatar={
+              <Avatar>{cat.name.charAt(0)}</Avatar>
+            }
+            label={cat.name}
+            onClick={() => history.push(`${slashDomain(domain)}/blog/category/${cat.slug}`)}
+            className={classes.chip}
+          />
+        )}
+      </div>
+    );
   }
 }
 
 CategoryChips.propTypes = {
-  categories: PropTypes.array,
-  history: PropTypes.object.isRequired,
-  domain: PropTypes.string,
+  classes: PropTypes.object.isRequired,
   className: PropTypes.string,
+  categories: PropTypes.array,
+  domain: PropTypes.string.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
-export default CategoryChips;
+export default withStyles(styles)(CategoryChips);

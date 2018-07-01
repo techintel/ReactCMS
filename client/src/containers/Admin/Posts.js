@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { Paper, Tabs, Tab } from '@material-ui/core';
 import PostsTable from './PostsTable';
@@ -35,8 +35,8 @@ class Posts extends Component {
     this.state = { value: 0 };
 
     const { collectionPrefix, type } = props;
-    props.fetchPosts(type, collectionPrefix);
-    if ( type === 'post' ) props.fetchPosts('category', collectionPrefix);
+    props.fetchPosts(type, { collectionPrefix });
+    if ( type === 'post' ) props.fetchPosts('category', { collectionPrefix });
 
     documentTitle(`${type}s`);
   }
