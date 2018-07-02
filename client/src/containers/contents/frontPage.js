@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { documentTitle } from '../../utils/reactcms';
 
 import Home from './Home';
-import Page from './Page';
+import Post from './Post';
 
 class FrontPage extends Component {
   componentDidMount () {
@@ -17,7 +17,7 @@ class FrontPage extends Component {
 
     return (show_on_front === 'posts') ?
       <Home history={history} /> :
-      <Page id={page_on_front} />;
+      <Post type="page" match={{ params: { slug: page_on_front } }} history={history} />;
   }
 }
 

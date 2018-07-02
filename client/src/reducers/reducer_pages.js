@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import {
-  FETCH_PAGES,
+  FETCH_PAGE, FETCH_PAGES,
   DELETE_PAGE, DELETE_PAGES,
 } from '../actions/types';
 
@@ -10,6 +10,11 @@ export default (state = {}, action) => {
   const { data } = payload ? payload : { data: null };
 
   switch (action.type) {
+    case FETCH_PAGE:
+      return (payload !== undefined) ?
+        { ...state, [data._id]: data } :
+        state;
+
     case FETCH_PAGES:
       const mapped = _.mapKeys(data, '_id');
       return { ...state, ...mapped };

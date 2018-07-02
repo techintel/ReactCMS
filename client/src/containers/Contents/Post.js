@@ -34,27 +34,25 @@ const styles = theme => ({
     paddingLeft: theme.spacing.unit,
     fontWeight: 300,
   },
+  empty: {
+    padding: '25px 0px',
+  },
 });
 
-class Blog extends Component {
-  mounted = false;
+class Post extends Component {
   state = {
     isNotFound: null,
     anchorEl: null,
-    editorState: null
-  }
+    editorState: null,
+  };
 
   componentDidMount() {
-    this.mounted = true;
+    this._isMounted = true;
+    const { type, match: { params }, info: { collectionPrefix } } = this.props;
 
-    const {
-      match: { params },
-      info: { collectionPrefix }
-    } = this.props;
-
-    this.props.fetchPost( 'post', { ...params, collectionPrefix }, post => {
-      if ( this.mounted ) {
-        if (post) {
+    this.props.fetchPost( type, { ...params, collectionPrefix }, post => {
+      if ( this._isMounted ) {
+        if ( post ) {
           this.setState({
             editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(post.content)))
           });
@@ -66,7 +64,7 @@ class Blog extends Component {
   }
 
   componentWillUnmount() {
-    this.mounted = false;
+    this._isMounted = false;
   }
 
   handleOpenMenu = event => {
@@ -78,12 +76,13 @@ class Blog extends Component {
   };
 
   onDeleteClick = post_id => {
-    this.props.deletePost( 'post', post_id, data => {
-      const { history, info: { domain } } = this.props;
+    const { type, history, info: { domain } } = this.props;
+
+    this.props.deletePost( type, post_id, data => {
       const snackbarActionText = (data.status === 'trash') ? 'put to bin' : 'deleted';
 
       history.push(`${slashDomain(domain)}/`);
-      this.props.openSnackbar( hasBeenText('post', data.title, snackbarActionText) );
+      this.props.openSnackbar( hasBeenText(type, data.title, snackbarActionText) );
     });
   }
 
@@ -91,23 +90,21 @@ class Blog extends Component {
     const { post } = this.props;
     const { isNotFound } = this.state;
 
-    if (isNotFound) {
+    if ( isNotFound ) {
       return <NotFound />;
-    } else if (!post) {
+    } else if ( !post ) {
       return <Loading />;
     } else {
-      const { user, history, classes, info: { domain } } = this.props;
+      const { type, user, history, classes, info: { domain } } = this.props;
       const { anchorEl, editorState } = this.state;
-      const deleteText = post.status !== 'trash' ? 'Bin' : 'Delete';
+      const deleteText = (post.status !== 'trash') ? 'Bin' : 'Delete';
 
-      const isDeleteEnabled = isUserCapable('delete', 'post', user, post);
-      const isEditEnabled = isUserCapable('edit', 'post', user, post);
+      const isDeleteEnabled = isUserCapable('delete', type, user, post);
+      const isEditEnabled = isUserCapable('edit', type, user, post);
 
       return (
         <div>
-          <Typography variant="title">
-            {post.title}
-          </Typography>
+          <Typography variant="title">{post.title}</Typography>
 
           <CardHeader
             avatar={
@@ -131,7 +128,7 @@ class Blog extends Component {
                   onClose={this.handleCloseMenu}
                 >
                   {isEditEnabled &&
-                    <MenuItem onClick={() => onEditPost('post', post._id, domain, history)}>Edit Post</MenuItem>
+                    <MenuItem onClick={() => onEditPost(type, post._id, domain, history)}>Edit Post</MenuItem>
                   }
                   {isDeleteEnabled &&
                     <MenuItem onClick={() => this.onDeleteClick(post._id)}>{deleteText}</MenuItem>
@@ -150,45 +147,61 @@ class Blog extends Component {
             }
           />
 
-          <Editor
-            editorState={editorState}
-            readOnly
-            wrapperClassName={classes.readOnlyEditorWrapper}
-            toolbarClassName={classes.readOnlyEditorToolbar}
-          />
+          {( editorState && editorState.getCurrentContent().hasText() ) ?
+            <Editor
+              editorState={editorState}
+              readOnly
+              wrapperClassName={classes.readOnlyEditorWrapper}
+              toolbarClassName={classes.readOnlyEditorToolbar}
+            /> :
+            <Typography variant="subheading" gutterBottom align="center" className={classes.empty}>
+              Nothing to show
+            </Typography>
+          }
 
-          <TagChips tags={post.tags} domain={domain} history={history} />
+          {type === 'post' && <TagChips tags={post.tags} domain={domain} history={history} />}
         </div>
       );
     }
   }
 }
 
-Blog.propTypes = {
+Post.propTypes = {
   classes: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  match: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
 };
 
-function mapStateToProps({ info, posts, auth: { user } }, ownProps) {
-  const { match: { params } } = ownProps;
+function mapStateToProps({ info, posts, pages, auth: { user } }, ownProps) {
+  const { type, match: { params } } = ownProps;
+  let post;
 
-  return {
-    info, user,
-    post: find(posts, o => {
-      const date = new Date(o.date);
-      const year = date.getUTCFullYear();
-      const month = date.getUTCMonth() + 1;
-      const day = date.getUTCDate();
+  switch (type) {
+    case 'post':
+      post = find(posts, o => {
+        const date = new Date(o.date);
+        const year = date.getUTCFullYear();
+        const month = date.getUTCMonth() + 1;
+        const day = date.getUTCDate();
 
-      return (
-        o.slug === params.slug &&
-        year === Number(params.year) &&
-        month === Number(params.month) &&
-        day === Number(params.day)
-      );
-    })
-  };
+        return (
+          o.slug === params.slug &&
+          year === Number(params.year) &&
+          month === Number(params.month) &&
+          day === Number(params.day)
+        );
+      });
+      break;
+    case 'page':
+      post = find(pages, o => o.slug === params.slug);
+      break;
+    default: break;
+  }
+
+  return { info, user, post };
 }
 
 export default connect(mapStateToProps, { fetchPost, deletePost, openSnackbar })(
-  withStyles(styles)(Blog)
+  withStyles(styles)(Post)
 );

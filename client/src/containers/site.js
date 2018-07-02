@@ -10,12 +10,10 @@ import { openSnackbar } from '../actions/openSnackbar';
 
 import Header from './Parts/Header';
 import Footer from './Parts/Footer';
-
 import Signin from './Contents/Signin';
 import FrontPage from './Contents/FrontPage';
-import Blog from './Contents/Blog';
+import Post from './Contents/Post';
 import Tag from './Contents/Tag';
-import Page from './Contents/Page';
 import Admin from './Admin';
 
 import NotFound from '../components/NotFound';
@@ -71,14 +69,24 @@ class Site extends Component {
             <Route exact path={`${slashDomainParam}/`} component={FrontPage} />
             <Route path={`${slashDomainParam}/admin`} component={Admin} />
 
-            <Route exact path={`${slashDomainParam}/blog/:year/:month/:day/:slug`} component={Blog} />
+            <Route exact path={`${slashDomainParam}/blog/:year/:month/:day/:slug`}
+              render={props => {
+                const { params: { year, month, day, slug } } = props.match;
+                return <Post type="post" key={`${year}-${month}-${day}-${slug}`} {...props} />;
+              }}
+            />
             <Route exact path={`${slashDomainParam}/blog/:type/:slug`}
               render={props => {
-                const { match: { params: { type, slug } } } = props;
+                const { params: { type, slug } } = props.match;
                 return <Tag type={type} key={`${type}-${slug}`} {...props} />;
               }}
             />
-            <Route exact path={`${slashDomainParam}/:slug`} component={Page} />
+            <Route exact path={`${slashDomainParam}/:slug`}
+              render={props => {
+                const { params: { slug } } = props.match;
+                return <Post type="page" key={`page-${slug}`} {...props} />;
+              }}
+            />
 
             <Route component={NotFound} />
           </Switch>

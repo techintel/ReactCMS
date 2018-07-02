@@ -24,7 +24,7 @@ import TagChips from '../../components/Lists/TagChips';
 
 const styles = theme => ({
   loading: {
-    padding: 50,
+    padding: 20,
   },
   title: {
     display: 'inline-block',
@@ -65,7 +65,12 @@ class Home extends Component {
   };
 
   componentDidMount() {
+    this._isMounted = true;
     this.loadPosts(0);
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   loadPosts = postsNumber => {
@@ -89,10 +94,12 @@ class Home extends Component {
     }
 
     this.props.fetchPosts( 'post', params, data => {
-      this.setState({
-        isLoading: false,
-        isEndResult: (data.length < itemsPerLoad),
-      });
+      if ( this._isMounted ) {
+        this.setState({
+          isLoading: false,
+          isEndResult: (data.length < itemsPerLoad),
+        });
+      }
     });
   }
 

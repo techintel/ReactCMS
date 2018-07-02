@@ -189,7 +189,13 @@ router.delete('/:_id?', authenticate, (req, res, next) => {
               doc.remove();
             }
 
-            res.send(doc);
+            doc.populate({
+              path: 'author ancestors parent',
+              select: '-hash -email'
+            }, (err, doc) => {
+              assert.ifError(err);
+              res.send(doc);
+            });
           } else {
             res.sendStatus(403);
           }

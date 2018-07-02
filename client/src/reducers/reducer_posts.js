@@ -10,15 +10,15 @@ export default (state = {}, action) => {
   const { data } = payload ? payload : { data: null };
 
   switch (action.type) {
-    case FETCH_POSTS:
-      const mapped = _.mapKeys(data, '_id');
-      const uniquePost = _.find( mapped, o => !state[o._id] );
-      return uniquePost ? { ...mapped, ...state } : { ...state, ...mapped };
-
     case FETCH_POST:
       return (payload !== undefined) ?
         { ...state, [data._id]: data } :
         state;
+
+    case FETCH_POSTS:
+      const mapped = _.mapKeys(data, '_id');
+      const uniquePost = _.find( mapped, o => !state[o._id] );
+      return uniquePost ? { ...mapped, ...state } : { ...state, ...mapped };
 
     case DELETE_POST:
       return (data.status === 'delete') ?

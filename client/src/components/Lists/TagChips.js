@@ -23,7 +23,7 @@ class TagChips extends Component {
   render() {
     const { tags, domain, history, classes, className } = this.props;
 
-    return (
+    return tags.length ? (
       <Paper className={classNames(classes.root, className)}>
         {map( tags, data => {
           const avatar = (
@@ -43,7 +43,7 @@ class TagChips extends Component {
           );
         })}
       </Paper>
-    );
+    ) : null;
   }
 }
 
