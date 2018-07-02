@@ -44,6 +44,7 @@ class Ancestors extends Component {
 }
 
 Ancestors.propTypes = {
+  classes: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
   items: PropTypes.array,
   childName: PropTypes.string,

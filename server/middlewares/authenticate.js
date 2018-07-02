@@ -32,9 +32,10 @@ function authenticate(req, res, next) {
       }
     });
   } else {
-    res.status(403).json({
-      error: 'No token provided'
-    });
+    // res.status(403).json({
+    //   error: 'No token provided'
+    // });
+    next();
   }
 }
 

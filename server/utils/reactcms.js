@@ -22,18 +22,22 @@ const {
 } = require('../routes/capabilities');
 
 function isCapable(user, post, capability, capability_others, capability_published) {
-  if ( post ) {
-    // post.author(._id) is typeof object while user.id is string.
-    if ( post.author._id !== undefined ?
-      post.author._id == user.id : post.author == user.id ) {
-      return ( post.status === 'publish' ) ?
-        includes(capability_published, user.role) :
-        includes(capability, user.role);
+  if ( user ) {
+    if ( post ) {
+      // post.author(._id) is typeof object while user.id is string.
+      if ( post.author._id !== undefined ?
+        post.author._id == user.id : post.author == user.id ) {
+        return ( post.status === 'publish' ) ?
+          includes(capability_published, user.role) :
+          includes(capability, user.role);
+      } else {
+        return includes(capability_others, user.role);
+      }
     } else {
-      return includes(capability_others, user.role);
+      return includes(capability, user.role);
     }
   } else {
-    return includes(capability, user.role);
+    return false;
   }
 }
 

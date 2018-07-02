@@ -19,6 +19,7 @@ import NotFound from '../../components/NotFound';
 import Loading from '../../components/Loading';
 import CategoryChips from '../../components/Lists/CategoryChips';
 import TagChips from '../../components/Lists/TagChips';
+import Ancestors from '../../components/Lists/Ancestors';
 
 const styles = theme => ({
   readOnlyEditorWrapper: {
@@ -136,8 +137,9 @@ class Post extends Component {
                 </Menu>
               </div>
             ) : null}
-            title={
-              <CategoryChips categories={post.categories} domain={domain} history={history} className={classes.categoryChips} />
+            title={type === 'post'
+              ? <CategoryChips categories={post.categories} domain={domain} history={history} className={classes.categoryChips} />
+              : <Ancestors type="page" items={post.ancestors} childName={post.title} domain={domain} />
             }
             subheader={
               <div>
