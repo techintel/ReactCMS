@@ -89,15 +89,15 @@ class Post extends Component {
 
   render() {
     const { post } = this.props;
-    const { isNotFound } = this.state;
+    const { isNotFound, editorState } = this.state;
 
     if ( isNotFound ) {
       return <NotFound />;
-    } else if ( !post ) {
+    } else if ( !post || !editorState ) {
       return <Loading />;
     } else {
       const { type, user, history, classes, info: { domain } } = this.props;
-      const { anchorEl, editorState } = this.state;
+      const { anchorEl } = this.state;
       const deleteText = (post.status !== 'trash') ? 'Bin' : 'Delete';
 
       const isDeleteEnabled = isUserCapable('delete', type, user, post);
@@ -149,7 +149,7 @@ class Post extends Component {
             }
           />
 
-          {( editorState && editorState.getCurrentContent().hasText() ) ?
+          {editorState.getCurrentContent().hasText() ?
             <Editor
               editorState={editorState}
               readOnly

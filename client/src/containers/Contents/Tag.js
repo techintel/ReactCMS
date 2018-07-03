@@ -25,14 +25,21 @@ class Tag extends Component {
   };
 
   componentDidMount() {
+    this._isMounted = true;
     const { type, match: { params }, info: { collectionPrefix } } = this.props;
 
     this.props.fetchPost( type, { ...params, collectionPrefix },
       tag => {
-        if (tag) this.setState({ tag });
-        else this.setState({ isNotFound: true });
+        if ( this._isMounted ) {
+          if (tag) this.setState({ tag });
+          else this.setState({ isNotFound: true });
+        }
       }
     );
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   handleOpenMenu = event => {
