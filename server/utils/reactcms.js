@@ -19,6 +19,9 @@ const {
   DELETE_PAGES,
   DELETE_OTHERS_PAGES,
   DELETE_PUBLISHED_PAGES,
+
+  SWITCH_THEMES,
+  EDIT_THEME_OPTIONS,
 } = require('../routes/capabilities');
 
 function isCapable(user, post, capability, capability_others, capability_published) {
@@ -60,8 +63,12 @@ function isUserCapable(action, postType, user, post) {
     case 'delete_page':
       return isCapable(user, post, DELETE_PAGES, DELETE_OTHERS_PAGES, DELETE_PUBLISHED_PAGES);
 
-    default:
-      return;
+    case 'switch_theme':
+      return isCapable(user, null, SWITCH_THEMES);
+    case 'edit_theme_option':
+      return isCapable(user, null, EDIT_THEME_OPTIONS);
+
+    default: return;
   }
 }
 

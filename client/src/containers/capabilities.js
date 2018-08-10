@@ -65,3 +65,12 @@ export const DELETE_PUBLISHED_PAGES = [
   'admin',
   'editor',
 ];
+export const SWITCH_THEMES = [
+  'admin',
+];
+export const EDIT_THEMES = [
+  'admin',
+];
+export const EDIT_THEME_OPTIONS = [
+  'admin',
+];

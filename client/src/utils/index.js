@@ -43,9 +43,9 @@ export const RenderWidgets = ({ contents }) => (
     {_.map(_.orderBy(contents, 'order'),
       widget => {
         switch (widget.type) {
-          case 'Markdown':
+          case 'markdown':
             return renderTypography(widget, true);
-          case 'HTML':
+          case 'html':
             return renderTypography(widget);
           default:
             return;

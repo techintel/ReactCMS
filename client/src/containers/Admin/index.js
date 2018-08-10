@@ -8,6 +8,8 @@ import Posts from './Posts';
 import Post from './Post';
 import Tags from './Tags';
 import Tag from './Tag';
+import Themes from './Appearance/Themes';
+import Widgets from './Appearance/Widgets';
 
 class Admin extends Component {
   render() {
@@ -64,6 +66,11 @@ class Admin extends Component {
             <Posts type="page" title="Pages" key="pages" {...props} />
           } />
         )}
+
+        {isUserCapable('switch', 'theme', user)
+          && <Route exact path={`${url}/appearance/themes`} component={Themes} />}
+        {isUserCapable('edit_theme', 'option', user)
+          && <Route exact path={`${url}/appearance/widgets`} component={Widgets} />}
 
         <Route component={NotFound} />
 

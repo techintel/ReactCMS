@@ -22,6 +22,10 @@ import {
   DELETE_PAGES,
   DELETE_OTHERS_PAGES,
   DELETE_PUBLISHED_PAGES,
+
+  SWITCH_THEMES,
+  EDIT_THEMES,
+  EDIT_THEME_OPTIONS,
 } from '../containers/capabilities';
 
 function isCapable(user, post, capability, capability_others, capability_published) {
@@ -57,8 +61,14 @@ export function isUserCapable(action, postType, user, post) {
     case 'delete_page':
       return isCapable(user, post, DELETE_PAGES, DELETE_OTHERS_PAGES, DELETE_PUBLISHED_PAGES);
 
-    default:
-      return;
+    case 'switch_theme':
+      return isCapable(user, null, SWITCH_THEMES);
+    case 'edit_theme':
+      return isCapable(user, null, EDIT_THEMES);
+    case 'edit_theme_option':
+      return isCapable(user, null, EDIT_THEME_OPTIONS);
+
+    default: return;
   }
 }
 

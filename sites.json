@@ -7,12 +7,12 @@
   "description": "A ReactCMS site.",
   "front_page": {
     "show_on_front": "posts",
-    "page_on_front": 0,
-    "page_for_posts": 0
+    "page_on_front": null,
+    "page_for_posts": null
   },
   "footer": [
     {
-      "type": "Markdown",
+      "type": "markdown",
       "body": {
         "variant": "caption",
         "align": "center",
@@ -21,7 +21,7 @@
       "order": 1
     },
     {
-      "type": "HTML",
+      "type": "html",
       "body": {
         "variant": "body1",
         "align": "center",
@@ -40,7 +40,7 @@
   "description": "Another ReactCMS site.",
   "footer": [
     {
-      "type": "Markdown",
+      "type": "markdown",
       "title": {
         "variant": "body2",
         "content": "Copyright"
@@ -53,7 +53,7 @@
       "order": 1
     },
     {
-      "type": "HTML",
+      "type": "html",
       "title": {
         "variant": "body2",
         "content": "Attribution"

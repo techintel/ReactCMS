@@ -7,24 +7,47 @@ import './App.css';
 import 'typeface-roboto';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { SERVER_ROOT_URL } from './config';
 
 import Loading from './components/Loading';
 import Site from './containers/Site';
 
-const theme = createMuiTheme({
-  palette: {
-    type: 'dark',
-  },
-});
-
 class App extends Component {
+  state = {
+    muiTheme: createMuiTheme(),
+    template: null,
+  };
+
+  componentWillReceiveProps(nextProps) {
+    const { sites, domain } =  nextProps;
+
+    if ( !isEmpty(sites) ) {
+      const template = sites[domain].template;
+
+      if ( template !== this.state.template ) {
+        const aScript = document.createElement('script');
+        aScript.type = 'text/javascript';
+        aScript.src = `${SERVER_ROOT_URL}/upload/themes/${template}/functions.js`;
+
+        document.head.appendChild(aScript);
+        aScript.onload = () => this.setState({
+          muiTheme: createMuiTheme(window.themeOptions),
+          template,
+        });
+      }
+    }
+  }
+
   render() {
+    const { muiTheme } = this.state;
+    const { sites } = this.props;
+
     return (
-      <MuiThemeProvider theme={theme}>
+      <MuiThemeProvider theme={muiTheme}>
         <div className="App">
           <CssBaseline />
           <BrowserRouter>
-            {isEmpty(this.props.sites) ?
+            {isEmpty(sites) ?
               <Route component={props => <Loading fetchSite={true} {...props} />} /> :
               <Site />
             }
@@ -35,8 +58,8 @@ class App extends Component {
   }
 }
 
-function mapStateToProps({ sites }) {
-  return { sites };
+function mapStateToProps({ sites, info: { domain } }) {
+  return { sites, domain };
 }
 
 export default connect(mapStateToProps)(App);

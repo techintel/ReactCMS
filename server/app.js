@@ -11,7 +11,7 @@ const config = require('./config');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
-var site = require('./routes/site');
+var sites = require('./routes/sites');
 var tags = require('./routes/tags');
 var posts = require('./routes/posts');
 var pages = require('./routes/pages');
@@ -56,11 +56,12 @@ app.use(function (req, res, next) {
   next();
 });
 
-mongoose.connect(`${config.MONGODB_URI}/${config.DATABASE_NAME}`);
+mongoose.connect(`${config.MONGODB_URI}/${config.DATABASE_NAME}`, { useNewUrlParser: true });
 
 app.use('/', index);
 app.use('/users', users);
-app.use('/site', site);
+app.use('/sites', sites);
+app.use('/themes', sites);
 app.use('/categories', tags);
 app.use('/tags', tags);
 app.use('/posts', posts);

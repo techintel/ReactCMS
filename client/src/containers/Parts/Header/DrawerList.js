@@ -6,6 +6,7 @@ import { List, ListItem, ListItemIcon, ListItemText, Divider, Collapse } from '@
 import {
   ExpandLess, ExpandMore,
   LibraryAdd, LibraryBooks, Create, BookmarkBorder, Label,
+  ColorLens, FormatPaint, Widgets,
   List as ListIcon
 } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
@@ -15,13 +16,15 @@ import { isUserCapable } from '../../../utils/reactcms';
 const styles = theme => ({
   nested: {
     paddingLeft: theme.spacing.unit * 4,
+    backgroundColor: theme.palette.background.default,
   },
 });
 
 class DrawerList extends Component {
   state = {
     openPosts: false,
-    openPages: false
+    openPages: false,
+    openAppearance: false,
   };
 
   handlePostsClick = () => {
@@ -30,6 +33,10 @@ class DrawerList extends Component {
 
   handlePagesClick = () => {
     this.setState({ openPages: !this.state.openPages });
+  };
+
+  handleAppearanceClick = () => {
+    this.setState({ openAppearance: !this.state.openAppearance });
   };
 
   render() {
@@ -55,8 +62,7 @@ class DrawerList extends Component {
                 <List component="div" disablePadding>
 
                   {canEditPosts &&
-                    <ListItem button className={classes.nested}
-                      component={Link}
+                    <ListItem button className={classes.nested} component={Link}
                       to={`${slashDomain(domain)}/admin/posts`}
                     >
                       <ListItemIcon>
@@ -67,8 +73,7 @@ class DrawerList extends Component {
                   }
 
                   {canEditPosts &&
-                    <ListItem button className={classes.nested}
-                      component={Link}
+                    <ListItem button className={classes.nested} component={Link}
                       to={`${slashDomain(domain)}/admin/post/new`}
                     >
                       <ListItemIcon>
@@ -79,8 +84,7 @@ class DrawerList extends Component {
                   }
 
                   {canManageCategories &&
-                    <ListItem button className={classes.nested}
-                      component={Link}
+                    <ListItem button className={classes.nested} component={Link}
                       to={`${slashDomain(domain)}/admin/categories`}
                     >
                       <ListItemIcon>
@@ -91,8 +95,7 @@ class DrawerList extends Component {
                   }
 
                   {canManageCategories &&
-                    <ListItem button className={classes.nested}
-                      component={Link}
+                    <ListItem button className={classes.nested} component={Link}
                       to={`${slashDomain(domain)}/admin/tags`}
                     >
                       <ListItemIcon>
@@ -120,8 +123,7 @@ class DrawerList extends Component {
                 <List component="div" disablePadding>
 
                   {isUserCapable('edit', 'page', user) &&
-                    <ListItem button className={classes.nested}
-                      component={Link}
+                    <ListItem button className={classes.nested} component={Link}
                       to={`${slashDomain(domain)}/admin/pages`}
                     >
                       <ListItemIcon>
@@ -132,14 +134,52 @@ class DrawerList extends Component {
                   }
 
                   {isUserCapable('edit', 'page', user) &&
-                    <ListItem button className={classes.nested}
-                      component={Link}
+                    <ListItem button className={classes.nested} component={Link}
                       to={`${slashDomain(domain)}/admin/page/new`}
                     >
                       <ListItemIcon>
                         <Create />
                       </ListItemIcon>
                       <ListItemText inset primary="Add New" />
+                    </ListItem>
+                  }
+
+                </List>
+              </Collapse>
+            </div>
+          )}
+
+          {isUserCapable('switch', 'theme', user) && (
+            <div>
+              <ListItem button onClick={this.handleAppearanceClick}>
+                <ListItemIcon>
+                  <ColorLens />
+                </ListItemIcon>
+                <ListItemText inset primary="Appearance" />
+                {this.state.openAppearance ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+              <Collapse in={this.state.openAppearance} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+
+                  {isUserCapable('switch', 'theme', user) &&
+                    <ListItem button className={classes.nested} component={Link}
+                      to={`${slashDomain(domain)}/admin/appearance/themes`}
+                    >
+                      <ListItemIcon>
+                        <FormatPaint />
+                      </ListItemIcon>
+                      <ListItemText inset primary="Themes" />
+                    </ListItem>
+                  }
+
+                  {isUserCapable('edit_theme', 'option', user) &&
+                    <ListItem button className={classes.nested} component={Link}
+                      to={`${slashDomain(domain)}/admin/appearance/widgets`}
+                    >
+                      <ListItemIcon>
+                        <Widgets />
+                      </ListItemIcon>
+                      <ListItemText inset primary="Widgets" />
                     </ListItem>
                   }
 
