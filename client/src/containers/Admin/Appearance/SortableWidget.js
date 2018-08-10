@@ -15,11 +15,14 @@ const styles = theme => ({
   paper: {
     margin: theme.spacing.unit,
   },
-  button: {
+  listItem: {
     backgroundColor: theme.palette.background.default,
     border: `solid 1px ${theme.palette.divider}`,
     borderRadius: theme.shape.borderRadius,
   },
+  listItemText: {
+    overflowX: 'hidden',
+  }
 });
 
 const widgetTarget = {
@@ -97,8 +100,8 @@ class SortableWidget extends Component {
         connectDropTarget(
           <div>
             <Paper className={classes.paper}>
-              <ListItem button disableRipple onClick={() => this.handleClick(openId)} className={classes.button}>
-                <ListItemText primary={foundWidget.name} />
+              <ListItem button disableRipple onClick={() => this.handleClick(openId)} className={classes.listItem}>
+                <ListItemText primary={foundWidget.name} className={classes.listItemText} />
                 {this.state[openId] ? <ExpandLess /> : <ExpandMore />}
               </ListItem>
               <Collapse in={this.state[openId]} timeout="auto" unmountOnExit>

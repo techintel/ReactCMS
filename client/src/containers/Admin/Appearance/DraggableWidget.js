@@ -13,6 +13,7 @@ const styles = theme => ({
     border: `solid 1px ${theme.palette.divider}`,
     borderRadius: theme.shape.borderRadius,
     cursor: 'grab',
+    overflowX: 'hidden',
   },
 });
 
