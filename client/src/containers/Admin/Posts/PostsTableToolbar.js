@@ -6,9 +6,9 @@ import { withStyles } from '@material-ui/core/styles';
 import { Toolbar, Typography, IconButton, Tooltip } from '@material-ui/core';
 import { Delete as DeleteIcon, FilterList as FilterListIcon } from '@material-ui/icons';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
-import MenuSelect from '../Menus/MenuSelect';
-import { deletePosts } from '../../actions/fetchPosts';
-import { openSnackbar } from '../../actions/openSnackbar';
+import MenuSelect from '../../../components/Menus/MenuSelect';
+import { deletePosts } from '../../../actions/fetchPosts';
+import { openSnackbar } from '../../../actions/openSnackbar';
 
 const toolbarStyles = theme => ({
   root: {
@@ -35,7 +35,7 @@ const toolbarStyles = theme => ({
   },
 });
 
-class EnhancedTableToolbar extends Component {
+class PostsTableToolbar extends Component {
   state = {
     anchorEl: null,
     deleteDisabled: false,
@@ -124,7 +124,7 @@ class EnhancedTableToolbar extends Component {
   }
 };
 
-EnhancedTableToolbar.propTypes = {
+PostsTableToolbar.propTypes = {
   classes: PropTypes.object.isRequired,
   numSelected: PropTypes.number.isRequired,
   type: PropTypes.string.isRequired,
@@ -134,8 +134,10 @@ EnhancedTableToolbar.propTypes = {
   onDeleteEnd: PropTypes.func.isRequired,
   filterList: PropTypes.array,
   onFilter: PropTypes.func,
+  deletePosts: PropTypes.func.isRequired,
+  openSnackbar: PropTypes.func.isRequired,
 };
 
 export default connect(null, { deletePosts, openSnackbar })(
-  withStyles(toolbarStyles)(EnhancedTableToolbar)
+  withStyles(toolbarStyles)(PostsTableToolbar)
 );

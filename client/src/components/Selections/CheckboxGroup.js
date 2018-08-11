@@ -71,12 +71,12 @@ class CheckboxGroup extends Component {
 }
 
 CheckboxGroup.propTypes = {
+  className: PropTypes.string,
   input: PropTypes.object.isRequired,
   meta: PropTypes.object.isRequired,
   options: PropTypes.array,
   label: PropTypes.string,
   helperText: PropTypes.string,
-  className: PropTypes.string,
 };
 
 export default CheckboxGroup;

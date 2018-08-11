@@ -6,23 +6,23 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import { Grid, Button, Card, CardHeader, CardContent, CardActions } from '@material-ui/core';
 import { VpnKey } from '@material-ui/icons';
-import { SERVER_ROOT_URL } from '../../config';
+import { SERVER_ROOT_URL } from '../../../config';
 
-import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText } from '../../utils';
-import { isUserCapable, getPostStatuses, documentTitle } from '../../utils/reactcms';
-import { addPost, editPost } from '../../actions/addPosts';
-import { deletePost, fetchPosts } from '../../actions/fetchPosts';
-import { openSnackbar } from '../../actions/openSnackbar';
+import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText } from '../../../utils';
+import { isUserCapable, getPostStatuses, documentTitle, onEditPost } from '../../../utils/reactcms';
+import { addPost, editPost } from '../../../actions/addPosts';
+import { deletePost, fetchPosts } from '../../../actions/fetchPosts';
+import { openSnackbar } from '../../../actions/openSnackbar';
 import _ from 'lodash';
 
-import Loading from '../../components/Loading';
-import SelectField from '../../components/Selections/SelectField';
-import CheckboxGroup from '../../components/Selections/CheckboxGroup';
-import Autocomplete from '../../components/Selections/Autocomplete';
-import ReactCmsEditor from '../../components/ReactCmsEditor';
-import InstantTag from '../../containers/Admin/Forms/InstantTag';
+import Loading from '../../../components/Loading';
+import SelectField from '../../../components/Selections/SelectField';
+import CheckboxGroup from '../../../components/Selections/CheckboxGroup';
+import Autocomplete from '../../../components/Selections/Autocomplete';
+import ReactCmsEditor from '../../../components/ReactCmsEditor';
+import InstantTag from './InstantTag';
 
-import { boxCardStyle, textFieldButtonStyle, textFieldStyle } from '../../assets/jss/styles';
+import { boxCardStyle, textFieldButtonStyle, textFieldStyle } from '../../../assets/jss/styles';
 
 function validate(values) {
   const { title, slug } = values;
@@ -59,7 +59,7 @@ class Post extends Component {
     super(props);
     const { user, match } = props;
     const dirs = match.path.split('/');
-    const type = dirs[ dirs.length-2 ];
+    const type = dirs[ dirs.length-2 ].replace(/s$/, "");
 
     this.state = {
       type,
@@ -190,7 +190,7 @@ class Post extends Component {
         } else if (!params._id) {
           const { info: { domain } } = this.props;
           const { data } = res;
-          this.props.history.push(`${slashDomain(domain)}/admin/${type}/${data._id}`);
+          onEditPost(type, data._id, domain, this.props.history);
         }
 
         this.props.openSnackbar(hasBeenText(type, values.title, snackbarActionText));

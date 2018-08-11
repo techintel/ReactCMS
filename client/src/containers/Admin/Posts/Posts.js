@@ -4,10 +4,10 @@ import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
 import { Paper, Tabs, Tab } from '@material-ui/core';
 import PostsTable from './PostsTable';
-import { fetchPosts } from '../../actions/fetchPosts';
+import { fetchPosts } from '../../../actions/fetchPosts';
 import { omitBy } from 'lodash';
-import { slugNameToValueLabel, slugTitleToValueLabel } from '../../utils';
-import { documentTitle } from '../../utils/reactcms';
+import { slugNameToValueLabel, slugTitleToValueLabel } from '../../../utils';
+import { documentTitle } from '../../../utils/reactcms';
 
 const styles = theme => ({
   root: {

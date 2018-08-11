@@ -4,17 +4,17 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { withStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
-import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText, newCreatedText } from '../../utils';
-import { SERVER_ROOT_URL } from '../../config';
-import { addPost, editPost } from '../../actions/addPosts';
-import { addStateValues, fetchPosts } from '../../actions/fetchPosts';
-import { openSnackbar } from '../../actions/openSnackbar';
+import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText, newCreatedText } from '../../../utils';
+import { SERVER_ROOT_URL } from '../../../config';
+import { addPost, editPost } from '../../../actions/addPosts';
+import { addStateValues, fetchPosts } from '../../../actions/fetchPosts';
+import { openSnackbar } from '../../../actions/openSnackbar';
 import { omit } from 'lodash';
 
-import Loading from '../../components/Loading';
-import SelectField from '../../components/Selections/SelectField';
+import Loading from '../../../components/Loading';
+import SelectField from '../../../components/Selections/SelectField';
 
-import { textFieldStyle } from '../../assets/jss/styles';
+import { textFieldStyle } from '../../../assets/jss/styles';
 
 function validate(values) {
   const { name } = values;

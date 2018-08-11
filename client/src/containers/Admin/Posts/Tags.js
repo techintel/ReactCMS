@@ -5,8 +5,8 @@ import { withStyles } from '@material-ui/core/styles';
 import { Grid } from '@material-ui/core';
 import Tag from './Tag';
 import PostsTable from './PostsTable';
-import { fetchPosts } from '../../actions/fetchPosts';
-import { documentTitle } from '../../utils/reactcms';
+import { fetchPosts } from '../../../actions/fetchPosts';
+import { documentTitle } from '../../../utils/reactcms';
 
 const styles = theme => ({
   root: {

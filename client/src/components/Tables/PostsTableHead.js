@@ -4,7 +4,7 @@ import {
   TableCell, TableHead, TableRow, TableSortLabel, Checkbox, Tooltip
 } from '@material-ui/core';
 
-class EnhancedTableHead extends Component {
+class PostsTableHead extends Component {
   createSortHandler = property => event => {
     this.props.onRequestSort(event, property);
   };
@@ -52,7 +52,7 @@ class EnhancedTableHead extends Component {
   }
 }
 
-EnhancedTableHead.propTypes = {
+PostsTableHead.propTypes = {
   numSelected: PropTypes.number.isRequired,
   onRequestSort: PropTypes.func.isRequired,
   onSelectAllClick: PropTypes.func.isRequired,
@@ -62,4 +62,4 @@ EnhancedTableHead.propTypes = {
   columnData: PropTypes.array.isRequired,
 };
 
-export default EnhancedTableHead;
+export default PostsTableHead;

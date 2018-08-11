@@ -59,6 +59,7 @@ class SelectField extends Component {
 
 SelectField.propTypes = {
   input: PropTypes.object,
+  meta: PropTypes.object.isRequired,
   value: PropTypes.string,
   onChange: PropTypes.func,
 

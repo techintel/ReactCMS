@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Route, Switch } from 'react-router-dom';
 import { isUserCapable } from '../../utils/reactcms';
 
 import NotFound from '../../components/NotFound';
-import Posts from './Posts';
-import Post from './Post';
-import Tags from './Tags';
-import Tag from './Tag';
+import Posts from './Posts/Posts';
+import Post from './Posts/Post';
+import Tags from './Posts/Tags';
+import Tag from './Posts/Tag';
 import Themes from './Appearance/Themes';
 import Widgets from './Appearance/Widgets';
 
@@ -22,45 +23,42 @@ class Admin extends Component {
     return (
       <Switch>
 
-        {canEditPosts && (
-          <Route exact path={`${url}/post/new`} component={Post} key="new-post" />
-        )}
-        {canEditPosts && (
-          <Route exact path={`${url}/post/:_id`} component={Post} key="edit-post" />
-        )}
+        {canEditPosts
+          && <Route exact path={`${url}/posts/new`} component={Post} key="new-post" />}
+        {canEditPosts
+          && <Route exact path={`${url}/posts/post/:_id`} component={Post} key="edit-post" />}
         {canEditPosts && (
           <Route exact path={`${url}/posts`} render={props =>
             <Posts type="post" title="Posts" key="posts" {...props} />
           } />
         )}
+
         {canManageCategories && (
-          <Route exact path={`${url}/categories`} key="categories" render={props =>
+          <Route exact path={`${url}/posts/categories`} key="categories" render={props =>
             <Tags type="category" title="Categories" {...props} />
           } />
         )}
-        {canManageCategories &&
-          <Route exact path={`${url}/category/:_id`} key="edit-category" render={props =>
+        {canManageCategories && (
+          <Route exact path={`${url}/posts/category/:_id`} key="edit-category" render={props =>
             <Tag type="category" {...props} />
           } />
-        }
+        )}
 
         {canManageCategories && (
-          <Route exact path={`${url}/tags`} key="tags" render={props =>
+          <Route exact path={`${url}/posts/tags`} key="tags" render={props =>
             <Tags type="tag" title="Tags" {...props} />
           } />
         )}
-        {canManageCategories &&
-          <Route exact path={`${url}/tag/:_id`} key="edit-tag" render={props =>
+        {canManageCategories && (
+          <Route exact path={`${url}/posts/tag/:_id`} key="edit-tag" render={props =>
             <Tag type="tag" {...props} />
           } />
-        }
+        )}
 
-        {canEditPages && (
-          <Route exact path={`${url}/page/new`} component={Post} key="new-page" />
-        )}
-        {canEditPages && (
-          <Route exact path={`${url}/page/:_id`} component={Post} key="edit-page" />
-        )}
+        {canEditPages
+          && <Route exact path={`${url}/pages/new`} component={Post} key="new-page" />}
+        {canEditPages
+          && <Route exact path={`${url}/pages/page/:_id`} component={Post} key="edit-page" />}
         {canEditPages && (
           <Route exact path={`${url}/pages`} render={props =>
             <Posts type="page" title="Pages" key="pages" {...props} />
@@ -78,6 +76,11 @@ class Admin extends Component {
     );
   }
 }
+
+Admin.propTypes = {
+  user: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
+};
 
 function mapStateToProps({ auth: { user } }) {
   return { user };

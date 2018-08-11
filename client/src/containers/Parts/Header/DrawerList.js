@@ -74,7 +74,7 @@ class DrawerList extends Component {
 
                   {canEditPosts &&
                     <ListItem button className={classes.nested} component={Link}
-                      to={`${slashDomain(domain)}/admin/post/new`}
+                      to={`${slashDomain(domain)}/admin/posts/new`}
                     >
                       <ListItemIcon>
                         <Create />
@@ -85,7 +85,7 @@ class DrawerList extends Component {
 
                   {canManageCategories &&
                     <ListItem button className={classes.nested} component={Link}
-                      to={`${slashDomain(domain)}/admin/categories`}
+                      to={`${slashDomain(domain)}/admin/posts/categories`}
                     >
                       <ListItemIcon>
                         <BookmarkBorder />
@@ -96,7 +96,7 @@ class DrawerList extends Component {
 
                   {canManageCategories &&
                     <ListItem button className={classes.nested} component={Link}
-                      to={`${slashDomain(domain)}/admin/tags`}
+                      to={`${slashDomain(domain)}/admin/posts/tags`}
                     >
                       <ListItemIcon>
                         <Label />
@@ -135,7 +135,7 @@ class DrawerList extends Component {
 
                   {isUserCapable('edit', 'page', user) &&
                     <ListItem button className={classes.nested} component={Link}
-                      to={`${slashDomain(domain)}/admin/page/new`}
+                      to={`${slashDomain(domain)}/admin/pages/new`}
                     >
                       <ListItemIcon>
                         <Create />
@@ -196,6 +196,8 @@ class DrawerList extends Component {
 
 DrawerList.propTypes = {
   classes: PropTypes.object.isRequired,
+  info: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired,
 };
 
 function mapStateToProps({ info, auth }) {

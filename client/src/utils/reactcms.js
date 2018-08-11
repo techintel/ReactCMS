@@ -73,7 +73,9 @@ export function isUserCapable(action, postType, user, post) {
 }
 
 export function onEditPost(type, _id, domain, history) {
-  history.push(`${slashDomain(domain)}/admin/${type}/${_id}`);
+  history.push(`${slashDomain(domain)}/admin/${
+    type !== 'page' ? 'posts' : 'pages'
+  }/${type}/${_id}`);
 }
 
 export function onViewPost(type, post, domain, history) {
