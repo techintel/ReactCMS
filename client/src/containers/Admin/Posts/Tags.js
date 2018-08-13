@@ -62,6 +62,10 @@ Tags.propTypes = {
   classes: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
   title: PropTypes.string,
+  history: PropTypes.object.isRequired,
+  collectionPrefix: PropTypes.string.isRequired,
+  tags: PropTypes.object.isRequired,
+  fetchPosts: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ categories, tags, info: { collectionPrefix } }, { type }) {

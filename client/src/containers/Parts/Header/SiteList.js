@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { map } from 'lodash';
 import { List, ListItem, ListItemIcon, ListItemText, Divider } from '@material-ui/core';
@@ -31,6 +32,10 @@ class SiteList extends Component {
     );
   }
 }
+
+SiteList.propTypes = {
+  sites: PropTypes.object.isRequired,
+};
 
 function mapStateToProps({ sites }) {
   return { sites };

@@ -8,6 +8,25 @@ import { Email, Security, VerifiedUser, AccountCircle } from '@material-ui/icons
 import { signinWithEmail, signinAsyncValidate as asyncValidate, setCurrentUserByToken } from '../../actions/signin';
 import { renderTextField } from '../../utils';
 
+const styles = theme => ({
+  header: {
+    textAlign: 'center',
+    margin: `${theme.spacing.unit * 3}px 0`,
+  },
+  paper: {
+    margin: `0 auto`,
+    padding: theme.spacing.unit * 6,
+    maxWidth: 600,
+  },
+  form: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  button: {
+    margin: theme.spacing.unit,
+  },
+});
+
 function validate(values) {
   const { email, username, password, code } = values;
   const errors = {};
@@ -27,25 +46,6 @@ function validate(values) {
 
   return errors;
 }
-
-const styles = theme => ({
-  header: {
-    textAlign: 'center',
-    margin: `${theme.spacing.unit * 3}px 0`,
-  },
-  paper: {
-    margin: `0 auto`,
-    padding: theme.spacing.unit * 6,
-    maxWidth: 600,
-  },
-  form: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  button: {
-    margin: theme.spacing.unit,
-  },
-});
 
 const Container = (
   { Icon, title, description, form, classes }
@@ -188,6 +188,14 @@ class Signin extends Component {
 
 Signin.propTypes = {
   classes: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  pristine: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool.isRequired,
+  invalid: PropTypes.bool.isRequired,
+  initialize: PropTypes.func.isRequired,
+  info: PropTypes.object.isRequired,
+  setCurrentUserByToken: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ info }) {

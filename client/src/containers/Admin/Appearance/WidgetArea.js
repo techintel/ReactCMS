@@ -11,6 +11,17 @@ import { moveWidget, saveMovedWidget } from '../../../actions/fetchSite';
 
 import SortableWidget from './SortableWidget';
 
+const styles = theme => ({
+  root: {
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+    marginBottom: theme.spacing.unit,
+  },
+  rootIsOver: {
+    backgroundColor: theme.palette.action.hover,
+  },
+});
+
 const widgetAreaTarget = {
   hover(props, monitor, component) {
     const dragItem = monitor.getItem();
@@ -37,17 +48,6 @@ const widgetAreaTarget = {
     props.saveMovedWidget(props.area, dragItem.data);
   },
 };
-
-const styles = theme => ({
-  root: {
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    marginBottom: theme.spacing.unit,
-  },
-  rootIsOver: {
-    backgroundColor: theme.palette.action.hover,
-  },
-});
 
 function collect(connect, monitor) {
   return {
@@ -83,11 +83,11 @@ WidgetArea.propTypes = {
   area: PropTypes.string.isRequired,
   header: PropTypes.string,
   list: PropTypes.array.isRequired,
+  connectDropTarget: PropTypes.func.isRequired,
+  isOver: PropTypes.bool.isRequired,
   domain: PropTypes.string.isRequired,
   moveWidget: PropTypes.func.isRequired,
   saveMovedWidget: PropTypes.func.isRequired,
-  connectDropTarget: PropTypes.func.isRequired,
-  isOver: PropTypes.bool.isRequired,
 };
 
 function mapStateToProps({ info: { domain } }) {

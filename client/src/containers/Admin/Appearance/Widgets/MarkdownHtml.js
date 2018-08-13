@@ -126,6 +126,12 @@ MarkdownHtml.propTypes = {
   classes: PropTypes.object.isRequired,
   area: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired,
+  handleSubmit: PropTypes.func.isRequired,
+  pristine: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool.isRequired,
+  initialize: PropTypes.func.isRequired,
+  saveWidget: PropTypes.func.isRequired,
+  deleteWidget: PropTypes.func.isRequired,
 };
 
 export default reduxForm()(

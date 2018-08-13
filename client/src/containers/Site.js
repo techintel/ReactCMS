@@ -115,6 +115,12 @@ class Site extends Component {
 
 Site.propTypes = {
   classes: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
+  snackbar: PropTypes.object.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
+  domain: PropTypes.string.isRequired,
+  setCurrentUserByToken: PropTypes.func.isRequired,
+  openSnackbar: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ snackbar, auth: { isAuthenticated }, info: { domain } }) {

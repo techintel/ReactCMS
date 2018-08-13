@@ -172,6 +172,10 @@ Header.propTypes = {
   theme: PropTypes.object.isRequired,
   drawerOpen: PropTypes.bool,
   onDrawerToggle: PropTypes.func.isRequired,
+  info: PropTypes.object.isRequired,
+  auth: PropTypes.object.isRequired,
+  site: PropTypes.object.isRequired,
+  setCurrentUserByToken: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ info, sites, auth }) {

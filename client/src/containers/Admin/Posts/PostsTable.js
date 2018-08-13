@@ -320,6 +320,12 @@ PostsTable.propTypes = {
   orderBy: PropTypes.string.isRequired,
   filterList: PropTypes.array,
   history: PropTypes.object.isRequired,
+
+  isPost: PropTypes.bool.isRequired,
+  user: PropTypes.object.isRequired,
+  domain: PropTypes.string.isRequired,
+  deletePost: PropTypes.func.isRequired,
+  openSnackbar: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ info: { domain }, auth: { user } }, { posts, type }) {

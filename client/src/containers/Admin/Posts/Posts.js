@@ -127,7 +127,11 @@ Posts.propTypes = {
   classes: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
+  posts: PropTypes.object.isRequired,
+  categories: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
+  collectionPrefix: PropTypes.string.isRequired,
+  fetchPosts: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ posts, pages, categories, info: { collectionPrefix } }, { type }) {

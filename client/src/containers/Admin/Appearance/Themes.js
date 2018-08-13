@@ -70,6 +70,7 @@ class Themes extends Component {
 Themes.propTypes = {
   classes: PropTypes.object.isRequired,
   site: PropTypes.object.isRequired,
+  switchTheme: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ sites, info: { domain } }) {

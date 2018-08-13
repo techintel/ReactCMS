@@ -232,6 +232,13 @@ Home.propTypes = {
   type: PropTypes.string,
   tag_id: PropTypes.string,
   history: PropTypes.object.isRequired,
+
+  info: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  posts: PropTypes.object.isRequired,
+  fetchPosts: PropTypes.func.isRequired,
+  deletePost: PropTypes.func.isRequired,
+  openSnackbar: PropTypes.func.isRequired,
 };
 
 const pickByTag = ( group, tag_id, posts ) => {

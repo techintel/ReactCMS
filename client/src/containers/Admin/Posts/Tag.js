@@ -16,6 +16,10 @@ import SelectField from '../../../components/Selections/SelectField';
 
 import { textFieldStyle } from '../../../assets/jss/styles';
 
+const styles = theme => ({
+  ...textFieldStyle(theme),
+});
+
 function validate(values) {
   const { name } = values;
   const errors = {};
@@ -25,10 +29,6 @@ function validate(values) {
 
   return errors;
 }
-
-const styles = theme => ({
-  ...textFieldStyle(theme),
-});
 
 class Tag extends Component {
   state = {
@@ -84,7 +84,7 @@ class Tag extends Component {
         this.props.addStateValues( type, res );
 
         if (history)
-          history.push(`${slashDomain(domain)}/admin/${type === 'category' ? 'categorie' : type}s`);
+          history.push(`${slashDomain(domain)}/admin/posts/${type === 'category' ? 'categorie' : type}s`);
         else
           this.props.reset();
       }
@@ -160,6 +160,22 @@ class Tag extends Component {
 Tag.propTypes = {
   classes: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
+  match: PropTypes.object,
+  history: PropTypes.object,
+
+  handleSubmit: PropTypes.func.isRequired,
+  pristine: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool.isRequired,
+  invalid: PropTypes.bool.isRequired,
+  initialize: PropTypes.func.isRequired,
+  reset: PropTypes.func.isRequired,
+  change: PropTypes.func.isRequired,
+
+  categories: PropTypes.object.isRequired,
+  info: PropTypes.object.isRequired,
+  openSnackbar: PropTypes.func.isRequired,
+  addStateValues: PropTypes.func.isRequired,
+  fetchPosts: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ categories, info }) {

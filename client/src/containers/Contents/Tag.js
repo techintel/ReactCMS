@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { withStyles } from '@material-ui/core/styles';
 import { CardHeader, IconButton, Menu, MenuItem } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
@@ -14,8 +13,6 @@ import NotFound from '../../components/NotFound';
 import Loading from '../../components/Loading';
 import Ancestors from '../../components/Lists/Ancestors';
 import Home from './Home';
-
-const styles = theme => ({});
 
 class Tag extends Component {
   state = {
@@ -110,9 +107,13 @@ class Tag extends Component {
 }
 
 Tag.propTypes = {
-  classes: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
   history: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
+  info: PropTypes.object.isRequired,
+  fetchPost: PropTypes.func.isRequired,
+  deletePost: PropTypes.func.isRequired,
+  openSnackbar: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ info }) {
@@ -120,5 +121,5 @@ function mapStateToProps({ info }) {
 }
 
 export default connect(mapStateToProps, { fetchPost, deletePost, openSnackbar })(
-  withStyles(styles)(Tag)
+  Tag
 );

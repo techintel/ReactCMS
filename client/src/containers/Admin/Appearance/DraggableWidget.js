@@ -53,8 +53,8 @@ DraggableWidget.propTypes = {
   classes: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
   name: PropTypes.string,
-  domain: PropTypes.string.isRequired,
   connectDragSource: PropTypes.func.isRequired,
+  domain: PropTypes.string.isRequired,
 };
 
 function mapStateToProps({ info: { domain } }) {

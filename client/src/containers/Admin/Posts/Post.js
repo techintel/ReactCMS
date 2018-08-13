@@ -24,18 +24,6 @@ import InstantTag from './InstantTag';
 
 import { boxCardStyle, textFieldButtonStyle, textFieldStyle } from '../../../assets/jss/styles';
 
-function validate(values) {
-  const { title, slug } = values;
-  const errors = {};
-
-  if ( !title )
-    errors.title = 'Please enter some title.';
-  if ( !slug || /[^\w-]+/g.test(slug) || /[A-Z]/.test(slug) )
-    errors.slug = 'Must only contain dash, underscore and lowercase alphanumeric characters.';
-
-  return errors;
-}
-
 const styles = theme => ({
   ...boxCardStyle(theme),
   ...textFieldButtonStyle(theme),
@@ -53,6 +41,18 @@ const styles = theme => ({
     verticalAlign: 'bottom',
   },
 });
+
+function validate(values) {
+  const { title, slug } = values;
+  const errors = {};
+
+  if ( !title )
+    errors.title = 'Please enter some title.';
+  if ( !slug || /[^\w-]+/g.test(slug) || /[A-Z]/.test(slug) )
+    errors.slug = 'Must only contain dash, underscore and lowercase alphanumeric characters.';
+
+  return errors;
+}
 
 class Post extends Component {
   constructor(props) {
@@ -381,6 +381,25 @@ class Post extends Component {
 
 Post.propTypes = {
   classes: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired,
+  history: PropTypes.object.isRequired,
+
+  handleSubmit: PropTypes.func.isRequired,
+  pristine: PropTypes.bool.isRequired,
+  submitting: PropTypes.bool.isRequired,
+  invalid: PropTypes.bool.isRequired,
+  initialize: PropTypes.func.isRequired,
+  change: PropTypes.func.isRequired,
+
+  info: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  categories: PropTypes.object.isRequired,
+  tags: PropTypes.object.isRequired,
+  pages: PropTypes.object.isRequired,
+  title: PropTypes.string,
+  deletePost: PropTypes.func.isRequired,
+  fetchPosts: PropTypes.func.isRequired,
+  openSnackbar: PropTypes.func.isRequired,
 };
 
 const selector = formValueSelector('Post');

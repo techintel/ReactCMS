@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { documentTitle } from '../../utils/reactcms';
 
@@ -20,6 +21,11 @@ class FrontPage extends Component {
       <Post type="page" match={{ params: { slug: page_on_front } }} history={history} />;
   }
 }
+
+FrontPage.propTypes = {
+  history: PropTypes.object.isRequired,
+  front_page: PropTypes.object.isRequired,
+};
 
 function mapStateToProps({ info, sites }) {
   return { front_page: sites[info.domain].front_page };

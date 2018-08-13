@@ -119,11 +119,11 @@ SortableWidget.propTypes = {
   classes: PropTypes.object.isRequired,
   area: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired,
+  connectDragSource: PropTypes.func.isRequired,
+  connectDropTarget: PropTypes.func.isRequired,
   domain: PropTypes.string.isRequired, // Needed for reducer: `stateDeepCopy[hover.domain][hover.area]`
   moveWidget: PropTypes.func.isRequired,
   saveMovedWidget: PropTypes.func.isRequired,
-  connectDragSource: PropTypes.func.isRequired,
-  connectDropTarget: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ info: { domain } }) {

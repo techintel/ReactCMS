@@ -13,7 +13,7 @@
     "express": "~4.15.5",
     "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.10",
-    "mongoose": "^5.2.1",
+    "mongoose": "^5.2.7",
     "morgan": "~1.9.0",
     "node-sass-middleware": "0.9.8",
     "nodemailer": "^4.6.7",

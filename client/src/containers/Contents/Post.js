@@ -173,6 +173,12 @@ Post.propTypes = {
   type: PropTypes.string.isRequired,
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
+  info: PropTypes.object.isRequired,
+  user: PropTypes.object.isRequired,
+  post: PropTypes.object,
+  fetchPost: PropTypes.func.isRequired,
+  deletePost: PropTypes.func.isRequired,
+  openSnackbar: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ info, posts, pages, auth: { user } }, ownProps) {
