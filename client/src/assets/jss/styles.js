@@ -66,3 +66,12 @@ export const textFieldStyle = theme => ({
     padding: theme.spacing.unit,
   },
 });
+
+export const sidebarStyle = theme => ({
+  paper: {
+    ...theme.mixins.gutters(),
+    paddingTop: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 2,
+    overflowX: 'hidden',
+  },
+});

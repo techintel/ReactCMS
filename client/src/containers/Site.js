@@ -8,16 +8,10 @@ import { Snackbar } from '@material-ui/core';
 import { setCurrentUserByToken } from '../actions/signin';
 import { openSnackbar } from '../actions/openSnackbar';
 
-import Header from './Parts/Header';
-import Footer from './Parts/Footer';
-import Signin from './Contents/Signin';
-import FrontPage from './Contents/FrontPage';
-import Post from './Contents/Post';
-import Tag from './Contents/Tag';
-import Admin from './Admin';
-
-import NotFound from '../components/NotFound';
 import SnackbarContentWrapper from '../components/SnackbarContentWrapper';
+import Header from './Parts/Header';
+import Admin from './Admin';
+import Contents from './Contents';
 
 import { drawerStyle } from '../assets/jss/styles';
 
@@ -65,33 +59,10 @@ class Site extends Component {
           <div className={classes.toolbar} />
 
           <Switch>
-            <Route exact path={`${slashDomainParam}/signin`} component={Signin} />
-            <Route exact path={`${slashDomainParam}/`} component={FrontPage} />
             <Route path={`${slashDomainParam}/admin`} component={Admin} />
-
-            <Route exact path={`${slashDomainParam}/blog/:year/:month/:day/:slug`}
-              render={props => {
-                const { params: { year, month, day, slug } } = props.match;
-                return <Post type="post" key={`${year}-${month}-${day}-${slug}`} {...props} />;
-              }}
-            />
-            <Route exact path={`${slashDomainParam}/blog/:type/:slug`}
-              render={props => {
-                const { params: { type, slug } } = props.match;
-                return <Tag type={type} key={`${type}-${slug}`} {...props} />;
-              }}
-            />
-            <Route exact path={`${slashDomainParam}/:slug`}
-              render={props => {
-                const { params: { slug } } = props.match;
-                return <Post type="page" key={`page-${slug}`} {...props} />;
-              }}
-            />
-
-            <Route component={NotFound} />
+            <Route path={`${slashDomainParam}`} component={Contents} />
           </Switch>
 
-          <Footer />
         </main>
 
         <Snackbar
@@ -115,7 +86,6 @@ class Site extends Component {
 
 Site.propTypes = {
   classes: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired,
   snackbar: PropTypes.object.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
   domain: PropTypes.string.isRequired,

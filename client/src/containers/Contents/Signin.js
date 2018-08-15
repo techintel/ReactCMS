@@ -52,9 +52,9 @@ const Container = (
 ) => {
   return (
     <div>
-      <div className={`App-header ${classes.header}`}>
+      <div className={classes.header}>
         <Icon color="primary" style={{ height: 70, width: 70 }} />
-        <Typography variant="subheading" gutterBottom className="App-title">
+        <Typography variant="subheading" gutterBottom>
           {title}
         </Typography>
         <Typography variant="caption">

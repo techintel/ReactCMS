@@ -15,7 +15,7 @@ export function createCleanHtml(dirtyMarkupSource, markdownFormatted) {
   return {__html: cleanHtml};
 }
 
-function renderTypography({ type, order, title, body, ...custom }, markdownFormatted) {
+export function renderTypography({ type, order, title, body, ...custom }, markdownFormatted) {
   const { ...titleCustom } = title;
   const titleContent = titleCustom.content;
   delete titleCustom.content;
@@ -37,23 +37,6 @@ function renderTypography({ type, order, title, body, ...custom }, markdownForma
     </Typography>
   );
 }
-
-export const RenderWidgets = ({ contents }) => (
-  <div>
-    {_.map(_.orderBy(contents, 'order'),
-      widget => {
-        switch (widget.type) {
-          case 'markdown':
-            return renderTypography(widget, true);
-          case 'html':
-            return renderTypography(widget);
-          default:
-            return;
-        }
-      }
-    )}
-  </div>
-);
 
 export function setAuthorizationToken(authToken) {
   if (authToken) {
@@ -86,7 +69,7 @@ export function renderTextField(
 };
 
 export function slashDomain(domain) {
-  return `${domain ? '/' : ''}${domain}`;
+  return (domain !== undefined) ? `${domain ? '/' : ''}${domain}` : '';
 }
 
 export function toSlug(text) {

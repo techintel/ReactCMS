@@ -1,17 +1,21 @@
-.App .App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 80px; }
-.App .App-header {
-  padding: 20px 20px 0; }
-.App .App-intro {
-  font-size: large; }
-.App .App-footer {
-  margin: 80px 8% 10px; }
-
+@-webkit-keyframes App-logo-spin {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
 @keyframes App-logo-spin {
   from {
-    transform: rotate(0deg); }
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg);
+  }
   to {
-    transform: rotate(360deg); } }
-
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+  }
+}
 /*# sourceMappingURL=App.css.map */
