@@ -2,8 +2,9 @@ const mongoose = require('mongoose');
 const assert = require('assert');
 const { authorFieldRef, tagsFieldRef, ancestorsFieldRef } = require('../utils');
 
-const { siteSchema } = require('./schemas');
+const { siteSchema, bruteForceSchema } = require('./schemas');
 const Site = mongoose.model('Site', siteSchema);
+const bruteForceModel = mongoose.model('bruteforce', bruteForceSchema);
 const compiledModels = [];
 
 Site.find( {},
@@ -43,4 +44,4 @@ Site.find( {},
   }
 );
 
-module.exports = { Site, compiledModels };
+module.exports = { Site, bruteForceModel, compiledModels };

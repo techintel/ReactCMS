@@ -52,6 +52,16 @@ const unverifiedSchema = new Schema({
   expires: { type: Date, required: true },
 });
 
+const bruteForceSchema = new Schema({
+  "_id": String,
+  "data": {
+    "count": Number,
+    "lastRequest": Date,
+    "firstRequest": Date
+  },
+  "expires": Date
+});
+
 const tagSchema = new Schema({
   name: { type: String, required: true },
   slug: { type: String, required: true },
@@ -73,6 +83,7 @@ module.exports = {
   siteSchema,
   userSchema,
   unverifiedSchema,
+  bruteForceSchema,
   tagSchema,
   postSchema,
 };

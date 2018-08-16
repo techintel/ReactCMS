@@ -5,13 +5,21 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { sendMail } = require('../utils');
 const { SALT_ROUNDS, JWT_SECRET } = require('../config');
+const bruteforce = require('../middlewares/bruteforce');
 
 const { Site, compiledModels } = require('../models');
 const assert = require('assert');
 
 Site.find().then((sites) => {
 
-  router.post('/', (req, res, next) => {
+  router.post('/',
+    bruteforce.getMiddleware({
+      key: function(req, res, next) {
+        // prevent too many attempts for the same email
+        next(req.body.email);
+      }
+    }),
+  (req, res, next) => {
     const { collectionPrefix, username, password, code, validate } = req.body;
     const email = req.body.email.toLowerCase();
     const site = _.find(sites, { _id: { collectionPrefix } });
