@@ -66,5 +66,6 @@ mongo
 use reactcms
 db.users.updateOne({ username: 'CREATED_USER_NAME' },{ $set: { role: 'admin' } })
 ~~~~
+ - If the modified account is currently signed in, sign out and re-sign in it.
 
-That all the things that you need to accomplish, you may now post a new content using your admin account.
+Those are the things that you need, you may now post a new content using your administrator account.
