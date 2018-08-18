@@ -41,7 +41,7 @@ The "client" directory contains the source code for your React app.
 
 You need to manually modify the created user's data in the database 'users' collection. Here are a few guidelines about it:
 
- - First, register a regular account that you want to be an administrator.
+ - First, register a regular account that you'll going to convert as administrator.
  - A user data document contains these properties:
 ~~~~
 {
