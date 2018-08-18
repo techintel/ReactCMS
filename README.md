@@ -39,8 +39,9 @@ The "client" directory contains the source code for your React app.
 
 ### How to register the first administrator?
 
-You need to manually modify the created user's data in the database 'users' collection. Here's a few guide about it:
+You need to manually modify the created user's data in the database 'users' collection. Here are a few guidelines about it:
 
+ - First, register a regular account that you want to be an administrator.
  - A user data document contains these properties:
 ~~~~
 {
