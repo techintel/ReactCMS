@@ -12,6 +12,7 @@
   },
   "footer": [
     {
+      "_id": { "$oid": "5099803df3f4948bd2f98391" },
       "type": "markdown",
       "body": {
         "variant": "caption",
@@ -21,6 +22,7 @@
       "order": 1
     },
     {
+      "_id": { "$oid": "5099803df3f4948bd2f98392" },
       "type": "html",
       "body": {
         "variant": "body1",
