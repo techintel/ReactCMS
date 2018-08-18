@@ -25,8 +25,9 @@ The "server" directory contains the source code for your app's backend Express s
  - First, you must have a `mongod` running version 3.2.x of MongoDB or above.
  - In the "server" directory, run `npm install` to install its dependencies.
  - Open */server/config.js*, read the property descriptions carefully and set them properly according to the configuration of your server.
- - */sites.json* contains your multisite information, modify and import it as your database collection named 'sites' by running: `mongoimport --drop -d reactcms -c sites sites.json`
- - In the "server" directory, run `npm start` or `nodemon` to run the Express app which starts your server.
+ - */sites.json* contains your multisite information, modify and import it as your database collection named 'sites' by running: `mongoimport --drop -d reactcms -c sites sites.json` or `mongoimport -h <hostname><:port> -d reactcms -c sites -u <username> -p <password> --file sites.json`
+ - In the "server" directory, run `npm start` or `nodemon` to run the Express app which starts your server that can be locally access at: http://localhost:3001
+ - **Make sure to test your RESTful API server locally to easily diagnose if there's any problem.**
 
 ### Installing front-end React application
 
