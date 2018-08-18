@@ -45,7 +45,7 @@ class Contents extends Component {
         <Grid item xs={12} md={content_cols}>
           <Switch>
             <Route exact path={`${slashDomainVal}/signin`} component={Signin} />
-            <Route exact path={`${slashDomainVal}`} component={FrontPage} />
+            <Route exact path={`${slashDomainVal}/`} component={FrontPage} />
 
             <Route exact path={`${slashDomainVal}/blog/:year/:month/:day/:slug`}
               render={props => {
