@@ -1,14 +1,14 @@
-ReactCMS is a free and open-source content management system *(CMS)* based on ReactJS, Node.js, Express and MongoDB.
+ReactCMS is a free and open-source content management system *(CMS)* based on React, Node.js, Express and MongoDB.
 
 ## Supporting ReactCMS
 
-There are many ways to support ReactCMS:
+ReactCMS can be modified and used to create your awesome single-page application. Consider supporting ReactCMS if you want to see some improvement. Here are the ways to show support:
 
 |   |   |
 |:-:|:-:|
-| **Spreed the word** | Tell, share or tweet about ReactCMS to your friends. |
-| [**via Patreon**](https://www.patreon.com/5ervant) | Become a backer or sponsor on Patreon. |
-| [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7CKXRHMTRVSZC) | For those who are willing to do a one-time donation. |
+| **Spreed the word** | Share ReactCMS to your friends, or give it a little tweet. |
+| [**via Patreon**](https://www.patreon.com/5ervant) | Become a backer/sponsor on Patreon. |
+| [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7CKXRHMTRVSZC) | Make a donation with PayPal. |
 |   |   |
 
 Thanks for any love and support!
