@@ -20,8 +20,7 @@ To use ReactCMS, you must first checkout this repository, or download the .ZIP f
 
 ### Installing back-end with Node.js, Express and MongoDB
 
-The "server" directory contains the source code for your app's backend Express server.<br />
-*(You can build your own custom backend server using other programming language if you want.)*
+The "server" directory contains the source code for your app's backend Express server.
 
  - First, you must have a `mongod` running version 3.2.x of MongoDB or above.
  - In the "server" directory, run `npm install` to install its dependencies.
