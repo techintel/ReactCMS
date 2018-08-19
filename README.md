@@ -2,7 +2,7 @@ ReactCMS is a free and open-source content management system *(CMS)* based on Re
 
 ## Supporting ReactCMS
 
-ReactCMS can be modified and now be used to create your awesome and fast single-page application. Consider supporting ReactCMS with a notice about your suggestion if you want to see some improvement. Here are the ways to show some support:
+ReactCMS can be modified and now be used to create your awesome and fast single-page application. Consider supporting ReactCMS with a notice about your suggestion and the feature that you want to implement if you want to see some improvement. Here are the ways to show some support:
 
 |   |   |
 |:-:|:-:|
