@@ -12,7 +12,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { EditorState, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { slashDomain, hasBeenText, getPostStatusLabel } from '../../utils';
-import { isUserCapable, onEditPost } from '../../utils/reactcms';
+import { isUserCapable, onEditPost, documentTitle } from '../../utils/reactcms';
 import moment from 'moment';
 
 import NotFound from '../../components/NotFound';
@@ -57,6 +57,7 @@ class Post extends Component {
           this.setState({
             editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(post.content)))
           });
+          documentTitle(post.title);
         } else {
           this.setState({ isNotFound: true });
         }
