@@ -6,6 +6,7 @@ ReactCMS can be modified and now be used to create your awesome and fast single-
 
 |   |   |
 |:-:|:-:|
+| [**Give a Star**](https://github.com/5TechCenter/ReactCMS) | Give 5TechCenter/ReactCMS a star on GitHub. |
 | **Spreed the word** | Share about ReactCMS to your friends, or give it a little tweet. |
 | **Post an article** | Publish a blog or a forum thread about ReactCMS. |
 | [**via Patreon**](https://www.patreon.com/5ervant) | Become a patron/backer/sponsor on Patreon. |
