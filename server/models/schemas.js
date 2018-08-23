@@ -35,6 +35,7 @@ const siteSchema = new Schema({
   left_sidebar: widgetAreaField,
   right_sidebar: widgetAreaField,
   footer: widgetAreaField,
+  disqus: Schema.Types.Mixed,
 });
 
 const userSchema = new Schema({

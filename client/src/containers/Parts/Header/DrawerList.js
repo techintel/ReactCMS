@@ -7,6 +7,7 @@ import {
   ExpandLess, ExpandMore,
   LibraryAdd, LibraryBooks, Create, BookmarkBorder, Label,
   ColorLens, FormatPaint, Widgets,
+  Settings, Comment,
   List as ListIcon
 } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
@@ -25,6 +26,7 @@ class DrawerList extends Component {
     openPosts: false,
     openPages: false,
     openAppearance: false,
+    openSettings: false,
   };
 
   handlePostsClick = () => {
@@ -37,6 +39,10 @@ class DrawerList extends Component {
 
   handleAppearanceClick = () => {
     this.setState({ openAppearance: !this.state.openAppearance });
+  };
+
+  handleSettingsClick = () => {
+    this.setState({ openSettings: !this.state.openSettings });
   };
 
   render() {
@@ -182,6 +188,32 @@ class DrawerList extends Component {
                       <ListItemText inset primary="Widgets" />
                     </ListItem>
                   }
+
+                </List>
+              </Collapse>
+            </div>
+          )}
+
+          {isUserCapable('manage', 'option', user) && (
+            <div>
+              <ListItem button onClick={this.handleSettingsClick}>
+                <ListItemIcon>
+                  <Settings />
+                </ListItemIcon>
+                <ListItemText inset primary="Settings" />
+                {this.state.openSettings ? <ExpandLess /> : <ExpandMore />}
+              </ListItem>
+              <Collapse in={this.state.openSettings} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+
+                    <ListItem button className={classes.nested} component={Link}
+                      to={`${slashDomain(domain)}/admin/settings/disqus`}
+                    >
+                      <ListItemIcon>
+                        <Comment />
+                      </ListItemIcon>
+                      <ListItemText inset primary="Disqus" />
+                    </ListItem>
 
                 </List>
               </Collapse>

@@ -6,6 +6,7 @@ import {
   SWITCH_THEME,
   EDIT_THEME_OPTION,
   MOVE_WIDGET,
+  MANAGE_OPTIONS,
 } from './types';
 
 export function fetchSite(pathname) {
@@ -58,6 +59,19 @@ export function deleteWidget(area, values) {
 
   return {
     type: EDIT_THEME_OPTION,
+    payload: request
+  };
+}
+
+export function configureSettings(optionName, config, onConfigure) {
+  const request = axios.post(`${SERVER_ROOT_URL}/sites/settings/${optionName}`, config)
+    .then(res => {
+      if ( onConfigure ) onConfigure(res.data);
+      return res;
+    });
+
+  return {
+    type: MANAGE_OPTIONS,
     payload: request
   };
 }

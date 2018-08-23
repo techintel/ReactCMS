@@ -172,3 +172,29 @@ export function getFiltering(post, type, filter) {
 
   return isIncluded;
 }
+
+export function getPermalink(domain, type, post, relative = false, removeSlug = false) {
+  let url = !relative ? window.location.host : '';
+  url += slashDomain(domain);
+
+  switch (type) {
+    case 'post':
+      const date = post.date ? new Date(post.date) : new Date();
+      const year = date.getUTCFullYear();
+      const month = date.getUTCMonth() + 1;
+      const day = date.getUTCDate();
+
+      url += `/blog/${year}/${month}/${day}/`;
+      break;
+
+    case 'page':
+      url += '/';
+      break;
+
+    default:
+      url += `/blog/${type}/`;
+      break;
+  }
+
+  return url + `${removeSlug || !post || !post.slug ? '' : post.slug}`;
+}

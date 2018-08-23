@@ -74,3 +74,6 @@ export const EDIT_THEMES = [
 export const EDIT_THEME_OPTIONS = [
   'admin',
 ];
+export const MANAGE_OPTIONS = [
+  'admin',
+];

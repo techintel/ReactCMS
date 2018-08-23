@@ -5,18 +5,16 @@ import {
   SWITCH_THEME,
   EDIT_THEME_OPTION,
   MOVE_WIDGET,
+  MANAGE_OPTIONS,
 } from '../actions/types';
 
 export default (state = {}, action) => {
   const { payload } = action;
 
   switch (action.type) {
-    case FETCH_SITE:
+    case FETCH_SITE: case SWITCH_THEME: case EDIT_THEME_OPTION: case MANAGE_OPTIONS:
       return { ...state, [payload.data._id.domain]: payload.data };
-    case SWITCH_THEME:
-      return { ...state, [payload.data._id.domain]: payload.data };
-    case EDIT_THEME_OPTION:
-      return { ...state, [payload.data._id.domain]: payload.data };
+
     case MOVE_WIDGET:
       const stateDeepCopy = JSON.parse(JSON.stringify(state));
       const { drag, hover } = payload;

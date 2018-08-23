@@ -6,9 +6,8 @@ import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
 import { Grid, Button, Card, CardHeader, CardContent, CardActions } from '@material-ui/core';
 import { VpnKey } from '@material-ui/icons';
-import { SERVER_ROOT_URL } from '../../../config';
 
-import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText } from '../../../utils';
+import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText, getPermalink } from '../../../utils';
 import { isUserCapable, getPostStatuses, documentTitle, onEditPost } from '../../../utils/reactcms';
 import { addPost, editPost } from '../../../actions/addPosts';
 import { deletePost, fetchPosts } from '../../../actions/fetchPosts';
@@ -239,11 +238,6 @@ class Post extends Component {
     } = this.state;
     const isDraftPublishDisabled = (_id === undefined ? pristine : false) || submitting || invalid;
 
-    const date2 = date ? new Date(date) : new Date();
-    const year = date2.getUTCFullYear();
-    const month = date2.getUTCMonth() + 1;
-    const day = date2.getUTCDate();
-
     return !postInitialized ||
     ( type === 'post' && ( !categoriesInitialized || !tagsInitialized ) ) ||
     ( type === 'page' && !pagesInitialized ) ? <Loading /> : (
@@ -264,9 +258,7 @@ class Post extends Component {
               name="slug"
               component={renderTextField}
               label="Slug"
-              startAdornment={`${SERVER_ROOT_URL}${slashDomain(domain)}/${
-                type === 'post' ? `blog/${year}/${month}/${day}/` : ''
-              }`}
+              startAdornment={getPermalink( domain, type, { date } )}
               className={classes.textField}
               fullWidth
               required

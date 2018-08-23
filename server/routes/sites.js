@@ -121,4 +121,22 @@ router.delete('/widgets', authenticate, (req, res, next) => {
   }
 });
 
+router.post('/settings/:optionName', authenticate, (req, res) => {
+  const { optionName } = req.params;
+  const { currentUser, body } = req;
+
+  if ( isUserCapable( 'manage', 'option', currentUser ) ) {
+    Site.findOne({ '_id.collectionPrefix': currentUser.collectionPrefix })
+      .then(doc => {
+        if (doc) {
+          doc[optionName] = body;
+          doc.save(err => {
+            assert.ifError(err);
+            res.json(doc);
+          });
+        }
+      });
+  }
+});
+
 module.exports = router;

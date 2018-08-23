@@ -13,11 +13,12 @@ import { MoreVert, KeyboardArrowRight } from '@material-ui/icons';
 
 import { fetchPosts, deletePost } from '../../actions/fetchPosts';
 import { openSnackbar } from '../../actions/openSnackbar';
-import { slashDomain, toSlug, hasBeenText } from '../../utils';
+import { hasBeenText, getPermalink } from '../../utils';
 import { isUserCapable, onEditPost } from '../../utils/reactcms';
 import moment from 'moment';
 import { EditorState, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
+import { CommentCount } from 'disqus-react';
 
 import CategoryChips from '../../components/Lists/CategoryChips';
 import TagChips from '../../components/Lists/TagChips';
@@ -29,6 +30,10 @@ const styles = theme => ({
   title: {
     display: 'inline-block',
     textTransform: 'none',
+  },
+  commentCount: {
+    paddingLeft: theme.spacing.unit * 2,
+    color: theme.palette.primary.light,
   },
   categoryChips: {
     float: 'right',
@@ -123,20 +128,26 @@ class Home extends Component {
   }
 
   renderPosts() {
-    const { user, posts, history, classes, info: { domain } } = this.props;
+    const { user, posts, history, classes,
+      info: { domain },
+      site: { disqus },
+    } = this.props;
+
+    let { type } = this.props;
+    type = (type === undefined) ? 'post' : type;
 
     return _.map( _.orderBy( posts, ['date'],['desc'] ), post => {
-      const slug = toSlug(post.title);
       const anchorEl = this.state[post._id];
-
-      const date = new Date(post.date);
-      const yr = date.getFullYear();
-      const mo = date.getMonth() + 1;
-      const day = date.getUTCDate();
-      const linkTo = `${slashDomain(domain)}/blog/${yr}/${mo}/${day}/${slug}`;
+      const linkTo = getPermalink(domain, type, post, true);
 
       const isDeleteEnabled = isUserCapable('delete', 'post', user, post);
       const isEditEnabled = isUserCapable('edit', 'post', user, post);
+
+      const disqusConfig = {
+        url: getPermalink(domain, type, post),
+        identifier: post._id,
+        title: post.title,
+      };
 
       return (
         <Card key={post._id}>
@@ -178,6 +189,16 @@ class Home extends Component {
             subheader={
               <div>
                 <span>{moment(post.date).format("dddd, MMMM D, YYYY")}</span>
+                {disqus && disqus.enabled_on
+                  .includes(
+                    `${type === 'category' ? 'categories' : `${type}s`}`
+                  ) && (
+                    <span className={classes.commentCount}>
+                      <CommentCount shortname={disqus.shortname} config={disqusConfig}>
+                        Comments
+                      </CommentCount>
+                    </span>
+                  )}
                 <CategoryChips categories={post.categories} domain={domain} history={history} className={classes.categoryChips} />
               </div>
             }
@@ -236,6 +257,7 @@ Home.propTypes = {
   info: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   posts: PropTypes.object.isRequired,
+  site: PropTypes.object.isRequired,
   fetchPosts: PropTypes.func.isRequired,
   deletePost: PropTypes.func.isRequired,
   openSnackbar: PropTypes.func.isRequired,
@@ -252,7 +274,7 @@ const pickByTag = ( group, tag_id, posts ) => {
   });
 }
 
-function mapStateToProps({ info, posts, auth: { user } }, { type, tag_id }) {
+function mapStateToProps({ info, posts, sites, auth: { user } }, { type, tag_id }) {
   let published = _.omitBy( posts, (value, key) => ( value.status !== 'publish' ) );
 
   switch (type) {
@@ -265,7 +287,10 @@ function mapStateToProps({ info, posts, auth: { user } }, { type, tag_id }) {
     default: break;
   }
 
-  return { info, user, posts: published };
+  return { info, user,
+    posts: published,
+    site: sites[info.domain],
+  };
 }
 
 export default connect(mapStateToProps, { fetchPosts, deletePost, openSnackbar })(

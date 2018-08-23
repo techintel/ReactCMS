@@ -4,8 +4,7 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { withStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
-import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText, newCreatedText } from '../../../utils';
-import { SERVER_ROOT_URL } from '../../../config';
+import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText, newCreatedText, getPermalink } from '../../../utils';
 import { addPost, editPost } from '../../../actions/addPosts';
 import { addStateValues, fetchPosts } from '../../../actions/fetchPosts';
 import { openSnackbar } from '../../../actions/openSnackbar';
@@ -118,7 +117,7 @@ class Tag extends Component {
           name="slug"
           component={renderTextField}
           label="Slug"
-          startAdornment={`${SERVER_ROOT_URL}${slashDomain(domain)}/blog/${type}/`}
+          startAdornment={getPermalink(domain, type, null)}
           className={classes.textField}
           fullWidth
           required

@@ -11,9 +11,10 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import { EditorState, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import { slashDomain, hasBeenText, getPostStatusLabel } from '../../utils';
+import { slashDomain, hasBeenText, getPostStatusLabel, getPermalink } from '../../utils';
 import { isUserCapable, onEditPost, documentTitle } from '../../utils/reactcms';
 import moment from 'moment';
+import Disqus from 'disqus-react';
 
 import NotFound from '../../components/NotFound';
 import Loading from '../../components/Loading';
@@ -35,8 +36,16 @@ const styles = theme => ({
     paddingLeft: theme.spacing.unit,
     fontWeight: 300,
   },
+  commentCount: {
+    paddingLeft: theme.spacing.unit,
+    color: theme.palette.primary.light,
+  },
   empty: {
     padding: '25px 0px',
+  },
+  discussion: {
+    marginTop: theme.spacing.unit * 2,
+    marginBottom: theme.spacing.unit * 3,
   },
 });
 
@@ -97,12 +106,21 @@ class Post extends Component {
     } else if ( !post || !editorState ) {
       return <Loading />;
     } else {
-      const { type, user, history, classes, info: { domain } } = this.props;
+      const { type, user, history, classes,
+        info: { domain },
+        site: { disqus },
+      } = this.props;
       const { anchorEl } = this.state;
       const deleteText = (post.status !== 'trash') ? 'Bin' : 'Delete';
 
       const isDeleteEnabled = isUserCapable('delete', type, user, post);
       const isEditEnabled = isUserCapable('edit', type, user, post);
+
+      const disqusConfig = {
+        url: getPermalink(domain, type, post),
+        identifier: post._id,
+        title: post.title,
+      };
 
       return (
         <div>
@@ -146,6 +164,13 @@ class Post extends Component {
               <div>
                 <span>{moment(post.date).format("dddd, MMMM D, YYYY")}</span>
                 <span className={classes.status}>({getPostStatusLabel(post.status)})</span>
+                {disqus && disqus.enabled_on.includes(type + 's') && (
+                  <span className={classes.commentCount}>
+                    <Disqus.CommentCount shortname={disqus.shortname} config={disqusConfig}>
+                      Comments
+                    </Disqus.CommentCount>
+                  </span>
+                )}
               </div>
             }
           />
@@ -163,6 +188,11 @@ class Post extends Component {
           }
 
           {type === 'post' && <TagChips tags={post.tags} domain={domain} history={history} />}
+          {disqus && disqus.enabled_on.includes(type + 's') && (
+            <div className={classes.discussion}>
+              <Disqus.DiscussionEmbed shortname={disqus.shortname} config={disqusConfig} />
+            </div>
+          )}
         </div>
       );
     }
@@ -177,12 +207,13 @@ Post.propTypes = {
   info: PropTypes.object.isRequired,
   user: PropTypes.object.isRequired,
   post: PropTypes.object,
+  site: PropTypes.object.isRequired,
   fetchPost: PropTypes.func.isRequired,
   deletePost: PropTypes.func.isRequired,
   openSnackbar: PropTypes.func.isRequired,
 };
 
-function mapStateToProps({ info, posts, pages, auth: { user } }, ownProps) {
+function mapStateToProps({ info, posts, pages, sites, auth: { user } }, ownProps) {
   const { type, match: { params } } = ownProps;
   let post;
 
@@ -208,7 +239,9 @@ function mapStateToProps({ info, posts, pages, auth: { user } }, ownProps) {
     default: break;
   }
 
-  return { info, user, post };
+  return { info, user, post,
+    site: sites[info.domain],
+  };
 }
 
 export default connect(mapStateToProps, { fetchPost, deletePost, openSnackbar })(

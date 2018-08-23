@@ -22,6 +22,8 @@ const {
 
   SWITCH_THEMES,
   EDIT_THEME_OPTIONS,
+
+  MANAGE_OPTIONS,
 } = require('../routes/capabilities');
 
 function isCapable(user, post, capability, capability_others, capability_published) {
@@ -67,6 +69,9 @@ function isUserCapable(action, postType, user, post) {
       return isCapable(user, null, SWITCH_THEMES);
     case 'edit_theme_option':
       return isCapable(user, null, EDIT_THEME_OPTIONS);
+
+    case 'manage_option':
+      return isCapable(user, null, MANAGE_OPTIONS);
 
     default: return;
   }

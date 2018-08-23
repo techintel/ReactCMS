@@ -71,6 +71,9 @@ const SWITCH_THEMES = [
 const EDIT_THEME_OPTIONS = [
   'admin',
 ];
+const MANAGE_OPTIONS = [
+  'admin',
+];
 
 module.exports = {
   MANAGE_CATEGORIES,
@@ -90,4 +93,5 @@ module.exports = {
   DELETE_PUBLISHED_PAGES,
   SWITCH_THEMES,
   EDIT_THEME_OPTIONS,
+  MANAGE_OPTIONS,
 };

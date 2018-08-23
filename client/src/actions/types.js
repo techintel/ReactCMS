@@ -31,3 +31,5 @@ export const ADD_PAGE = 'add_page';
 export const SWITCH_THEME = 'switch_theme';
 export const EDIT_THEME_OPTION = 'edit_theme_option';
 export const MOVE_WIDGET = 'move_widget';
+
+export const MANAGE_OPTIONS = 'manage_options';
