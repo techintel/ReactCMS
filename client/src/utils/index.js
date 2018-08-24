@@ -174,7 +174,8 @@ export function getFiltering(post, type, filter) {
 }
 
 export function getPermalink(domain, type, post, relative = false, removeSlug = false) {
-  let url = !relative ? window.location.host : '';
+  const { location } = window;
+  let url = !relative ? `${location.protocol}//${location.host}` : '';
   url += slashDomain(domain);
 
   switch (type) {
