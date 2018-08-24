@@ -8,6 +8,8 @@ import { WidgetTypes } from './Constants';
 import { DropTarget } from 'react-dnd';
 import { orderBy } from 'lodash';
 import { moveWidget, saveMovedWidget } from '../../../actions/fetchSite';
+import { openSnackbar } from '../../../actions/openSnackbar';
+import { hasBeenText } from '../../../utils';
 
 import SortableWidget from './SortableWidget';
 
@@ -45,7 +47,9 @@ const widgetAreaTarget = {
     }
 
     const dragItem = monitor.getItem();
-    props.saveMovedWidget(props.area, dragItem.data);
+    props.saveMovedWidget(props.area, dragItem.data, () => {
+      props.openSnackbar(hasBeenText(dragItem.data.type, 'widget', 'moved'));
+    });
   },
 };
 
@@ -88,13 +92,14 @@ WidgetArea.propTypes = {
   domain: PropTypes.string.isRequired,
   moveWidget: PropTypes.func.isRequired,
   saveMovedWidget: PropTypes.func.isRequired,
+  openSnackbar: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ info: { domain } }) {
   return { domain };
 }
 
-export default connect(mapStateToProps, { moveWidget, saveMovedWidget })(
+export default connect(mapStateToProps, { moveWidget, saveMovedWidget, openSnackbar })(
   DropTarget(WidgetTypes.MOVE, widgetAreaTarget, collect)(
     withStyles(styles)(WidgetArea)
   )

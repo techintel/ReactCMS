@@ -45,7 +45,7 @@ class Disqus extends Component {
     this.setState({ formInitialized: true });
   }
 
-  onSubmit = values => {
+  submit = values => {
     return this.props.configureSettings( 'disqus', values, () => {
       this.props.openSnackbar(hasBeenText('Disqus', 'site configuration', 'updated'));
     } );
@@ -65,7 +65,7 @@ class Disqus extends Component {
         </Typography>
 
         <Paper className={classes.paper}>
-          <form onSubmit={handleSubmit(this.onSubmit)} className={classes.form}>
+          <form onSubmit={handleSubmit(this.submit)} className={classes.form}>
 
             <Grid container>
               <Grid item xs={12} sm={3}>

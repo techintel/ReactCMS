@@ -10,6 +10,8 @@ import { AVAILABLE_WIDGETS } from './Widgets/';
 import { DropTarget, DragSource } from 'react-dnd';
 import { flow } from 'lodash';
 import { moveWidget, saveMovedWidget } from '../../../actions/fetchSite';
+import { openSnackbar } from '../../../actions/openSnackbar';
+import { hasBeenText } from '../../../utils';
 
 const styles = theme => ({
   paper: {
@@ -72,7 +74,9 @@ const widgetTarget = {
     monitor.getItem().data.order = hover.data.order;
   },
   drop(props, monitor, component) {
-    props.saveMovedWidget(props.area, props.data);
+    props.saveMovedWidget(props.area, props.data, () => {
+      props.openSnackbar(hasBeenText(props.data.type, 'widget', 'sorted'));
+    });
   },
 };
 
@@ -124,13 +128,14 @@ SortableWidget.propTypes = {
   domain: PropTypes.string.isRequired, // Needed for reducer: `stateDeepCopy[hover.domain][hover.area]`
   moveWidget: PropTypes.func.isRequired,
   saveMovedWidget: PropTypes.func.isRequired,
+  openSnackbar: PropTypes.func.isRequired,
 };
 
 function mapStateToProps({ info: { domain } }) {
   return { domain };
 }
 
-export default connect(mapStateToProps, { moveWidget, saveMovedWidget })(
+export default connect(mapStateToProps, { moveWidget, saveMovedWidget, openSnackbar })(
   flow(
     DragSource(
       WidgetTypes.MOVE,

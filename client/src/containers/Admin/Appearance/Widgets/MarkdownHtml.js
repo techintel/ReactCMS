@@ -6,8 +6,9 @@ import { withStyles } from '@material-ui/core/styles';
 import { Grid, Divider, Button } from '@material-ui/core';
 import { FormatSize, FormatAlignRight } from '@material-ui/icons';
 import SelectField from '../../../../components/Selections/SelectField';
-import { renderTextField } from '../../../../utils';
+import { renderTextField, hasBeenText } from '../../../../utils';
 import { saveWidget, deleteWidget } from '../../../../actions/fetchSite';
+import { openSnackbar } from '../../../../actions/openSnackbar';
 import { VARIANTS, ALIGNS } from '../Constants';
 
 const styles = theme => ({
@@ -63,7 +64,7 @@ class MarkdownHtml extends Component {
   submit = values => {
     const { area, data: { _id, type, order } } = this.props;
 
-    this.props.saveWidget( area, {
+    return this.props.saveWidget( area, {
       _id, type, order,
       title: {
         variant: values.titleVariant,
@@ -75,6 +76,8 @@ class MarkdownHtml extends Component {
         align: values.bodyAlign,
         content: values.bodyContent,
       },
+    }, () => {
+      this.props.openSnackbar(hasBeenText(`A ${area.replace(/_/g, " ")}`, 'widget', 'saved'));
     } );
   }
 
@@ -132,10 +135,11 @@ MarkdownHtml.propTypes = {
   initialize: PropTypes.func.isRequired,
   saveWidget: PropTypes.func.isRequired,
   deleteWidget: PropTypes.func.isRequired,
+  openSnackbar: PropTypes.func.isRequired,
 };
 
 export default reduxForm()(
-  connect(null, { saveWidget, deleteWidget })(
+  connect(null, { saveWidget, deleteWidget, openSnackbar })(
     withStyles(styles)(MarkdownHtml)
   )
 );

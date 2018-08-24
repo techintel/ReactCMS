@@ -29,8 +29,12 @@ export function switchTheme(template) {
   };
 }
 
-export function saveWidget(area, values) {
-  const request = axios.post(`${SERVER_ROOT_URL}/sites/widgets/save`, { area, values });
+export function saveWidget(area, values, onSave) {
+  const request = axios.post(`${SERVER_ROOT_URL}/sites/widgets/save`, { area, values })
+    .then(res => {
+      onSave();
+      return res;
+    });
 
   return {
     type: EDIT_THEME_OPTION,
@@ -38,8 +42,12 @@ export function saveWidget(area, values) {
   };
 }
 
-export function saveMovedWidget(area, values) {
-  const request = axios.post(`${SERVER_ROOT_URL}/sites/widgets/move`, { area, values });
+export function saveMovedWidget(area, values, onSave) {
+  const request = axios.post(`${SERVER_ROOT_URL}/sites/widgets/move`, { area, values })
+    .then(res => {
+      onSave();
+      return res;
+    });
 
   return {
     type: EDIT_THEME_OPTION,
