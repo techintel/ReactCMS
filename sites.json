@@ -42,6 +42,7 @@
   "description": "Another ReactCMS site.",
   "footer": [
     {
+      "_id": { "$oid": "5099803df3f4948bd2f98396" },
       "type": "markdown",
       "title": {
         "variant": "body2",
@@ -55,6 +56,7 @@
       "order": 1
     },
     {
+      "_id": { "$oid": "5099803df3f4948bd2f98397" },
       "type": "html",
       "title": {
         "variant": "body2",
