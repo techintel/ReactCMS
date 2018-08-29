@@ -20,8 +20,12 @@ export function fetchSite(pathname) {
   };
 }
 
-export function switchTheme(template) {
-  const request = axios.post(`${SERVER_ROOT_URL}/sites/themes`, { template });
+export function switchTheme(template, onSwitch) {
+  const request = axios.post(`${SERVER_ROOT_URL}/sites/themes`, { template })
+    .then(res => {
+      onSwitch();
+      return res;
+    });
 
   return {
     type: SWITCH_THEME,

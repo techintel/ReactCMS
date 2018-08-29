@@ -28,10 +28,18 @@ const styles = theme => ({
 });
 
 class Themes extends Component {
-  state = {};
+  state = { activating: false };
+
+  handleError = name => { this.setState({ [name]: true }); }
+
+  handleClick = tile => {
+    this.setState({ activating: true });
+    this.props.switchTheme( tile.template, () => { this.setState({ activating: false }); } );
+  }
 
   render() {
     const { classes, site: { themes, template } } = this.props;
+    const { activating } = this.state;
 
     return (
       <div className={classes.root}>
@@ -39,28 +47,33 @@ class Themes extends Component {
           <GridListTile key="Subheader" cols={3} style={{ height: 'auto' }}>
             <ListSubheader component="div">Themes</ListSubheader>
           </GridListTile>
-          {themes.map(tile => (
-            <GridListTile key={tile.template} className={classes.gridListTile}>
-              {this.state[`errored-${tile.template}`] ? null :
-                <img alt={tile.name}
-                  src={`${SERVER_ROOT_URL}/upload/themes/${tile.template}/screenshot.png`}
-                  onError={() => this.setState({ [`errored-${tile.template}`]: true })}
-                />
-              }
-              <GridListTileBar
-                title={tile.name}
-                subtitle={<span>by: {tile.author}</span>}
-                actionIcon={
-                  <Button variant="outlined" className={classes.button}
-                    disabled={template === tile.template}
-                    onClick={() => this.props.switchTheme(tile.template)}
-                  >
-                    Activate
-                  </Button>
+          {themes.map( tile => {
+            const errorName = `errored-${tile.template}`;
+            const isCurrentTemplate = template === tile.template;
+
+            return (
+              <GridListTile key={tile.template} className={classes.gridListTile}>
+                {this.state[ errorName ] ? null :
+                  <img alt={tile.name}
+                    src={`${SERVER_ROOT_URL}/upload/themes/${tile.template}/screenshot.png`}
+                    onError={() => this.handleError(errorName)}
+                  />
                 }
-              />
-            </GridListTile>
-          ))}
+                <GridListTileBar
+                  title={tile.name}
+                  subtitle={<span>by: {tile.author}</span>}
+                  actionIcon={
+                    <Button variant="outlined" className={classes.button}
+                      disabled={isCurrentTemplate || activating}
+                      onClick={() => this.handleClick(tile)}
+                    >
+                      Activate{isCurrentTemplate && 'd'}
+                    </Button>
+                  }
+                />
+              </GridListTile>
+            );
+          } )}
         </GridList>
       </div>
     );
