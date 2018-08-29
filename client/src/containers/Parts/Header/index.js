@@ -15,6 +15,7 @@ import { setCurrentUserByToken } from '../../../actions/signin';
 
 import DrawerList from './DrawerList';
 import SiteList from './SiteList';
+import Search from './Search';
 
 import { drawerStyle } from '../../../assets/jss/styles';
 
@@ -111,6 +112,9 @@ class Header extends React.Component {
             >
               {site.title}
             </Typography>
+
+            <Search />
+
             {isAuthenticated ? (
               <div>
                 <IconButton
