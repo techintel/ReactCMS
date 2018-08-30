@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { findDOMNode } from 'react-dom';
 import { withStyles } from '@material-ui/core/styles';
@@ -14,8 +15,30 @@ import { openSnackbar } from '../../../actions/openSnackbar';
 import { hasBeenText } from '../../../utils';
 
 const styles = theme => ({
+  root: {
+    direction: 'rtl',
+  },
   paper: {
     margin: theme.spacing.unit,
+    direction: 'ltr',
+
+    [theme.breakpoints.up('md')]: {
+      width: '94%',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+
+      transition: theme.transitions.create(['width'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+      }),
+    },
+  },
+  paperOpen: {
+    [theme.breakpoints.up('md')]: {
+      width: '40vw',
+      zIndex: 1200,
+      position: 'relative',
+    },
   },
   listItem: {
     backgroundColor: theme.palette.background.default,
@@ -102,8 +125,8 @@ class SortableWidget extends Component {
     return ( connectDragSource && connectDropTarget &&
       connectDragSource(
         connectDropTarget(
-          <div>
-            <Paper className={classes.paper}>
+          <div className={classes.root}>
+            <Paper className={classNames(classes.paper, this.state[openId] && classes.paperOpen)}>
               <ListItem button disableRipple onClick={() => this.handleClick(openId)} className={classes.listItem}>
                 <ListItemText primary={foundWidget.name} className={classes.listItemText} />
                 {this.state[openId] ? <ExpandLess /> : <ExpandMore />}
