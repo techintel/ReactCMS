@@ -28,18 +28,19 @@ const styles = theme => ({
 });
 
 class Themes extends Component {
-  state = { activating: false };
+  state = { activatingTemplate: null };
 
   handleError = name => { this.setState({ [name]: true }); }
 
   handleClick = tile => {
-    this.setState({ activating: true });
-    this.props.switchTheme( tile.template, () => { this.setState({ activating: false }); } );
+    this.setState({ activatingTemplate: tile.template });
+    this.props.switchTheme( tile.template, () => { this.setState({ activatingTemplate: null }); } );
   }
 
   render() {
     const { classes, site: { themes, template } } = this.props;
-    const { activating } = this.state;
+    const { activatingTemplate } = this.state;
+    const activating = activatingTemplate !== null;
 
     return (
       <div className={classes.root}>
@@ -50,6 +51,7 @@ class Themes extends Component {
           {themes.map( tile => {
             const errorName = `errored-${tile.template}`;
             const isCurrentTemplate = template === tile.template;
+            const isTileActivating = activatingTemplate === tile.template;
 
             return (
               <GridListTile key={tile.template} className={classes.gridListTile}>
@@ -67,7 +69,8 @@ class Themes extends Component {
                       disabled={isCurrentTemplate || activating}
                       onClick={() => this.handleClick(tile)}
                     >
-                      Activate{isCurrentTemplate && 'd'}
+                      Activat{isCurrentTemplate ? 'ed' :
+                        isTileActivating ? 'ing' : 'e'}
                     </Button>
                   }
                 />
