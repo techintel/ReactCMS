@@ -14,6 +14,8 @@ const styles = theme => ({
   root: {
     backgroundColor: theme.palette.primary.light,
     position: 'relative',
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit * 2,
   },
   textField: {
     marginLeft: theme.spacing.unit,
