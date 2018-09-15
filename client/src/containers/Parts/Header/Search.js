@@ -79,9 +79,14 @@ class Search extends Component {
     isFocused: false,
   };
 
-  insertPostsType = (collection, value) => _.map( collection,
-    post => { return { ...post, type: value }; }
-  );
+  componentWillUnmount() {
+    document.removeEventListener( 'keydown', this.escFunction, false );
+  }
+
+  escFunction = event => {
+    if ( event.keyCode === 27 )
+      this.setState({ showResults: false });
+  }
 
   handleFocus = () => {
     let state = { isFocused: true };
@@ -92,6 +97,8 @@ class Search extends Component {
       ['post', 'category', 'tag', 'page'].forEach( type => {
         this.props.fetchPosts(type, { collectionPrefix });
       } );
+
+      document.addEventListener( 'keydown', this.escFunction, false );
       state.isFetched = true;
     }
 
@@ -99,10 +106,21 @@ class Search extends Component {
     this.setState(state);
   }
 
+  handleChange = event => {
+    const { value } = event.target;
+
+    this.setState({
+      search: value,
+      showResults: value ? true : false,
+    });
+  }
+
   handleBlur = () => { this.setState({ isFocused: false }); }
-  handleChange = name => event => { this.setState({ [name]: event.target.value }); }
-  handleKeyUp = () => event => { this.setState({ showResults: (event.keyCode === 27) ? false : this.state.search ? true : false }); }
   handleClick = () => { this.setState({ showResults: false }); }
+
+  insertPostsType = (collection, value) => _.map( collection,
+    post => { return { ...post, type: value }; }
+  );
 
   render() {
     const { classes, info: { domain } } = this.props;
@@ -172,10 +190,9 @@ class Search extends Component {
       <div className={classes.root}>
         <TextField
           placeholder="Search..."
-          className={classNames(classes.textField, isFocused && classes.textFieldFocus)}
+          className={classNames(classes.textField, ( isFocused || search ) && classes.textFieldFocus)}
           value={search}
-          onChange={this.handleChange('search')}
-          onKeyUp={this.handleKeyUp()}
+          onChange={this.handleChange}
           InputProps={{
             disableUnderline: true,
             startAdornment: (
@@ -184,8 +201,8 @@ class Search extends Component {
               </InputAdornment>
             ),
           }}
-          onFocus={() => this.handleFocus()}
-          onBlur={() => this.handleBlur()}
+          onFocus={this.handleFocus}
+          onBlur={this.handleBlur}
         />
         {showResults && (
           <Paper className={classes.result}>
@@ -199,7 +216,7 @@ class Search extends Component {
                     <ListItem key={post._id} className={classes.listItem} divider
                       component={Link}
                       to={getPermalink(domain, post.type, post, true)}
-                      onClick={() => this.handleClick()}
+                      onClick={this.handleClick}
                     >
                       <Typography color="textSecondary">
                         <span className={classes.title}>{isPost ? post.title : post.name}</span> {post.type}
