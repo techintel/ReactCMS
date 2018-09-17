@@ -112,7 +112,7 @@ const widgetSource = {
 class SortableWidget extends Component {
   state = {};
 
-  handleClick = openId => {
+  handleClick = openId => () => {
     this.setState(state => ({ [openId]: !state[openId] }));
   };
 
@@ -127,7 +127,7 @@ class SortableWidget extends Component {
         connectDropTarget(
           <div className={classes.root}>
             <Paper className={classNames(classes.paper, this.state[openId] && classes.paperOpen)}>
-              <ListItem button disableRipple onClick={() => this.handleClick(openId)} className={classes.listItem}>
+              <ListItem button disableRipple onClick={this.handleClick(openId)} className={classes.listItem}>
                 <ListItemText primary={foundWidget.name} className={classes.listItemText} />
                 {this.state[openId] ? <ExpandLess /> : <ExpandMore />}
               </ListItem>
