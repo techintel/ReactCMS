@@ -30,10 +30,18 @@ const styles = theme => ({
 class Themes extends Component {
   state = { activatingTemplate: null };
 
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   handleError = name => { this.setState({ [name]: true }); }
 
   handleClick = tile => {
-    this.setState({ activatingTemplate: tile.template });
+    if ( this._isMounted ) this.setState({ activatingTemplate: tile.template });
     this.props.switchTheme( tile.template, () => { this.setState({ activatingTemplate: null }); } );
   }
 
