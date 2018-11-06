@@ -53,7 +53,7 @@ class Tag extends Component {
         const init = { name, slug, description };
 
         if (type === 'category')
-          init.parent = tag.parent ? tag.parent : 0;
+          init.parent = tag.parent ? tag.parent : '';
 
         this.props.initialize(init);
         this.setState({ tagInitialized: true });
@@ -62,7 +62,7 @@ class Tag extends Component {
       const init = {};
 
       if (type === 'category')
-        init.parent = 0;
+        init.parent = '';
 
       this.props.initialize(init);
       this.setState({ tagInitialized: true });
@@ -136,8 +136,8 @@ class Tag extends Component {
           component={SelectField}
           label="Parent"
           options={[{
-            value: 0,
-            label: '(no parent)'
+            value: '',
+            label: 'no parent'
           }, ...idNameToValueLabel(omit(categories, _id)) ]}
           className={classes.textField}
           fullWidth
