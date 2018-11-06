@@ -46,6 +46,8 @@ class SelectField extends Component {
         disabled={submitting}
         error={error !== undefined}
         helperText={error}
+        SelectProps={{ displayEmpty: true }}
+        InputLabelProps={{ shrink: true }}
       >
         {options.map(option => (
           <MenuItem key={option.value} value={option.value}>

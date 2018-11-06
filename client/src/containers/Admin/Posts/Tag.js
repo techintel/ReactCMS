@@ -137,7 +137,7 @@ class Tag extends Component {
           label="Parent"
           options={[{
             value: '',
-            label: 'no parent'
+            label: '(no parent)'
           }, ...idNameToValueLabel(omit(categories, _id)) ]}
           className={classes.textField}
           fullWidth
