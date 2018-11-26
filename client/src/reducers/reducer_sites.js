@@ -16,12 +16,12 @@ export default (state = {}, action) => {
       return { ...state, [payload.data._id.domain]: payload.data };
 
     case MOVE_WIDGET:
-      const stateDeepCopy = JSON.parse(JSON.stringify(state));
+      const stateDeepClone = JSON.parse(JSON.stringify(state));
       const { drag, hover } = payload;
 
       const areaKeys = ['content', 'left_sidebar', 'right_sidebar', 'footer'];
       areaKeys.forEach(areaKey => {
-        let areaItems = stateDeepCopy[drag.domain][areaKey];
+        let areaItems = stateDeepClone[drag.domain][areaKey];
         const dragIndex = areaItems.findIndex(el => el._id === drag.data._id);
 
         if (dragIndex !== -1) {
@@ -34,7 +34,7 @@ export default (state = {}, action) => {
         }
       });
 
-      let hoverArea = stateDeepCopy[hover.domain][hover.area];
+      let hoverArea = stateDeepClone[hover.domain][hover.area];
       hoverArea.forEach((o, i, a) => {
         if (o.order >= hover.data.order) {
           o.order = o.order + 1;
@@ -43,8 +43,8 @@ export default (state = {}, action) => {
       });
       hoverArea.push({ ...drag.data, order: hover.data.order });
 
-      stateDeepCopy[hover.domain][hover.area] = hoverArea;
-      return stateDeepCopy;
+      stateDeepClone[hover.domain][hover.area] = hoverArea;
+      return stateDeepClone;
 
     default:
       return state;
