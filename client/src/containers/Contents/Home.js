@@ -138,7 +138,8 @@ class Home extends Component {
 
     return _.map( _.orderBy( posts, ['date'],['desc'] ), post => {
       const anchorEl = this.state[post._id];
-      const linkTo = getPermalink(domain, type, post, true);
+      const linkToType = ( type === 'category' || type === 'tag' ) ? 'post' : type;
+      const linkTo = getPermalink(domain, linkToType, post, true);
 
       const isDeleteEnabled = isUserCapable('delete', 'post', user, post);
       const isEditEnabled = isUserCapable('edit', 'post', user, post);
