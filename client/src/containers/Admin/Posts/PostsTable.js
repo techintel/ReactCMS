@@ -278,7 +278,7 @@ class PostsTable extends Component {
                         </TableCell>
                       }
                       {!isPost &&
-                        <TableCell numeric>{n.count}</TableCell>
+                        <TableCell align="right">{n.count}</TableCell>
                       }
                     </TableRow>
                   );
