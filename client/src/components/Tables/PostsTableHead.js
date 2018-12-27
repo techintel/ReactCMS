@@ -26,7 +26,7 @@ class PostsTableHead extends Component {
             return (
               <TableCell
                 key={column.id}
-                numeric={column.numeric}
+                align={row.numeric ? 'right' : 'left'}
                 padding={column.disablePadding ? 'none' : 'default'}
                 sortDirection={orderBy === column.id ? order : false}
               >
