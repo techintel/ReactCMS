@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { List, ListItem, ListItemIcon, ListItemText, Divider } from '@material-ui/core';
 import {
   LibraryAdd, LibraryBooks, List as ListIcon, Create, BookmarkBorder, Label,
-  ColorLens, FormatPaint, Widgets,// Menu,
+  ColorLens, FormatPaint, Widgets, Menu,
   Settings, Comment,
 } from '@material-ui/icons';
 import { Link } from 'react-router-dom';
@@ -143,7 +143,7 @@ class DrawerList extends Component {
                 </ListItem>
               }
 
-              {/* {isUserCapable('edit_theme', 'option', user) &&
+              {isUserCapable('edit_theme', 'option', user) &&
                 <ListItem button className={classes.nested} component={Link}
                   to={`${slashDomain(domain)}/admin/appearance/menus`}
                 >
@@ -152,7 +152,7 @@ class DrawerList extends Component {
                   </ListItemIcon>
                   <ListItemText inset primary="Menus" />
                 </ListItem>
-              } */}
+              }
 
             </DrawerListItem>
           )}

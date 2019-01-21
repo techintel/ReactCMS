@@ -145,7 +145,7 @@ class Tag extends Component {
         <Button
           type="submit"
           disabled={pristine || submitting || invalid }
-          variant="raised"
+          variant="contained"
           size="large"
           color="primary"
         >

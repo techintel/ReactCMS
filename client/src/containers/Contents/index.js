@@ -6,8 +6,9 @@ import { Grid } from '@material-ui/core';
 import { slashDomain } from '../../utils';
 
 import NotFound from '../../components/NotFound';
-import Sidebar from '../../components/Parts/Sidebar';
+import Header from '../../components/Parts/Header';
 import Content from '../../components/Parts/Content';
+import Sidebar from '../../components/Parts/Sidebar';
 import Footer from '../../components/Parts/Footer';
 
 import Signin from './Signin';
@@ -19,7 +20,7 @@ class Contents extends Component {
   render() {
     const {
       match: { params },
-      site: { content, left_sidebar, right_sidebar, footer },
+      site: { header, top_content, bottom_content, left_sidebar, right_sidebar, footer },
     } = this.props;
     const slashDomainVal = slashDomain(params.domain);
 
@@ -40,40 +41,47 @@ class Contents extends Component {
 
     return (
       <Grid container spacing={8}>
+        <Header widgets={header} />
+
         <Sidebar colNum={left_sidebar_cols} widgets={left_sidebar} />
 
         <Grid item xs={12} md={content_cols}>
-          <Switch>
-            <Route exact path={`${slashDomainVal}/signin`} component={Signin} />
-            <Route exact path={`${slashDomainVal}/`} component={FrontPage} />
+          <Content widgets={top_content} />
 
-            <Route exact path={`${slashDomainVal}/blog/:year/:month/:day/:slug`}
-              render={props => {
-                const { params: { year, month, day, slug } } = props.match;
-                return <Post type="post" key={`${year}-${month}-${day}-${slug}`} {...props} />;
-              }}
-            />
-            <Route exact path={`${slashDomainVal}/blog/:type/:slug`}
-              render={props => {
-                const { params: { type, slug } } = props.match;
-                return <Tag type={type} key={`${type}-${slug}`} {...props} />;
-              }}
-            />
-            <Route exact path={`${slashDomainVal}/:slug`}
-              render={props => {
-                const { params: { slug } } = props.match;
-                return <Post type="page" key={`page-${slug}`} {...props} />;
-              }}
-            />
+          <div id="content">
+            <Switch>
+              <Route exact path={`${slashDomainVal}/signin`} component={Signin} />
+              <Route exact path={`${slashDomainVal}/`} component={FrontPage} />
 
-            <Route component={NotFound} />
-          </Switch>
+              <Route exact path={`${slashDomainVal}/blog/:year/:month/:day/:slug`}
+                render={props => {
+                  const { params: { year, month, day, slug } } = props.match;
+                  return <Post type="post" key={`${year}-${month}-${day}-${slug}`} {...props} />;
+                }}
+              />
+              <Route exact path={`${slashDomainVal}/blog/:type/:slug`}
+                render={props => {
+                  const { params: { type, slug } } = props.match;
+                  return <Tag type={type} key={`${type}-${slug}`} {...props} />;
+                }}
+              />
+              <Route exact path={`${slashDomainVal}/:slug`}
+                render={props => {
+                  const { params: { slug } } = props.match;
+                  return <Post type="page" key={`page-${slug}`} {...props} />;
+                }}
+              />
 
-          <Content widgets={content} />
-          <Footer widgets={footer} />
+              <Route component={NotFound} />
+            </Switch>
+          </div>
+
+          <Content widgets={bottom_content} />
         </Grid>
 
         <Sidebar colNum={right_sidebar_cols} widgets={right_sidebar} />
+
+        <Footer widgets={footer} />
       </Grid>
     );
   }

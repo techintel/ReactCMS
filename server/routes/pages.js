@@ -107,11 +107,15 @@ router.post('/add', authenticate, (req, res, next) => {
 });
 
 router.get('/', authenticate, (req, res, next) => {
-  const { currentUser, query: { slug, collectionPrefix, status } } = req;
+  const { currentUser, query: { slug, collectionPrefix, status, _id } } = req;
 
-  if ( slug ) {
+  if ( slug || _id ) {
+    const params = {};
+    if (slug) params.slug = slug;
+    else if (_id) params._id = _id;
+
     compiledModels[collectionPrefix].Page
-    .findOne( { slug } )
+    .findOne(params)
     .populate({
       path: 'author ancestors parent',
       select: '-hash -email'

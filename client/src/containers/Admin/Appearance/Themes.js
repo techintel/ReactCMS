@@ -41,8 +41,10 @@ class Themes extends Component {
   handleError = name => { this.setState({ [name]: true }); }
 
   handleClick = tile => {
-    if ( this._isMounted ) this.setState({ activatingTemplate: tile.template });
-    this.props.switchTheme( tile.template, () => { this.setState({ activatingTemplate: null }); } );
+    this.setState({ activatingTemplate: tile.template });
+    this.props.switchTheme( tile.template, () => {
+      if ( this._isMounted ) this.setState({ activatingTemplate: null });
+    } );
   }
 
   render() {

@@ -14,7 +14,11 @@ import Site from './containers/Site';
 
 class App extends Component {
   state = {
-    muiTheme: createMuiTheme(),
+    muiTheme: createMuiTheme({
+      typography: {
+        useNextVariants: true,
+      },
+    }),
     template: null,
   };
 
@@ -31,7 +35,12 @@ class App extends Component {
 
         document.head.appendChild(aScript);
         aScript.onload = () => this.setState({
-          muiTheme: createMuiTheme(window.themeOptions),
+          muiTheme: createMuiTheme({
+            ...window.themeOptions,
+            typography: {
+              useNextVariants: true,
+            },
+          }),
           template,
         });
       }

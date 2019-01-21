@@ -7,10 +7,10 @@ const NotFound = () => {
 
   return (
     <div>
-      <Typography variant="title" gutterBottom>
+      <Typography variant="h6" gutterBottom>
         Page not found
       </Typography>
-      <Typography variant="body1" gutterBottom>
+      <Typography variant="body2" gutterBottom>
         Sorry, but the page you are looking for cannot be found.
       </Typography>
     </div>

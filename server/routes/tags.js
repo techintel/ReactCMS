@@ -121,15 +121,19 @@ router.post('/add', authenticate, (req, res, next) => {
 });
 
 router.get('/', (req, res, next) => {
-  const { originalUrl, query: { collectionPrefix, slug } } = req;
+  const { originalUrl, query: { collectionPrefix, slug, _id } } = req;
   const appDir = originalUrl.split("/")[1].split("?")[0];
 
   const model = (appDir === 'tags')
     ? compiledModels[collectionPrefix].Tag
     : compiledModels[collectionPrefix].Category;
 
-  if (slug) {
-    model.findOne({ slug })
+  if ( slug || _id ) {
+    const params = {};
+    if (slug) params.slug = slug;
+    else if (_id) params._id = _id;
+
+    model.findOne(params)
       .populate({ path: 'ancestors' })
       .exec((err, doc) => {
         assert.ifError(err);

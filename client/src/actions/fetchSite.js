@@ -75,6 +75,32 @@ export function deleteWidget(area, values) {
   };
 }
 
+export function editMenu(values, onEdit) {
+  const request = axios.post(`${SERVER_ROOT_URL}/sites/menus`, values)
+    .then(res => {
+      onEdit(res.data);
+      return res;
+    });
+
+  return {
+    type: EDIT_THEME_OPTION,
+    payload: request
+  };
+}
+
+export function deleteMenu(_id, onDelete) {
+  const request = axios.delete(`${SERVER_ROOT_URL}/sites/menus`, { data: { _id } })
+    .then(res => {
+      onDelete(res.data);
+      return res;
+    });
+
+  return {
+    type: EDIT_THEME_OPTION,
+    payload: request
+  };
+}
+
 export function configureSettings(optionName, config, onConfigure) {
   const request = axios.post(`${SERVER_ROOT_URL}/sites/settings/${optionName}`, config)
     .then(res => {

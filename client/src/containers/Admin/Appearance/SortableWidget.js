@@ -10,7 +10,7 @@ import { WidgetTypes } from './Constants';
 import { AVAILABLE_WIDGETS } from './Widgets/';
 import { DropTarget, DragSource } from 'react-dnd';
 import { flow } from 'lodash';
-import { moveWidget, saveMovedWidget } from '../../../actions/fetchSite';
+import { moveWidget, saveMovedWidget, deleteWidget } from '../../../actions/fetchSite';
 import { openSnackbar } from '../../../actions/openSnackbar';
 import { hasBeenText } from '../../../utils';
 
@@ -21,7 +21,8 @@ const styles = theme => ({
   paper: {
     margin: theme.spacing.unit,
     direction: 'ltr',
-
+  },
+  expandable: {
     [theme.breakpoints.up('md')]: {
       width: '94%',
       marginLeft: 'auto',
@@ -33,7 +34,7 @@ const styles = theme => ({
       }),
     },
   },
-  paperOpen: {
+  expandableOpen: {
     [theme.breakpoints.up('md')]: {
       width: '40vw',
       zIndex: 1200,
@@ -116,8 +117,13 @@ class SortableWidget extends Component {
     this.setState(state => ({ [openId]: !state[openId] }));
   };
 
+  handleDeleteWidget = (area, data, openId) => () => {
+    this.setState(state => ({ [openId]: !state[openId] }));
+    this.props.deleteWidget(area, data);
+  };
+
   render() {
-    const { area, data, connectDragSource, connectDropTarget, classes } = this.props;
+    const { area, data, connectDragSource, connectDropTarget, expandable, classes } = this.props;
     const foundWidget = AVAILABLE_WIDGETS.find( widget => widget.type === data.type );
     const formId = `${data.type}-${data.order}`;
     const openId = `open_${formId}`;
@@ -126,13 +132,16 @@ class SortableWidget extends Component {
       connectDragSource(
         connectDropTarget(
           <div className={classes.root}>
-            <Paper className={classNames(classes.paper, this.state[openId] && classes.paperOpen)}>
+            <Paper className={classNames(classes.paper, expandable && classes.expandable, expandable && this.state[openId] && classes.expandableOpen)}>
               <ListItem button disableRipple onClick={this.handleClick(openId)} className={classes.listItem}>
                 <ListItemText primary={foundWidget.name} className={classes.listItemText} />
                 {this.state[openId] ? <ExpandLess /> : <ExpandMore />}
               </ListItem>
               <Collapse in={this.state[openId]} timeout="auto" unmountOnExit>
-                <foundWidget.Component form={formId} area={area} data={data} />
+                <foundWidget.Component form={formId} area={area} data={data}
+                  handleDeleteWidget={this.handleDeleteWidget}
+                  openId={openId}
+                />
               </Collapse>
             </Paper>
           </div>
@@ -144,6 +153,7 @@ class SortableWidget extends Component {
 
 SortableWidget.propTypes = {
   classes: PropTypes.object.isRequired,
+  expandable: PropTypes.bool,
   area: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired,
   connectDragSource: PropTypes.func.isRequired,
@@ -151,6 +161,7 @@ SortableWidget.propTypes = {
   domain: PropTypes.string.isRequired, // Needed for reducer: `stateDeepCopy[hover.domain][hover.area]`
   moveWidget: PropTypes.func.isRequired,
   saveMovedWidget: PropTypes.func.isRequired,
+  deleteWidget: PropTypes.func.isRequired,
   openSnackbar: PropTypes.func.isRequired,
 };
 
@@ -158,7 +169,7 @@ function mapStateToProps({ info: { domain } }) {
   return { domain };
 }
 
-export default connect(mapStateToProps, { moveWidget, saveMovedWidget, openSnackbar })(
+export default connect(mapStateToProps, { moveWidget, saveMovedWidget, deleteWidget, openSnackbar })(
   flow(
     DragSource(
       WidgetTypes.MOVE,

@@ -11,7 +11,12 @@ const styles = theme => ({
   ...sidebarStyle(theme),
 
   root: {
-    marginTop: theme.spacing.unit * 2,
+    '&:first-child': {
+      marginBottom: theme.spacing.unit * 2,
+    },
+    '&:last-child': {
+      marginTop: theme.spacing.unit * 2,
+    },
   },
 });
 

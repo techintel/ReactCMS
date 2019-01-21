@@ -50,7 +50,7 @@ router.post('/widgets/:action', authenticate, (req, res, next) => {
         if (doc) {
           switch (action) {
             case 'move':
-              const areaKeys = ['content', 'left_sidebar', 'right_sidebar', 'footer'];
+              const areaKeys = ['header', 'top_content', 'bottom_content', 'left_sidebar', 'right_sidebar', 'footer'];
               areaKeys.forEach(areaKey => {
                 let areaArr = doc[areaKey];
                 const dragIndex = areaArr.findIndex( el => el._id.equals(values._id) );
@@ -116,6 +116,61 @@ router.delete('/widgets', authenticate, (req, res, next) => {
             assert.ifError(err);
             res.json(doc);
           });
+        }
+      });
+  }
+});
+
+router.post('/menus', authenticate, (req, res) => {
+  const { currentUser } = req;
+
+  if ( isUserCapable( 'edit_theme', 'option', currentUser ) ) {
+    Site.findOne({ '_id.collectionPrefix': currentUser.collectionPrefix })
+      .then(doc => {
+        if (doc) {
+          const { name, _id } = req.body;
+          const isNew = !_id;
+
+          if (isNew) {
+            const _id = Types.ObjectId();
+            doc.menus.push({ _id, name });
+          } else {
+            const key = doc.menus.findIndex(val => val._id.equals(_id));
+            req.body.items.map(item => {
+              if (!item._id) item._id = Types.ObjectId();
+              return item;
+            });
+            doc.menus[key] = req.body;
+          }
+
+          setTimeout(function() {
+            doc.save(err => {
+              assert.ifError(err);
+              res.json(doc);
+            });
+          }, 1500);
+
+        }
+      });
+  }
+});
+
+router.delete('/menus', authenticate, (req, res) => {
+  const { currentUser } = req;
+
+  if ( isUserCapable( 'edit_theme', 'option', currentUser ) ) {
+    Site.findOne({ '_id.collectionPrefix': currentUser.collectionPrefix })
+      .then(doc => {
+        if (doc) {
+          const { _id } = req.body;
+          doc.menus.splice(doc.menus.findIndex(item => item._id.equals(_id)), 1);
+
+          setTimeout(function() {
+            doc.save(err => {
+              assert.ifError(err);
+              res.json(doc);
+            });
+          }, 1500);
         }
       });
   }

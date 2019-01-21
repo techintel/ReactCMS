@@ -95,6 +95,7 @@ class Header extends React.Component {
       <div>
         <AppBar
           className={classNames(classes.appBar, drawerOpen && classes.appBarShift)}
+          id="header"
         >
           <Toolbar>
             {isAuthenticated && (
@@ -107,7 +108,7 @@ class Header extends React.Component {
                 <MenuIcon />
               </IconButton>
             )}
-            <Typography variant="title" color="inherit" noWrap className={classes.flex}
+            <Typography variant="h6" color="inherit" noWrap className={classes.flex}
               component={Link} to={`/${domain}`}
             >
               {site.title}

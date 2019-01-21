@@ -124,7 +124,7 @@ class Post extends Component {
 
       return (
         <div>
-          <Typography variant="title">{post.title}</Typography>
+          <Typography variant="h6">{post.title}</Typography>
 
           <CardHeader
             avatar={
@@ -182,7 +182,7 @@ class Post extends Component {
               wrapperClassName={classes.readOnlyEditorWrapper}
               toolbarClassName={classes.readOnlyEditorToolbar}
             /> :
-            <Typography variant="subheading" gutterBottom align="center" className={classes.empty}>
+            <Typography variant="subtitle1" gutterBottom align="center" className={classes.empty}>
               Nothing to show
             </Typography>
           }

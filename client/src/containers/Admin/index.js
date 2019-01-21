@@ -11,6 +11,7 @@ import Tags from './Posts/Tags';
 import Tag from './Posts/Tag';
 import Themes from './Appearance/Themes';
 import Widgets from './Appearance/Widgets';
+import Menus from '../../components/Menus/Menus';
 import Disqus from './Settings/Disqus';
 
 class Admin extends Component {
@@ -70,6 +71,8 @@ class Admin extends Component {
           && <Route exact path={`${url}/appearance/themes`} component={Themes} />}
         {isUserCapable('edit_theme', 'option', user)
           && <Route exact path={`${url}/appearance/widgets`} component={Widgets} />}
+        {isUserCapable('edit_theme', 'option', user)
+          && <Route exact path={`${url}/appearance/menus`} component={Menus} />}
 
         {isUserCapable('manage', 'option', user)
           && <Route exact path={`${url}/settings/disqus`} component={Disqus} />}

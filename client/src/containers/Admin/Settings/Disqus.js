@@ -57,7 +57,7 @@ class Disqus extends Component {
 
     return (
       <div>
-        <Typography variant="headline" component="h3">
+        <Typography variant="h5" component="h3">
           Disqus Comment System
         </Typography>
         <Typography paragraph>
@@ -93,7 +93,7 @@ class Disqus extends Component {
 
             <Button
               type="submit" disabled={pristine || submitting}
-              variant="raised" size="large" color="secondary" className={classes.button}
+              variant="contained" size="large" color="secondary" className={classes.button}
             >
               Save
             </Button>

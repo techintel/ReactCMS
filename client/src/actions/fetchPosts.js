@@ -12,7 +12,7 @@ export function fetchPosts(type, params, onFetch) {
   const request = axios.get(
     `${SERVER_ROOT_URL}/${type === 'category' ? 'categorie' : type}s`,
     { params }
-  ).then(res => {
+  ).then( res => {
     if ( onFetch ) onFetch(res.data);
     return res;
   });
@@ -35,10 +35,10 @@ export function fetchPosts(type, params, onFetch) {
   return { type, payload: request };
 }
 
-export function fetchPost( type, { collectionPrefix, slug, year, month, day }, onFetch) {
+export function fetchPost(type, params, onFetch) {
   const request = axios.get(
     `${SERVER_ROOT_URL}/${type === 'category' ? 'categorie' : type}s`,
-    { params: { collectionPrefix, slug, year, month, day } }
+    { params }
   )
   .then( res => {
     onFetch(res.data);

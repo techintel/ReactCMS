@@ -6,8 +6,8 @@ import _ from 'lodash';
 class CheckboxGroup extends Component {
   constructor(props) {
     super(props);
-    const { input } = props;
-    const state = {};
+    const { input, selectedValues } = props;
+    const state = selectedValues === undefined ? {} : selectedValues;
 
     if (input.value !== "")
       input.value.forEach(val => state[val] = true);
@@ -20,19 +20,25 @@ class CheckboxGroup extends Component {
     const { target: { checked } } = event;
     const newStateProp = { [name]: checked };
 
+    let { selectedValues } = this.props;
+
+    if ( selectedValues === undefined ) {
+      selectedValues = this.state;
+      this.setState(newStateProp);
+    }
+
     const selectedValueLabels = _.map(
       _.pickBy(
-        _.merge(this.state, newStateProp), _.identity
+        _.merge(selectedValues, newStateProp), _.identity
       ),
       (value, key) => key
     );
 
-    this.setState(newStateProp);
     return input.onChange(selectedValueLabels);
   };
 
   renderCheckboxes() {
-    const { options, meta: { submitting } } = this.props;
+    const { options, selectedValues, meta: { submitting } } = this.props;
 
     return _.map(options, option => {
       return (
@@ -42,7 +48,10 @@ class CheckboxGroup extends Component {
               onChange={this.handleChange(option.value)}
               value={option.value}
               disabled={submitting}
-              checked={this.state[option.value]}
+              checked={selectedValues === undefined ?
+                this.state[option.value] :
+                ( selectedValues[option.value] === true )
+              }
             />
           }
           label={option.label}
@@ -77,6 +86,7 @@ CheckboxGroup.propTypes = {
   options: PropTypes.array,
   label: PropTypes.string,
   helperText: PropTypes.string,
+  selectedValues: PropTypes.object,
 };
 
 export default CheckboxGroup;

@@ -54,7 +54,7 @@ const Container = (
     <div>
       <div className={classes.header}>
         <Icon color="primary" style={{ height: 70, width: 70 }} />
-        <Typography variant="subheading" gutterBottom>
+        <Typography variant="subtitle1" gutterBottom>
           {title}
         </Typography>
         <Typography variant="caption">
@@ -72,7 +72,7 @@ const Submit = (
   { label, props: { pristine, submitting, invalid, classes } }
 ) => {
   return (
-    <Button type="submit" disabled={pristine || submitting || invalid} variant="raised" size="large" color="primary" className={classes.button} fullWidth>
+    <Button type="submit" disabled={pristine || submitting || invalid} variant="contained" size="large" color="primary" className={classes.button} fullWidth>
       {label}
     </Button>
   );

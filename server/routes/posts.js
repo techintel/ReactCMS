@@ -139,6 +139,7 @@ router.get('/', authenticate, (req, res, next) => {
   const { currentUser, query: {
     collectionPrefix, status, limit, skip, categories, tags,
     slug, year, month, day,
+    _id,
   } } = req;
 
   if ( slug && year && month && day ) {
@@ -176,6 +177,21 @@ router.get('/', authenticate, (req, res, next) => {
         res.sendStatus(404);
       }
     });
+
+  } else if ( _id ) {
+    populateSort(
+      compiledModels[collectionPrefix].Post.findOne({ _id }),
+      null, doc => {
+        if ( doc.status === 'publish' ) {
+          res.json(doc);
+        } else {
+          if ( isUserCapable( 'edit', 'post', currentUser, doc ) )
+            res.json(doc);
+          else
+            res.sendStatus(404);
+        }
+      }
+    );
 
   } else {
     const q = {};

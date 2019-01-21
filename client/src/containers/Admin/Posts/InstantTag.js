@@ -52,7 +52,7 @@ class InstantTag extends Component {
           <Button
             type="submit"
             disabled={pristine || submitting || invalid}
-            variant="raised"
+            variant="contained"
             size="medium"
             className={classes.groupButton}
             fullWidth

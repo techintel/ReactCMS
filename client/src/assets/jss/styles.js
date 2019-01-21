@@ -57,6 +57,7 @@ export const textFieldButtonStyle = theme => ({
   groupButton: {
     [theme.breakpoints.up('lg')]: {
       width: '40%',
+      marginTop: theme.spacing.unit,
     },
   },
 });

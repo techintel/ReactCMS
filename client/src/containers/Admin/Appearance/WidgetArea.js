@@ -62,7 +62,7 @@ function collect(connect, monitor) {
 
 class WidgetArea extends Component {
   render() {
-    const { area, header, list, connectDropTarget, isOver, classes } = this.props;
+    const { area, header, list, connectDropTarget, isOver, expandable, classes } = this.props;
 
     return connectDropTarget(
       <div>
@@ -73,7 +73,7 @@ class WidgetArea extends Component {
           >
             {orderBy(list, 'order').map(el => {
               const id = `${el.type}-${el.order}`;
-              return <SortableWidget key={id} area={area} data={el} />;
+              return <SortableWidget key={id} area={area} data={el} expandable={expandable} />;
             })}
           </List>
         </Paper>
@@ -84,6 +84,7 @@ class WidgetArea extends Component {
 
 WidgetArea.propTypes = {
   classes: PropTypes.object.isRequired,
+  expandable: PropTypes.bool,
   area: PropTypes.string.isRequired,
   header: PropTypes.string,
   list: PropTypes.array.isRequired,

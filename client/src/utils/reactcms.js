@@ -99,6 +99,19 @@ export function onViewPost(type, post, domain, history) {
 
   Uri += post.slug;
   history.push(Uri);
+
+  const content = document.getElementById('content');
+  if (content) {
+    let topPos = content.offsetTop;
+
+    const header = document.getElementById('header');
+    if (header) topPos -= header.offsetHeight;
+
+    window.scrollTo({
+      top: topPos,
+      behavior: 'smooth',
+    });
+  }
 }
 
 export function getPostStatuses(type, user, post) {

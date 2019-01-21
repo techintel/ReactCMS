@@ -7,7 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { Grid, Button, Card, CardHeader, CardContent, CardActions } from '@material-ui/core';
 import { VpnKey } from '@material-ui/icons';
 
-import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText, getPermalink } from '../../../utils';
+import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText, capitalizeFirstLetter, getPermalink } from '../../../utils';
 import { isUserCapable, getPostStatuses, documentTitle, onEditPost } from '../../../utils/reactcms';
 import { addPost, editPost } from '../../../actions/addPosts';
 import { deletePost, fetchPosts } from '../../../actions/fetchPosts';
@@ -119,7 +119,7 @@ class Post extends Component {
             break;
 
           case 'page':
-            init.parent = post.parent ? post.parent : 0;
+            init.parent = post.parent ? post.parent : '';
             break;
 
           default: break;
@@ -138,7 +138,7 @@ class Post extends Component {
 
       switch (type) {
         case 'page':
-          init.parent = 0;
+          init.parent = '';
           break;
 
         default: break;
@@ -248,7 +248,7 @@ class Post extends Component {
             <Field
               name="title"
               component={renderTextField}
-              label="Post title"
+              label={`${capitalizeFirstLetter(type)} title`}
               className={classes.textField}
               fullWidth
               required
@@ -304,7 +304,7 @@ class Post extends Component {
               <Button
                 type="submit"
                 disabled={!isPublishEnabled || isDraftPublishDisabled}
-                variant="raised"
+                variant="contained"
                 size="large"
                 color="primary"
                 fullWidth
@@ -354,7 +354,7 @@ class Post extends Component {
                   component={SelectField}
                   label="Parent"
                   options={[{
-                    value: 0,
+                    value: '',
                     label: '(no parent)'
                   }, ..._.map( _.omit(pages, _id), o => {
                     return { value: o._id, label: o.title };

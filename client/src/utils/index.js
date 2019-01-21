@@ -105,7 +105,7 @@ export function idNameToValueLabel(idNames) {
   return _.map(idNames, o => {
     return {
       value: o._id,
-      label: o.name
+      label: o.name ? o.name : o.title
     };
   });
 }
@@ -198,4 +198,31 @@ export function getPermalink(domain, type, post, relative = false, removeSlug = 
   }
 
   return url + `${removeSlug || !post || !post.slug ? '' : post.slug}`;
+}
+
+// If targetsChildren is true, the hovering target is a menu item children
+export function isMenuParentDescendant(itemId, nextParent, items, targetsChildren = false) {
+  let parentItem;
+  let isParentDescendant = false;
+  let descendantsChecked = false;
+  do {
+    // eslint-disable-next-line no-loop-func
+    parentItem = items.find(el => el._id === nextParent);
+
+    if (parentItem !== undefined || targetsChildren) {
+      if (parentItem._id === itemId) {
+        isParentDescendant = true;
+        descendantsChecked = true;
+      }
+
+      if (parentItem.parent === null)
+        descendantsChecked = true;
+      else
+        nextParent = parentItem.parent;
+    } else {
+      descendantsChecked = true;
+    }
+  } while (!descendantsChecked);
+
+  return isParentDescendant;
 }

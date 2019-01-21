@@ -21,7 +21,7 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     zIndex: 1,
-    overflow: 'hidden',
+    overflow: 'visible',
     position: 'relative',
     display: 'flex',
   },

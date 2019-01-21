@@ -75,6 +75,7 @@ const styles = theme => ({
   root: {
     flexGrow: 1,
     height: 70,
+    display: 'contents',
   },
   chip: {
     margin: theme.spacing.unit / 4,

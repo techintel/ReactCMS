@@ -6,10 +6,9 @@ import { withStyles } from '@material-ui/core/styles';
 import { Grid, Divider, Button } from '@material-ui/core';
 import { FormatSize, FormatAlignRight } from '@material-ui/icons';
 import SelectField from '../../../../components/Selections/SelectField';
-import { renderTextField, hasBeenText } from '../../../../utils';
-import { saveWidget, deleteWidget } from '../../../../actions/fetchSite';
+import { renderTextField, hasBeenText, capitalizeFirstLetter } from '../../../../utils';
+import { saveWidget } from '../../../../actions/fetchSite';
 import { openSnackbar } from '../../../../actions/openSnackbar';
-import { VARIANTS, ALIGNS } from '../Constants';
 
 const styles = theme => ({
   root: {
@@ -25,8 +24,15 @@ const styles = theme => ({
   },
 });
 
-const variants_valueLabels = VARIANTS.map(el => { return { value: el, label: el }; });
-const aligns_valueLabels = ALIGNS.map(el => { return { value: el, label: el }; });
+const variants = [
+  'display4', 'display3', 'display2', 'display1',
+  'headline', 'title', 'subheading',
+  'body2', 'body1', 'caption', 'button',
+];
+const aligns = [ 'inherit', 'left', 'center', 'right', 'justify' ];
+
+const variants_valueLabels = variants.map(el => ({ value: el, label: el }) );
+const aligns_valueLabels = aligns.map(el => ({ value: el, label: capitalizeFirstLetter(el) }) );
 
 const ElementProp = ({ xs, elem, label, Icon, options }) => {
   return (
@@ -82,7 +88,7 @@ class MarkdownHtml extends Component {
   }
 
   render () {
-    const { area, data, handleSubmit, pristine, submitting, classes } = this.props;
+    const { handleDeleteWidget, area, data, openId, handleSubmit, pristine, submitting, classes } = this.props;
 
     return (
       <form onSubmit={handleSubmit(this.submit)}>
@@ -111,7 +117,7 @@ class MarkdownHtml extends Component {
           />
 
           <div className={classes.buttons}>
-            <Button disabled={submitting} color="secondary" onClick={() => this.props.deleteWidget(area, data)}>
+            <Button disabled={submitting} color="secondary" onClick={handleDeleteWidget(area, data, openId)}>
               Delete
             </Button>
             <Button type="submit" disabled={pristine || submitting} variant="contained" color="primary">
@@ -127,19 +133,20 @@ class MarkdownHtml extends Component {
 
 MarkdownHtml.propTypes = {
   classes: PropTypes.object.isRequired,
+  handleDeleteWidget: PropTypes.func.isRequired,
   area: PropTypes.string.isRequired,
   data: PropTypes.object.isRequired,
+  openId: PropTypes.string.isRequired,
   handleSubmit: PropTypes.func.isRequired,
   pristine: PropTypes.bool.isRequired,
   submitting: PropTypes.bool.isRequired,
   initialize: PropTypes.func.isRequired,
   saveWidget: PropTypes.func.isRequired,
-  deleteWidget: PropTypes.func.isRequired,
   openSnackbar: PropTypes.func.isRequired,
 };
 
 export default reduxForm()(
-  connect(null, { saveWidget, deleteWidget, openSnackbar })(
+  connect(null, { saveWidget, openSnackbar })(
     withStyles(styles)(MarkdownHtml)
   )
 );

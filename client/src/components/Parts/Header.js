@@ -5,24 +5,24 @@ import { Grid } from '@material-ui/core';
 import RenderWidgets from '../Lists/RenderWidgets';
 
 const styles = theme => ({
-  footer: {
-    margin: `80px 5% 10px`,
+  header: {
+    marginBottom: 10,
   },
 });
 
-function Footer({ widgets, classes }) {
-  return (
+function Header({ widgets, classes }) {
+  return widgets.length ? (
     <Grid item xs={12} md={12}>
-      <footer className={classes.footer}>
+      <header className={classes.header}>
         <RenderWidgets contents={widgets} />
-      </footer>
+      </header>
     </Grid>
-  );
+  ) : null;
 }
 
-Footer.propTypes = {
+Header.propTypes = {
   classes: PropTypes.object.isRequired,
   widgets: PropTypes.array.isRequired,
 };
 
-export default withStyles(styles)(Footer);
+export default withStyles(styles)(Header);

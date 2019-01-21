@@ -19,7 +19,7 @@ export default (state = {}, action) => {
       const stateDeepClone = JSON.parse(JSON.stringify(state));
       const { drag, hover } = payload;
 
-      const areaKeys = ['content', 'left_sidebar', 'right_sidebar', 'footer'];
+      const areaKeys = ['header', 'top_content', 'bottom_content', 'left_sidebar', 'right_sidebar', 'footer'];
       areaKeys.forEach(areaKey => {
         let areaItems = stateDeepClone[drag.domain][areaKey];
         const dragIndex = areaItems.findIndex(el => el._id === drag.data._id);
