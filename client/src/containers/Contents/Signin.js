@@ -11,7 +11,7 @@ import { renderTextField } from '../../utils';
 const styles = theme => ({
   header: {
     textAlign: 'center',
-    margin: `${theme.spacing.unit * 3}px 0`,
+    margin: `${theme.spacing.unit * 5}px 0`,
   },
   paper: {
     margin: `0 auto`,
