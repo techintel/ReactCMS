@@ -56,7 +56,7 @@ export function renderTextField(
       <InputLabel htmlFor={input.name}>{label}</InputLabel>
       <Input id={input.name} type={type} autoComplete={autoComplete} {...input}
         startAdornment={startAdornment ?
-          <InputAdornment position="start">{startAdornment}</InputAdornment>
+          <InputAdornment position="start" style={{ whiteSpace: 'nowrap' }}>{startAdornment}</InputAdornment>
         : null}
         endAdornment={endAdornment ?
           <InputAdornment position="end">{endAdornment}</InputAdornment>
