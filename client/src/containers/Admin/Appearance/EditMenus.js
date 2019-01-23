@@ -155,8 +155,8 @@ class EditMenus extends Component {
           }
 
           const { menus } = site;
-          if (!newState.menuId) newState.menuId = menus[menus.length - 1]._id;
-          this.setState(newState);
+          if ( !newState.menuId ) newState.menuId = menus[menus.length - 1]._id;
+          if ( this._isMounted ) this.setState(newState);
 
           this.initForm(site);
           this.props.openSnackbar(hasBeenText('Menu item', values.name, 'saved'));
@@ -230,10 +230,12 @@ class EditMenus extends Component {
       }) );
     }
 
-    const editedMenu = { ...editingMenu, items: [...editingMenu.items, ...addingItems] };
-    handleSubmit(this.submit( editedMenu ));
-
-    this.setState({ addItemName: name });
+    this.setState( { addItemName: name },
+      () => {
+        const editedMenu = { ...editingMenu, items: [...editingMenu.items, ...addingItems] };
+        handleSubmit(this.submit( editedMenu ));
+      }
+    );
   }
 
   onRemove = _id => {
