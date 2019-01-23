@@ -104,7 +104,10 @@ class EditMenus extends Component {
     let newState = { editingMenu };
     if (!menuInitialized) newState.menuInitialized = true;
 
-    if ( this._isMounted ) this.setState(newState);
+    if ( this._isMounted ) {
+      if ( editingMenu ) newState.menuId = editingMenu._id;
+      this.setState(newState);
+    }
     this.props.initialize(editingMenu);
   }
 
@@ -372,8 +375,9 @@ class EditMenus extends Component {
                 input={{
                   value: editingMenu ? editingMenu._id : '',
                   onChange: _id => {
-                    this.setState({ menuId: _id });
-                    setTimeout(() => this.initForm());
+                    this.setState( { menuId: _id },
+                      () => this.initForm()
+                    )
                   },
                 }}
                 options={[ {
