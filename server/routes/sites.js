@@ -143,12 +143,12 @@ router.post('/menus', authenticate, (req, res) => {
             doc.menus[key] = req.body;
           }
 
-          setTimeout(function() {
+          // setTimeout(function() {
             doc.save(err => {
               assert.ifError(err);
               res.json(doc);
             });
-          }, 1500);
+          // }, 3000);
 
         }
       });
@@ -165,12 +165,12 @@ router.delete('/menus', authenticate, (req, res) => {
           const { _id } = req.body;
           doc.menus.splice(doc.menus.findIndex(item => item._id.equals(_id)), 1);
 
-          setTimeout(function() {
+          // setTimeout(function() {
             doc.save(err => {
               assert.ifError(err);
               res.json(doc);
             });
-          }, 1500);
+          // }, 3000);
         }
       });
   }
