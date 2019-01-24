@@ -10,7 +10,9 @@ class MenuListing extends Component {
 
     return (
       <MenuList subheader={title && (<ListSubheader>{title}</ListSubheader>)}>
-        {items.filter(el => parent ? el.parent === parent : !el.parent)
+        {items
+          .filter(el => parent ? el.parent === parent : !el.parent)
+          .sort((a, b) => a.order - b.order)
           .map(el => <MenuItemContainer key={el._id} data={el} items={items} horizontal={horizontal} />)
         }
       </MenuList>
