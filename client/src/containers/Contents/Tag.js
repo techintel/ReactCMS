@@ -7,7 +7,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { fetchPost, deletePost } from '../../actions/fetchPosts';
 import { openSnackbar } from '../../actions/openSnackbar';
 import { slashDomain, hasBeenText } from '../../utils';
-import { onEditPost } from '../../utils/reactcms';
+import { onEditPost, documentTitle } from '../../utils/reactcms';
 
 import NotFound from '../../components/NotFound';
 import Loading from '../../components/Loading';
@@ -28,8 +28,12 @@ class Tag extends Component {
     this.props.fetchPost( type, { ...params, collectionPrefix },
       tag => {
         if ( this._isMounted ) {
-          if (tag) this.setState({ tag });
-          else this.setState({ isNotFound: true });
+          if ( tag ) {
+            this.setState({ tag });
+            documentTitle(tag.name);
+          } else {
+            this.setState({ isNotFound: true });
+          }
         }
       }
     );
