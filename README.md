@@ -59,7 +59,8 @@ You need to manually modify the created user's data in the database 'users' coll
   email: CREATED_USER_EMAIL
   username: CREATED_USER_NAME,
   hash: CREATED_USER_HASH,
-  role: 'admin';
+  role: 'admin',
+  ...
 }
 ~~~~
  - Here are terminal commands that you may need to run if you're hosting your `mongod` on your local server:
