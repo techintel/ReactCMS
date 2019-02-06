@@ -75,7 +75,13 @@ class Post extends Component {
     };
   }
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   componentDidMount() {
+    this._isMounted = true;
+
     const { user, info: { collectionPrefix },
       match: { params: { _id } }
     } = this.props;
@@ -84,16 +90,22 @@ class Post extends Component {
     switch (type) {
       case 'post':
         this.props.fetchPosts( 'category', { collectionPrefix },
-          () => this.setState({ categoriesInitialized: true })
+          () => {
+            if (this._isMounted) this.setState({ categoriesInitialized: true });
+          }
         );
         this.props.fetchPosts( 'tag', { collectionPrefix },
-          () => this.setState({ tagsInitialized: true })
+          () => {
+            if (this._isMounted) this.setState({ tagsInitialized: true });
+          }
         );
         break;
 
       case 'page':
         this.props.fetchPosts( 'page', { collectionPrefix },
-          () => this.setState({ pagesInitialized: true })
+          () => {
+            if (this._isMounted) this.setState({ pagesInitialized: true });
+          }
         );
         break;
 
@@ -125,9 +137,11 @@ class Post extends Component {
           default: break;
         }
 
-        this.props.initialize(init);
-        this.setState(state);
-        documentTitle('Edit post');
+        if (this._isMounted) {
+          this.props.initialize(init);
+          this.setState(state);
+          documentTitle('Edit post');
+        }
       });
     } else {
       const init = { status: this.state.status };
