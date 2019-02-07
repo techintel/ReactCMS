@@ -41,7 +41,7 @@ const siteSchema = new Schema({
         order: { type: Number, required: true },
         label: String,
         type: { type: String, required: true },
-        guid: { type: String, required: true },
+        guid: String,
       }],
     }],
     default: [],
