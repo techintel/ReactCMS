@@ -23,7 +23,7 @@ To use ReactCMS, you must first checkout this repository, or download the .ZIP f
 
 The "server" directory contains the source code for your app's backend Express server.
 
- - First, you must have a `mongod` running version 3.2.x of MongoDB or above. *([Recommended fully-managed database service to deploy a MongoDB database in the cloud.](https://mbsy.co/pGh7l))*
+ - First, you must have a `mongod` running version 3.2.x of MongoDB or above. *([Recommended provider to have your own domain and VPS/dedicated server that can be customized to have Node.js and MongoDB for hosting a MEAN/MERN stack application like React CMS.](https://domains.5techcenter.com/))*
  - In the "server" directory, run `npm install` to install its dependencies.
  - Open */server/config.js*, read the property descriptions carefully and set them properly according to the configuration of your server.
  - */sites.json* contains your multisite information, modify and import it as your database collection named 'sites' by running: `mongoimport --drop -d reactcms -c sites sites.json` or `mongoimport -h <hostname><:port> -d reactcms -c sites -u <username> -p <password> --file sites.json`
