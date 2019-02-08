@@ -5,6 +5,7 @@ import { Field, reduxForm } from 'redux-form';
 import { withStyles } from '@material-ui/core/styles';
 import { Paper, Typography, Grid, Button } from '@material-ui/core';
 import { renderTextField, hasBeenText } from '../../../utils';
+import { documentTitle } from '../../../utils/reactcms';
 import { configureSettings } from '../../../actions/fetchSite';
 import { openSnackbar } from '../../../actions/openSnackbar';
 
@@ -43,6 +44,8 @@ class Disqus extends Component {
 
     if (disqus) this.props.initialize(disqus);
     this.setState({ formInitialized: true });
+
+    documentTitle('Disqus Comment System');
   }
 
   submit = values => {

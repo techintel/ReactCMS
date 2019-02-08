@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { Grid, Paper, Typography } from '@material-ui/core';
 import HTML5Backend from 'react-dnd-html5-backend'
 import { DragDropContext } from 'react-dnd';
+import { documentTitle } from '../../../utils/reactcms';
 
 import WidgetArea from './WidgetArea';
 import AvailableWidgets from '../../../components/Lists/AvailableWidgets';
@@ -24,6 +25,10 @@ const styles = theme => ({
 });
 
 class Widgets extends Component {
+  componentDidMount() {
+    documentTitle('Widgets');
+  }
+
   render() {
     const { classes, site: {
       header, top_content, bottom_content, left_sidebar, right_sidebar, footer

@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { GridList, GridListTile, GridListTileBar, ListSubheader, Button } from '@material-ui/core';
 import { SERVER_ROOT_URL } from '../../../config';
 import { switchTheme } from '../../../actions/fetchSite';
+import { documentTitle } from '../../../utils/reactcms';
 
 const styles = theme => ({
   root: {
@@ -32,6 +33,7 @@ class Themes extends Component {
 
   componentDidMount() {
     this._isMounted = true;
+    documentTitle('Themes');
   }
 
   componentWillUnmount() {

@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Paper, Tabs, Tab } from '@material-ui/core';
+import { documentTitle } from '../../utils/reactcms';
 
 import EditMenus from '../../containers/Admin/Appearance/EditMenus';
 
@@ -13,6 +14,10 @@ const styles = theme => ({
 
 class Menus extends Component {
   state = { value: 0 };
+
+  componentDidMount() {
+    documentTitle('Menus');
+  }
 
   handleChange = (event, value) => {
     this.setState({ value });
