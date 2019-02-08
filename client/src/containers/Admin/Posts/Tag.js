@@ -35,14 +35,23 @@ class Tag extends Component {
     categoriesInitialized: false
   };
 
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   componentDidMount() {
+    this._isMounted = true;
+
     const { type, match } = this.props;
     const _id = match ? match.params._id : null;
+    const isCategory = type === 'category';
 
-    if ( type === 'category' ) {
+    if (isCategory) {
       const { info: { collectionPrefix } } = this.props;
       this.props.fetchPosts( type, { collectionPrefix },
-        () => this.setState({ categoriesInitialized: true })
+        () => {
+          if (this._isMounted) this.setState({ categoriesInitialized: true });
+        }
       );
     }
 
@@ -52,17 +61,18 @@ class Tag extends Component {
         const { name, slug, description } = tag;
         const init = { name, slug, description };
 
-        if (type === 'category')
-          init.parent = tag.parent ? tag.parent : '';
+        if (isCategory) init.parent = tag.parent ? tag.parent : '';
 
-        this.props.initialize(init);
-        this.setState({ tagInitialized: true });
+        if (this._isMounted) {
+          this.props.initialize(init);
+          this.setState({ tagInitialized: true });
+          documentTitle(`Edit ${isCategory ? 'category' : 'tag'}`);
+        }
       });
     } else { // Add new
       const init = {};
 
-      if (type === 'category')
-        init.parent = '';
+      if (isCategory) init.parent = '';
 
       this.props.initialize(init);
       this.setState({ tagInitialized: true });
@@ -101,8 +111,9 @@ class Tag extends Component {
     } = this.props;
     const _id = match ? match.params._id : null;
     const { tagInitialized, categoriesInitialized } = this.state;
+    const isCategory = type === 'category';
 
-    return !tagInitialized || ( type === 'category' && !categoriesInitialized ) ? <Loading /> : (
+    return !tagInitialized || ( isCategory && !categoriesInitialized ) ? <Loading /> : (
       <form onSubmit={handleSubmit(this.onSubmit)}>
         <Field
           name="name"
@@ -131,7 +142,7 @@ class Tag extends Component {
           className={classes.textField}
           fullWidth
         />
-        {type === 'category' && <Field
+        {isCategory && <Field
           name="parent"
           component={SelectField}
           label="Parent"
