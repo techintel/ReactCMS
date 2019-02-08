@@ -5,6 +5,7 @@ import { Field, reduxForm } from 'redux-form';
 import { withStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText, newCreatedText, getPermalink } from '../../../utils';
+import { documentTitle } from '../../../utils/reactcms';
 import { addPost, editPost } from '../../../actions/addPosts';
 import { addStateValues, fetchPosts } from '../../../actions/fetchPosts';
 import { openSnackbar } from '../../../actions/openSnackbar';
