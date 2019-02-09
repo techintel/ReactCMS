@@ -56,20 +56,23 @@ class Post extends Component {
     editorState: null,
   };
 
+  updateContent(post) {
+    this.setState({
+      editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(post.content)))
+    });
+    documentTitle(post.title);
+  }
+
   componentDidMount() {
     this._isMounted = true;
-    const { type, match: { params }, info: { collectionPrefix } } = this.props;
+    const { type, post, match: { params }, info: { collectionPrefix } } = this.props;
+
+    if (post) this.updateContent(post);
 
     this.props.fetchPost( type, { ...params, collectionPrefix }, post => {
       if ( this._isMounted ) {
-        if ( post ) {
-          this.setState({
-            editorState: EditorState.createWithContent(convertFromRaw(JSON.parse(post.content)))
-          });
-          documentTitle(post.title);
-        } else {
-          this.setState({ isNotFound: true });
-        }
+        if ( post ) this.updateContent(post);
+        else this.setState({ isNotFound: true });
       }
     });
   }
