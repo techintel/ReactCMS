@@ -17,26 +17,24 @@ import Home from './Home';
 
 class Tag extends Component {
   state = {
-    tag: null,
     isNotFound: null,
     anchorEl: null,
   };
 
   setTag(tag) {
-    this.setState({ tag });
     documentTitle(tag.name);
   }
 
   componentDidMount() {
     this._isMounted = true;
-    const { type, foundTag, match: { params }, info: { collectionPrefix } } = this.props;
+    const { type, tag, match: { params }, info: { collectionPrefix } } = this.props;
 
-    if (foundTag) this.setTag(foundTag);
+    if (tag) this.setTag(tag);
 
     this.props.fetchPost( type, { ...params, collectionPrefix },
-      tag => {
+      nextTag => {
         if ( this._isMounted ) {
-          if ( tag ) this.setTag(tag);
+          if ( nextTag ) this.setTag(nextTag);
           else this.setState({ isNotFound: true });
         }
       }
@@ -65,11 +63,12 @@ class Tag extends Component {
   }
 
   render() {
-    const { tag, isNotFound } = this.state;
+    const { tag } = this.props;
+    const { isNotFound } = this.state;
 
-    if (isNotFound) {
+    if ( isNotFound ) {
       return <NotFound />;
-    } else if (!tag) {
+    } else if ( !tag ) {
       return <Loading />;
     } else {
       const { type, history, info: { domain } } = this.props;
@@ -119,6 +118,7 @@ Tag.propTypes = {
   history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   info: PropTypes.object.isRequired,
+  tag: PropTypes.object,
   fetchPost: PropTypes.func.isRequired,
   deletePost: PropTypes.func.isRequired,
   openSnackbar: PropTypes.func.isRequired,
@@ -126,19 +126,19 @@ Tag.propTypes = {
 
 function mapStateToProps({ info, categories, tags }, ownProps) {
   const { type, match: { params } } = ownProps;
-  let foundTag;
+  let tag;
 
   switch (type) {
     case 'category':
-      foundTag = find(categories, o => o.slug === params.slug);
+      tag = find(categories, o => o.slug === params.slug);
       break;
     case 'tag':
-      foundTag = find(tags, o => o.slug === params.slug);
+      tag = find(tags, o => o.slug === params.slug);
       break;
     default: break;
   }
 
-  return { info, foundTag };
+  return { info, tag };
 }
 
 export default connect(mapStateToProps, { fetchPost, deletePost, openSnackbar })(

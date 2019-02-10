@@ -51,9 +51,9 @@ const styles = theme => ({
 
 class Post extends Component {
   state = {
+    editorState: null,
     isNotFound: null,
     anchorEl: null,
-    editorState: null,
   };
 
   updateContent(post) {
@@ -65,16 +65,18 @@ class Post extends Component {
 
   componentDidMount() {
     this._isMounted = true;
-    const { type, foundPost, match: { params }, info: { collectionPrefix } } = this.props;
+    const { type, post, match: { params }, info: { collectionPrefix } } = this.props;
 
-    if (foundPost) this.updateContent(foundPost);
+    if (post) this.updateContent(post);
 
-    this.props.fetchPost( type, { ...params, collectionPrefix }, post => {
-      if ( this._isMounted ) {
-        if ( post ) this.updateContent(post);
-        else this.setState({ isNotFound: true });
+    this.props.fetchPost( type, { ...params, collectionPrefix },
+      nextPost => {
+        if ( this._isMounted ) {
+          if ( nextPost ) this.updateContent(nextPost);
+          else this.setState({ isNotFound: true });
+        }
       }
-    });
+    );
   }
 
   componentWillUnmount() {
@@ -102,7 +104,7 @@ class Post extends Component {
 
   render() {
     const { post } = this.props;
-    const { isNotFound, editorState } = this.state;
+    const { editorState, isNotFound } = this.state;
 
     if ( isNotFound ) {
       return <NotFound />;
@@ -218,11 +220,11 @@ Post.propTypes = {
 
 function mapStateToProps({ info, posts, pages, sites, auth: { user } }, ownProps) {
   const { type, match: { params } } = ownProps;
-  let foundPost;
+  let post;
 
   switch (type) {
     case 'post':
-      foundPost = find(posts, o => {
+      post = find(posts, o => {
         const date = new Date(o.date);
         const year = date.getUTCFullYear();
         const month = date.getUTCMonth() + 1;
@@ -237,12 +239,12 @@ function mapStateToProps({ info, posts, pages, sites, auth: { user } }, ownProps
       });
       break;
     case 'page':
-      foundPost = find(pages, o => o.slug === params.slug);
+      post = find(pages, o => o.slug === params.slug);
       break;
     default: break;
   }
 
-  return { info, user, foundPost,
+  return { info, user, post,
     site: sites[info.domain],
   };
 }
