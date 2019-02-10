@@ -65,9 +65,9 @@ class Post extends Component {
 
   componentDidMount() {
     this._isMounted = true;
-    const { type, post, match: { params }, info: { collectionPrefix } } = this.props;
+    const { type, foundPost, match: { params }, info: { collectionPrefix } } = this.props;
 
-    if (post) this.updateContent(post);
+    if (foundPost) this.updateContent(foundPost);
 
     this.props.fetchPost( type, { ...params, collectionPrefix }, post => {
       if ( this._isMounted ) {
@@ -218,11 +218,11 @@ Post.propTypes = {
 
 function mapStateToProps({ info, posts, pages, sites, auth: { user } }, ownProps) {
   const { type, match: { params } } = ownProps;
-  let post;
+  let foundPost;
 
   switch (type) {
     case 'post':
-      post = find(posts, o => {
+      foundPost = find(posts, o => {
         const date = new Date(o.date);
         const year = date.getUTCFullYear();
         const month = date.getUTCMonth() + 1;
@@ -237,12 +237,12 @@ function mapStateToProps({ info, posts, pages, sites, auth: { user } }, ownProps
       });
       break;
     case 'page':
-      post = find(pages, o => o.slug === params.slug);
+      foundPost = find(pages, o => o.slug === params.slug);
       break;
     default: break;
   }
 
-  return { info, user, post,
+  return { info, user, foundPost,
     site: sites[info.domain],
   };
 }

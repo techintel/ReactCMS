@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { find } from 'lodash';
 import { CardHeader, IconButton, Menu, MenuItem } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 
@@ -21,19 +22,22 @@ class Tag extends Component {
     anchorEl: null,
   };
 
+  setTag(tag) {
+    this.setState({ tag });
+    documentTitle(tag.name);
+  }
+
   componentDidMount() {
     this._isMounted = true;
-    const { type, match: { params }, info: { collectionPrefix } } = this.props;
+    const { type, foundTag, match: { params }, info: { collectionPrefix } } = this.props;
+
+    if (foundTag) this.setTag(foundTag);
 
     this.props.fetchPost( type, { ...params, collectionPrefix },
       tag => {
         if ( this._isMounted ) {
-          if ( tag ) {
-            this.setState({ tag });
-            documentTitle(tag.name);
-          } else {
-            this.setState({ isNotFound: true });
-          }
+          if ( tag ) this.setTag(tag);
+          else this.setState({ isNotFound: true });
         }
       }
     );
@@ -120,8 +124,21 @@ Tag.propTypes = {
   openSnackbar: PropTypes.func.isRequired,
 };
 
-function mapStateToProps({ info }) {
-  return { info };
+function mapStateToProps({ info, categories, tags }, ownProps) {
+  const { type, match: { params } } = ownProps;
+  let foundTag;
+
+  switch (type) {
+    case 'category':
+      foundTag = find(categories, o => o.slug === params.slug);
+      break;
+    case 'tag':
+      foundTag = find(tags, o => o.slug === params.slug);
+      break;
+    default: break;
+  }
+
+  return { info, foundTag };
 }
 
 export default connect(mapStateToProps, { fetchPost, deletePost, openSnackbar })(
