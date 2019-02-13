@@ -35,47 +35,35 @@ const styles = theme => ({
 });
 
 class MenuItemContainer extends Component {
-  state = {
-    open: false,
-    pathname: '',
-  };
+  state = { open: false };
+
+  componentDidMount() {
+    const { data, items } = this.props;
+
+    if ( ! this.hasChild(data, items) && data.type !== 'custom' ) {
+      const { posts, info: { collectionPrefix } } = this.props;
+      const foundPost = _.find( posts, o => o._id === data.guid );
+
+      if (!foundPost) this.props.fetchPost( data.type, { collectionPrefix, _id: data.guid } );
+    }
+  }
+
+  hasChild(data, items) {
+    const children = items.filter(el => el.parent === data._id);
+    return children.length > 0;
+  }
 
   handleToggle = (hasChild, item) => () => {
     if (hasChild) {
       this.setState(state => ({ open: !state.open }));
     } else {
-      const { history, info: { domain, collectionPrefix } } = this.props;
+      if (item.type === 'custom') {
+        window.location.href = item.guid;
+      } else {
+        const { posts, history, info: { domain } } = this.props;
+        const foundPost = _.find( posts, o => o._id === item.guid );
 
-      switch (item.type) {
-        case 'custom':
-          window.location.href = item.guid;
-          break;
-        default:
-          let posts;
-          switch (item.type) {
-            case 'page':
-              posts = this.props.pages;
-              break;
-            case 'category':
-              posts = this.props.categories;
-              break;
-            default:
-              posts = this.props.posts;
-              break;
-          }
-
-          const foundPost = _.find( posts, o => o._id === item.guid );
-          if (foundPost === undefined) {
-            this.setState({ pathname: history.location.pathname });
-
-            this.props.fetchPost( item.type, { collectionPrefix, _id: item.guid }, res => {
-              if (this.state.pathname === history.location.pathname)
-                onViewPost( item.type, res, domain, history );
-            } );
-          } else {
-            onViewPost( item.type, foundPost, domain, history );
-          }
-          break;
+        if (foundPost) onViewPost( item.type, foundPost, domain, history );
       }
     }
   }
@@ -92,10 +80,8 @@ class MenuItemContainer extends Component {
     const { open } = this.state;
 
     const menuName = `menu-${data._id}`;
+    const hasChild = this.hasChild(data, items);
     let Icon;
-
-    const children = items.filter(el => el.parent === data._id);
-    const hasChild = children.length > 0;
 
     if (!hasChild) {
       switch (data.type) {
@@ -160,14 +146,28 @@ MenuItemContainer.propTypes = {
   items: PropTypes.array.isRequired,
   horizontal: PropTypes.bool,
   info: PropTypes.object.isRequired,
-  posts: PropTypes.object.isRequired,
-  pages: PropTypes.object.isRequired,
-  categories: PropTypes.object.isRequired,
+  posts: PropTypes.object,
   fetchPost: PropTypes.func.isRequired,
 };
 
-function mapStateToProps({ info, posts, pages, categories }) {
-  return { info, posts, pages, categories };
+function mapStateToProps({ info, posts, pages, categories }, ownProps) {
+  const { data } = ownProps;
+
+  switch (data.type) {
+    case 'custom':
+      posts = null;
+      break;
+    case 'page':
+      posts = pages;
+      break;
+    case 'category':
+      posts = categories;
+      break;
+    default: // Use the original `posts`.
+      break;
+  }
+
+  return { info, posts };
 }
 
 export default withRouter(

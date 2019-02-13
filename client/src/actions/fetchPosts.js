@@ -41,10 +41,12 @@ export function fetchPost(type, params, onFetch) {
     { params }
   )
   .then( res => {
-    onFetch(res.data);
+    if ( onFetch ) onFetch(res.data);
     return res;
   })
-  .catch(err => onFetch(false));
+  .catch( err => {
+    if ( onFetch ) onFetch(false);
+  });
 
   switch (type) {
     case 'category':
