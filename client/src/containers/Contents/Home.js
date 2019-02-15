@@ -149,7 +149,7 @@ class Home extends Component {
       history,
       classes,
       info: { domain },
-      site: { disqus, description }
+      site: { disqus }
     } = this.props;
 
     let { type } = this.props;
@@ -171,7 +171,6 @@ class Home extends Component {
 
       return (
         <Card key={post._id}>
-          <Head description={description} />
           <CardHeader
             avatar={
               <Avatar aria-label="Author">
@@ -280,10 +279,15 @@ class Home extends Component {
 
   render() {
     const { isLoading, isEndResult } = this.state;
-    const { classes } = this.props;
+    const {
+      type,
+      classes,
+      site: { description }
+    } = this.props;
 
     return (
       <div>
+        {!type && <Head description={description} />}
         {this.renderPosts()}
         {isLoading && (
           <Card className={classes.loading} align="center">

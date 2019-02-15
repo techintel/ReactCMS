@@ -7,6 +7,7 @@ import { Paper, Button, Typography, Input } from '@material-ui/core';
 import { Email, Security, VerifiedUser, AccountCircle } from '@material-ui/icons';
 import { signinWithEmail, signinAsyncValidate as asyncValidate, setCurrentUserByToken } from '../../actions/signin';
 import { renderTextField } from '../../utils';
+import Head from '../Parts/Head';
 
 const styles = theme => ({
   header: {
@@ -52,6 +53,7 @@ const Container = (
 ) => {
   return (
     <div>
+      <Head name={title} description={description} />
       <div className={classes.header}>
         <Icon color="primary" style={{ height: 70, width: 70 }} />
         <Typography variant="subtitle1" gutterBottom>

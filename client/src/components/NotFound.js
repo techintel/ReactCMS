@@ -1,20 +1,23 @@
 import React from 'react';
 import { Typography } from '@material-ui/core';
-import { documentTitle } from '../utils/reactcms';
+import Head from '../containers/Parts/Head';
 
 const NotFound = () => {
-  documentTitle('Page not found');
+  const title = 'Page not found';
+  const description =
+    'Sorry, but the page you are looking for cannot be found.';
 
   return (
     <div>
+      <Head name={title} description={description} />
       <Typography variant="h6" gutterBottom>
-        Page not found
+        {title}
       </Typography>
       <Typography variant="body2" gutterBottom>
-        Sorry, but the page you are looking for cannot be found.
+        {description}
       </Typography>
     </div>
-  )
-}
+  );
+};
 
 export default NotFound;
