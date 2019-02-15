@@ -5,9 +5,16 @@ import { Link } from 'react-router-dom';
 import _ from 'lodash';
 import { withStyles } from '@material-ui/core/styles';
 import {
-  CircularProgress, Avatar, IconButton, Button,
-  Card, CardHeader, CardContent, CardActions,
-  Menu, MenuItem
+  CircularProgress,
+  Avatar,
+  IconButton,
+  Button,
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions,
+  Menu,
+  MenuItem
 } from '@material-ui/core';
 import { MoreVert, KeyboardArrowRight } from '@material-ui/icons';
 
@@ -20,53 +27,54 @@ import { EditorState, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { CommentCount } from 'disqus-react';
 
+import Head from '../Parts/Head';
 import CategoryChips from '../../components/Lists/CategoryChips';
 import TagChips from '../../components/Lists/TagChips';
 
 const styles = theme => ({
   loading: {
-    padding: 20,
+    padding: 20
   },
   title: {
     display: 'inline-block',
-    textTransform: 'none',
+    textTransform: 'none'
   },
   commentCount: {
     paddingLeft: theme.spacing.unit * 2,
-    color: theme.palette.primary.light,
+    color: theme.palette.primary.light
   },
   categoryChips: {
-    float: 'right',
+    float: 'right'
   },
   readOnlyEditorWrapper: {
     color: theme.typography.body1.color,
     maxHeight: 100,
     overflowY: 'hidden',
-    borderBottom: `2px dotted ${theme.typography.caption.color}`,
+    borderBottom: `2px dotted ${theme.typography.caption.color}`
   },
   readOnlyEditorToolbar: {
-    display: 'none',
+    display: 'none'
   },
   cardActions: {
     textAlign: 'right',
-    display: 'block',
+    display: 'block'
   },
   tagChips: {
-    display: 'inline-block',
+    display: 'inline-block'
   },
   readMore: {
-    textTransform: 'none',
+    textTransform: 'none'
   },
   button: {
-    margin: theme.spacing.unit,
-  },
+    margin: theme.spacing.unit
+  }
 });
 
 class Home extends Component {
   state = {
     itemsPerLoad: 5,
     isLoading: null,
-    isEndResult: null,
+    isEndResult: null
   };
 
   componentDidMount() {
@@ -81,11 +89,17 @@ class Home extends Component {
   loadPosts = postsNumber => {
     this.setState({ isLoading: true });
 
-    const { type, tag_id, info: { collectionPrefix } } = this.props;
+    const {
+      type,
+      tag_id,
+      info: { collectionPrefix }
+    } = this.props;
     const { itemsPerLoad } = this.state;
     const params = {
-      collectionPrefix, status: 'publish',
-      limit: itemsPerLoad, skip: postsNumber
+      collectionPrefix,
+      status: 'publish',
+      limit: itemsPerLoad,
+      skip: postsNumber
     };
 
     switch (type) {
@@ -95,50 +109,55 @@ class Home extends Component {
       case 'tag':
         params.tags = tag_id;
         break;
-      default: break;
+      default:
+        break;
     }
 
-    this.props.fetchPosts( 'post', params, data => {
-      if ( this._isMounted ) {
+    this.props.fetchPosts('post', params, data => {
+      if (this._isMounted) {
         this.setState({
           isLoading: false,
-          isEndResult: (data.length < itemsPerLoad),
+          isEndResult: data.length < itemsPerLoad
         });
       }
     });
-  }
+  };
 
   handleLoadMore = () => {
     const { posts } = this.props;
     this.loadPosts(_.size(posts));
-  }
+  };
 
   handleOpenMenu = (event, post_id) => {
     this.setState({ [post_id]: event.currentTarget });
-  }
+  };
 
   handleCloseMenu = post_id => {
     this.setState({ [post_id]: null });
   };
 
   onDeleteClick = post_id => {
-    this.props.deletePost( 'post', post_id,
-      data => this.props.openSnackbar( hasBeenText('post', data.title, 'put to bin') )
+    this.props.deletePost('post', post_id, data =>
+      this.props.openSnackbar(hasBeenText('post', data.title, 'put to bin'))
     );
-  }
+  };
 
   renderPosts() {
-    const { user, posts, history, classes,
+    const {
+      user,
+      posts,
+      history,
+      classes,
       info: { domain },
-      site: { disqus },
+      site: { disqus, description }
     } = this.props;
 
     let { type } = this.props;
-    type = (type === undefined) ? 'post' : type;
+    type = type === undefined ? 'post' : type;
 
-    return _.map( _.orderBy( posts, ['date'],['desc'] ), post => {
+    return _.map(_.orderBy(posts, ['date'], ['desc']), post => {
       const anchorEl = this.state[post._id];
-      const linkToType = ( type === 'category' || type === 'tag' ) ? 'post' : type;
+      const linkToType = type === 'category' || type === 'tag' ? 'post' : type;
       const linkTo = getPermalink(domain, linkToType, post, true);
 
       const isDeleteEnabled = isUserCapable('delete', 'post', user, post);
@@ -147,73 +166,109 @@ class Home extends Component {
       const disqusConfig = {
         url: getPermalink(domain, type, post),
         identifier: post._id,
-        title: post.title,
+        title: post.title
       };
 
       return (
         <Card key={post._id}>
+          <Head description={description} />
           <CardHeader
             avatar={
               <Avatar aria-label="Author">
                 {post.author.username.charAt(0)}
               </Avatar>
             }
-            action={( isDeleteEnabled || isEditEnabled ) ? (
-              <div>
-                <IconButton
-                  aria-owns={anchorEl ? post._id : null}
-                  aria-haspopup="true"
-                  onClick={e => this.handleOpenMenu(e, post._id)}
-                >
-                  <MoreVert />
-                </IconButton>
-                <Menu
-                  id={post._id}
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={() => this.handleCloseMenu(post._id)}
-                >
-                  {isEditEnabled &&
-                    <MenuItem onClick={() => onEditPost('post', post._id, domain, history)}>Edit Post</MenuItem>
-                  }
-                  {isDeleteEnabled &&
-                    <MenuItem onClick={() => this.onDeleteClick(post._id)}>Bin</MenuItem>
-                  }
-                </Menu>
-              </div>
-            ) : null}
+            action={
+              isDeleteEnabled || isEditEnabled ? (
+                <div>
+                  <IconButton
+                    aria-owns={anchorEl ? post._id : null}
+                    aria-haspopup="true"
+                    onClick={e => this.handleOpenMenu(e, post._id)}
+                  >
+                    <MoreVert />
+                  </IconButton>
+                  <Menu
+                    id={post._id}
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={() => this.handleCloseMenu(post._id)}
+                  >
+                    {isEditEnabled && (
+                      <MenuItem
+                        onClick={() =>
+                          onEditPost('post', post._id, domain, history)
+                        }
+                      >
+                        Edit Post
+                      </MenuItem>
+                    )}
+                    {isDeleteEnabled && (
+                      <MenuItem onClick={() => this.onDeleteClick(post._id)}>
+                        Bin
+                      </MenuItem>
+                    )}
+                  </Menu>
+                </div>
+              ) : null
+            }
             title={
-              <Button component={Link} to={linkTo} className={classes.title} fullWidth>
+              <Button
+                component={Link}
+                to={linkTo}
+                className={classes.title}
+                fullWidth
+              >
                 {post.title}
               </Button>
             }
             subheader={
               <div>
-                <span>{moment(post.date).format("dddd, MMMM D, YYYY")}</span>
-                {disqus && disqus.enabled_on
-                  .includes(
+                <span>{moment(post.date).format('dddd, MMMM D, YYYY')}</span>
+                {disqus &&
+                  disqus.enabled_on.includes(
                     `${type === 'category' ? 'categories' : `${type}s`}`
                   ) && (
                     <span className={classes.commentCount}>
-                      <CommentCount shortname={disqus.shortname} config={disqusConfig}>
+                      <CommentCount
+                        shortname={disqus.shortname}
+                        config={disqusConfig}
+                      >
                         Comments
                       </CommentCount>
                     </span>
                   )}
-                <CategoryChips categories={post.categories} domain={domain} history={history} className={classes.categoryChips} />
+                <CategoryChips
+                  categories={post.categories}
+                  domain={domain}
+                  history={history}
+                  className={classes.categoryChips}
+                />
               </div>
             }
           />
           <CardContent>
             <Editor
-              editorState={EditorState.createWithContent(convertFromRaw(JSON.parse(post.content)))}
+              editorState={EditorState.createWithContent(
+                convertFromRaw(JSON.parse(post.content))
+              )}
               readOnly
               wrapperClassName={classes.readOnlyEditorWrapper}
               toolbarClassName={classes.readOnlyEditorToolbar}
             />
             <CardActions className={classes.cardActions}>
-              <TagChips tags={post.tags} domain={domain} history={history} className={classes.tagChips} />
-              <Button component={Link} to={linkTo} color="primary" className={classes.readMore}>
+              <TagChips
+                tags={post.tags}
+                domain={domain}
+                history={history}
+                className={classes.tagChips}
+              />
+              <Button
+                component={Link}
+                to={linkTo}
+                color="primary"
+                className={classes.readMore}
+              >
                 Read More <KeyboardArrowRight />
               </Button>
             </CardActions>
@@ -237,8 +292,13 @@ class Home extends Component {
         )}
         {!isEndResult && (
           <Card align="center">
-            <Button variant="outlined" size="large" color="primary" className={classes.button}
-              onClick={this.handleLoadMore} disabled={isLoading}
+            <Button
+              variant="outlined"
+              size="large"
+              color="primary"
+              className={classes.button}
+              onClick={this.handleLoadMore}
+              disabled={isLoading}
             >
               Load More <KeyboardArrowRight />
             </Button>
@@ -261,22 +321,24 @@ Home.propTypes = {
   site: PropTypes.object.isRequired,
   fetchPosts: PropTypes.func.isRequired,
   deletePost: PropTypes.func.isRequired,
-  openSnackbar: PropTypes.func.isRequired,
+  openSnackbar: PropTypes.func.isRequired
 };
 
-const pickByTag = ( group, tag_id, posts ) => {
-  return _.pickBy( posts, (value, key) => {
+const pickByTag = (group, tag_id, posts) => {
+  return _.pickBy(posts, (value, key) => {
     let isIncluded = false;
-    value[group].forEach( el => {
-      if (el._id === tag_id)
-        return isIncluded = true;
+    value[group].forEach(el => {
+      if (el._id === tag_id) return (isIncluded = true);
     });
     return isIncluded;
   });
-}
+};
 
-function mapStateToProps({ info, posts, sites, auth: { user } }, { type, tag_id }) {
-  let published = _.omitBy( posts, (value, key) => ( value.status !== 'publish' ) );
+function mapStateToProps(
+  { info, posts, sites, auth: { user } },
+  { type, tag_id }
+) {
+  let published = _.omitBy(posts, (value, key) => value.status !== 'publish');
 
   switch (type) {
     case 'category':
@@ -285,15 +347,14 @@ function mapStateToProps({ info, posts, sites, auth: { user } }, { type, tag_id 
     case 'tag':
       published = pickByTag('tags', tag_id, published);
       break;
-    default: break;
+    default:
+      break;
   }
 
-  return { info, user,
-    posts: published,
-    site: sites[info.domain],
-  };
+  return { info, user, posts: published, site: sites[info.domain] };
 }
 
-export default connect(mapStateToProps, { fetchPosts, deletePost, openSnackbar })(
-  withStyles(styles)(Home)
-);
+export default connect(
+  mapStateToProps,
+  { fetchPosts, deletePost, openSnackbar }
+)(withStyles(styles)(Home));
