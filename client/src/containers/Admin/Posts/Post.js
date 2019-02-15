@@ -4,16 +4,36 @@ import { connect } from 'react-redux';
 import { Field, reduxForm, formValueSelector } from 'redux-form';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
-import { Grid, Button, Card, CardHeader, CardContent, CardActions } from '@material-ui/core';
+import {
+  Grid,
+  Button,
+  Card,
+  CardHeader,
+  CardContent,
+  CardActions
+} from '@material-ui/core';
 import { VpnKey } from '@material-ui/icons';
+import _ from 'lodash';
 
-import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText, capitalizeFirstLetter, getPermalink } from '../../../utils';
-import { isUserCapable, getPostStatuses, documentTitle, onEditPost } from '../../../utils/reactcms';
+import {
+  renderTextField,
+  slashDomain,
+  toSlug,
+  idNameToValueLabel,
+  hasBeenText,
+  capitalizeFirstLetter,
+  getPermalink
+} from '../../../utils';
+import {
+  isUserCapable,
+  getPostStatuses,
+  onEditPost
+} from '../../../utils/reactcms';
 import { addPost, editPost } from '../../../actions/addPosts';
 import { deletePost, fetchPosts } from '../../../actions/fetchPosts';
 import { openSnackbar } from '../../../actions/openSnackbar';
-import _ from 'lodash';
 
+import Head from '../../Parts/Head';
 import Loading from '../../../components/Loading';
 import SelectField from '../../../components/Selections/SelectField';
 import CheckboxGroup from '../../../components/Selections/CheckboxGroup';
@@ -21,7 +41,11 @@ import Autocomplete from '../../../components/Selections/Autocomplete';
 import ReactCmsEditor from '../../../components/ReactCmsEditor';
 import InstantTag from './InstantTag';
 
-import { boxCardStyle, textFieldButtonStyle, textFieldStyle } from '../../../assets/jss/styles';
+import {
+  boxCardStyle,
+  textFieldButtonStyle,
+  textFieldStyle
+} from '../../../assets/jss/styles';
 
 const styles = theme => ({
   ...boxCardStyle(theme),
@@ -30,25 +54,25 @@ const styles = theme => ({
 
   container: {
     [theme.breakpoints.down('sm')]: {
-      display: 'block',
+      display: 'block'
     }
   },
   checkboxesGroup: {
-    margin: -theme.spacing.unit,
+    margin: -theme.spacing.unit
   },
   textFieldSelect: {
-    verticalAlign: 'bottom',
-  },
+    verticalAlign: 'bottom'
+  }
 });
 
 function validate(values) {
   const { title, slug } = values;
   const errors = {};
 
-  if ( !title )
-    errors.title = 'Please enter some title.';
-  if ( !slug || /[^\w-]+/g.test(slug) || /[A-Z]/.test(slug) )
-    errors.slug = 'Must only contain dash, underscore and lowercase alphanumeric characters.';
+  if (!title) errors.title = 'Please enter some title.';
+  if (!slug || /[^\w-]+/g.test(slug) || /[A-Z]/.test(slug))
+    errors.slug =
+      'Must only contain dash, underscore and lowercase alphanumeric characters.';
 
   return errors;
 }
@@ -58,7 +82,7 @@ class Post extends Component {
     super(props);
     const { user, match } = props;
     const dirs = match.path.split('/');
-    const type = dirs[ dirs.length-2 ].replace(/s$/, "");
+    const type = dirs[dirs.length - 2].replace(/s$/, '');
 
     this.state = {
       type,
@@ -71,7 +95,7 @@ class Post extends Component {
       postInitialized: false,
       categoriesInitialized: false,
       tagsInitialized: false,
-      pagesInitialized: false,
+      pagesInitialized: false
     };
   }
 
@@ -82,45 +106,45 @@ class Post extends Component {
   componentDidMount() {
     this._isMounted = true;
 
-    const { user, info: { collectionPrefix },
-      match: { params: { _id } }
+    const {
+      user,
+      info: { collectionPrefix },
+      match: {
+        params: { _id }
+      }
     } = this.props;
     const { type } = this.state;
 
     switch (type) {
       case 'post':
-        this.props.fetchPosts( 'category', { collectionPrefix },
-          () => {
-            if (this._isMounted) this.setState({ categoriesInitialized: true });
-          }
-        );
-        this.props.fetchPosts( 'tag', { collectionPrefix },
-          () => {
-            if (this._isMounted) this.setState({ tagsInitialized: true });
-          }
-        );
+        this.props.fetchPosts('category', { collectionPrefix }, () => {
+          if (this._isMounted) this.setState({ categoriesInitialized: true });
+        });
+        this.props.fetchPosts('tag', { collectionPrefix }, () => {
+          if (this._isMounted) this.setState({ tagsInitialized: true });
+        });
         break;
 
       case 'page':
-        this.props.fetchPosts( 'page', { collectionPrefix },
-          () => {
-            if (this._isMounted) this.setState({ pagesInitialized: true });
-          }
-        );
+        this.props.fetchPosts('page', { collectionPrefix }, () => {
+          if (this._isMounted) this.setState({ pagesInitialized: true });
+        });
         break;
 
-      default: break;
+      default:
+        break;
     }
 
     if (_id) {
-      editPost( type, _id, post => {
+      editPost(type, _id, post => {
         const { title, slug, content, status } = post;
         const init = { title, slug, status };
         const state = {
-          content, status,
+          content,
+          status,
           statuses: getPostStatuses(type, user, post),
           isDeleteEnabled: isUserCapable('delete', type, user, post),
-          postInitialized: true,
+          postInitialized: true
         };
 
         switch (type) {
@@ -134,20 +158,20 @@ class Post extends Component {
             init.parent = post.parent ? post.parent : '';
             break;
 
-          default: break;
+          default:
+            break;
         }
 
         if (this._isMounted) {
           this.props.initialize(init);
           this.setState(state);
-          documentTitle('Edit post');
         }
       });
     } else {
       const init = { status: this.state.status };
       const state = {
         statuses: getPostStatuses(type, user),
-        postInitialized: true,
+        postInitialized: true
       };
 
       switch (type) {
@@ -155,30 +179,32 @@ class Post extends Component {
           init.parent = '';
           break;
 
-        default: break;
+        default:
+          break;
       }
 
       this.props.initialize(init);
       this.setState(state);
-      documentTitle('Add a new post');
     }
   }
 
   pushToList = type => {
-    const { info: { domain } } = this.props;
+    const {
+      info: { domain }
+    } = this.props;
     this.props.history.push(`${slashDomain(domain)}/admin/${type}s`);
-  }
+  };
 
   onPublish(values, status, willRedirect = false) {
     const { type, content } = this.state;
-    const { match: { params } } = this.props;
+    const {
+      match: { params }
+    } = this.props;
     let snackbarActionText;
 
     values.content = content;
-    if ( status )
-      values.status = status;
-    if ( params._id )
-      values._id = params._id;
+    if (status) values.status = status;
+    if (params._id) values._id = params._id;
 
     switch (values.status) {
       case 'draft':
@@ -193,34 +219,39 @@ class Post extends Component {
         snackbarActionText = 'put to bin';
         break;
 
-      default: break;
+      default:
+        break;
     }
 
-    return addPost( type, values, res => {
+    return addPost(type, values, res => {
       if (res) {
         if (willRedirect) {
           this.pushToList(type);
         } else if (!params._id) {
-          const { info: { domain } } = this.props;
+          const {
+            info: { domain }
+          } = this.props;
           const { data } = res;
           onEditPost(type, data._id, domain, this.props.history);
         }
 
-        this.props.openSnackbar(hasBeenText(type, values.title, snackbarActionText));
+        this.props.openSnackbar(
+          hasBeenText(type, values.title, snackbarActionText)
+        );
       }
     });
   }
 
   onPublishClick = values => {
     return this.onPublish(values, 'publish', true);
-  }
+  };
   onSaveDraftClick = values => {
     return this.onPublish(values, 'draft');
-  }
+  };
   onChangeStatusSubmit = values => {
     this.setState({ status: values.status });
     return this.onPublish(values);
-  }
+  };
 
   onTitleChange(e) {
     this.props.change('slug', toSlug(e.target.value));
@@ -230,34 +261,59 @@ class Post extends Component {
 
   onDeleteClick() {
     const { type, status } = this.state;
-    const { title, match: { params: { _id } } } = this.props;
+    const {
+      title,
+      match: {
+        params: { _id }
+      }
+    } = this.props;
 
-    this.props.deletePost( type, _id, () => {
+    this.props.deletePost(type, _id, () => {
       this.pushToList(type);
 
-      const action = (status === 'trash') ? 'deleted' : 'put to bin';
+      const action = status === 'trash' ? 'deleted' : 'put to bin';
       this.props.openSnackbar(hasBeenText(type, title, action));
     });
   }
 
   render() {
     const {
-      categories, tags, pages, handleSubmit, pristine, submitting, invalid, classes,
-      match: { params: { _id } },
+      categories,
+      tags,
+      pages,
+      handleSubmit,
+      pristine,
+      submitting,
+      invalid,
+      classes,
+      match: {
+        params: { _id }
+      },
       info: { domain }
     } = this.props;
     const {
-      type, content, statuses, date, isDeleteEnabled, isPublishEnabled,
-      postInitialized, categoriesInitialized, tagsInitialized, pagesInitialized
+      type,
+      content,
+      statuses,
+      date,
+      isDeleteEnabled,
+      isPublishEnabled,
+      postInitialized,
+      categoriesInitialized,
+      tagsInitialized,
+      pagesInitialized
     } = this.state;
-    const isDraftPublishDisabled = (_id === undefined ? pristine : false) || submitting || invalid;
+    const isDraftPublishDisabled =
+      (!_id ? pristine : false) || submitting || invalid;
 
     return !postInitialized ||
-    ( type === 'post' && ( !categoriesInitialized || !tagsInitialized ) ) ||
-    ( type === 'page' && !pagesInitialized ) ? <Loading /> : (
+      (type === 'post' && (!categoriesInitialized || !tagsInitialized)) ||
+      (type === 'page' && !pagesInitialized) ? (
+      <Loading />
+    ) : (
       <Grid container className={classes.container}>
         <Grid item md={8}>
-
+          <Head name={_id ? 'Edit post' : 'Add a new post'} />
           <form>
             <Field
               name="title"
@@ -272,17 +328,15 @@ class Post extends Component {
               name="slug"
               component={renderTextField}
               label="Slug"
-              startAdornment={getPermalink( domain, type, { date } )}
+              startAdornment={getPermalink(domain, type, { date })}
               className={classes.textField}
               fullWidth
               required
             />
             <ReactCmsEditor content={content} onChange={this.onEditorChange} />
           </form>
-
         </Grid>
         <Grid item md={4}>
-
           <Card className={classes.boxCard}>
             <CardHeader subheader="Publish" className={classes.boxCardHeader} />
             <CardContent>
@@ -292,9 +346,16 @@ class Post extends Component {
                 label="Status"
                 icon={<VpnKey />}
                 options={statuses}
-                className={classNames(classes.groupTextField, classes.textFieldSelect)}
+                className={classNames(
+                  classes.groupTextField,
+                  classes.textFieldSelect
+                )}
                 fullWidth
-                onChange={() => setTimeout(handleSubmit(params => this.onChangeStatusSubmit(params)))}
+                onChange={() =>
+                  setTimeout(
+                    handleSubmit(params => this.onChangeStatusSubmit(params))
+                  )
+                }
               />
               <Button
                 type="submit"
@@ -329,10 +390,13 @@ class Post extends Component {
             </CardActions>
           </Card>
 
-          { type === 'post' ? (
+          {type === 'post' ? (
             <div>
               <Card className={classes.boxCard}>
-                <CardHeader subheader="Categories" className={classes.boxCardHeader} />
+                <CardHeader
+                  subheader="Categories"
+                  className={classes.boxCardHeader}
+                />
                 <CardContent>
                   <Field
                     name="categories"
@@ -346,7 +410,10 @@ class Post extends Component {
                 </CardActions>
               </Card>
               <Card className={classes.boxCard}>
-                <CardHeader subheader="Tags" className={classes.boxCardHeader} />
+                <CardHeader
+                  subheader="Tags"
+                  className={classes.boxCardHeader}
+                />
                 <CardContent>
                   <Field
                     name="tags"
@@ -359,26 +426,32 @@ class Post extends Component {
                 </CardActions>
               </Card>
             </div>
-          ) : ( // type !== 'post'
+          ) : (
+            // type !== 'post'
             <Card className={classes.boxCard}>
-              <CardHeader subheader="Page Attributes" className={classes.boxCardHeader} />
+              <CardHeader
+                subheader="Page Attributes"
+                className={classes.boxCardHeader}
+              />
               <CardContent>
                 <Field
                   name="parent"
                   component={SelectField}
                   label="Parent"
-                  options={[{
-                    value: '',
-                    label: '(no parent)'
-                  }, ..._.map( _.omit(pages, _id), o => {
-                    return { value: o._id, label: o.title };
-                  } )]}
+                  options={[
+                    {
+                      value: '',
+                      label: '(no parent)'
+                    },
+                    ..._.map(_.omit(pages, _id), o => {
+                      return { value: o._id, label: o.title };
+                    })
+                  ]}
                   fullWidth
                 />
               </CardContent>
             </Card>
           )}
-
         </Grid>
       </Grid>
     );
@@ -405,22 +478,30 @@ Post.propTypes = {
   title: PropTypes.string,
   deletePost: PropTypes.func.isRequired,
   fetchPosts: PropTypes.func.isRequired,
-  openSnackbar: PropTypes.func.isRequired,
+  openSnackbar: PropTypes.func.isRequired
 };
 
 const selector = formValueSelector('Post');
 function mapStateToProps(state) {
-  const { info, categories, tags, pages, auth: { user } } = state;
+  const {
+    info,
+    categories,
+    tags,
+    pages,
+    auth: { user }
+  } = state;
   const title = selector(state, 'title');
 
   return { info, user, categories, tags, pages, title };
 }
 
-export default reduxForm({
+const wrappedForm = reduxForm({
   form: 'Post',
   validate
-})(
-  connect(mapStateToProps, { deletePost, fetchPosts, openSnackbar })(
-    withStyles(styles)(Post)
-  )
-);
+})(Post);
+const wrappedConnect = connect(
+  mapStateToProps,
+  { deletePost, fetchPosts, openSnackbar }
+)(wrappedForm);
+
+export default withStyles(styles)(wrappedConnect);

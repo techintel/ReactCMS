@@ -2,10 +2,16 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
-import { GridList, GridListTile, GridListTileBar, ListSubheader, Button } from '@material-ui/core';
+import {
+  GridList,
+  GridListTile,
+  GridListTileBar,
+  ListSubheader,
+  Button
+} from '@material-ui/core';
 import { SERVER_ROOT_URL } from '../../../config';
 import { switchTheme } from '../../../actions/fetchSite';
-import { documentTitle } from '../../../utils/reactcms';
+import Head from '../../Parts/Head';
 
 const styles = theme => ({
   root: {
@@ -13,19 +19,19 @@ const styles = theme => ({
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     overflow: 'hidden',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper
   },
   gridList: {
-    width: '100%',
+    width: '100%'
   },
   gridListTile: {
     backgroundColor: theme.palette.background.default,
-    margin: theme.spacing.unit,
+    margin: theme.spacing.unit
   },
   button: {
     color: theme.palette.primary.contrastText,
-    border: '1px solid rgba(255, 255, 255, 0.23)',
-  },
+    border: '1px solid rgba(255, 255, 255, 0.23)'
+  }
 });
 
 class Themes extends Component {
@@ -33,62 +39,79 @@ class Themes extends Component {
 
   componentDidMount() {
     this._isMounted = true;
-    documentTitle('Themes');
   }
 
   componentWillUnmount() {
     this._isMounted = false;
   }
 
-  handleError = name => { this.setState({ [name]: true }); }
+  handleError = name => {
+    this.setState({ [name]: true });
+  };
 
   handleClick = tile => {
     this.setState({ activatingTemplate: tile.template });
-    this.props.switchTheme( tile.template, () => {
-      if ( this._isMounted ) this.setState({ activatingTemplate: null });
-    } );
-  }
+    this.props.switchTheme(tile.template, () => {
+      if (this._isMounted) this.setState({ activatingTemplate: null });
+    });
+  };
 
   render() {
-    const { classes, site: { themes, template } } = this.props;
+    const {
+      classes,
+      site: { themes, template }
+    } = this.props;
     const { activatingTemplate } = this.state;
     const activating = activatingTemplate !== null;
 
     return (
       <div className={classes.root}>
+        <Head name="Themes" />
         <GridList cellHeight={180} className={classes.gridList} cols={3}>
           <GridListTile key="Subheader" cols={3} style={{ height: 'auto' }}>
             <ListSubheader component="div">Themes</ListSubheader>
           </GridListTile>
-          {themes.map( tile => {
+          {themes.map(tile => {
             const errorName = `errored-${tile.template}`;
             const isCurrentTemplate = template === tile.template;
             const isTileActivating = activatingTemplate === tile.template;
 
             return (
-              <GridListTile key={tile.template} className={classes.gridListTile}>
-                {this.state[ errorName ] ? null :
-                  <img alt={tile.name}
-                    src={`${SERVER_ROOT_URL}/upload/themes/${tile.template}/screenshot.png`}
+              <GridListTile
+                key={tile.template}
+                className={classes.gridListTile}
+              >
+                {this.state[errorName] ? null : (
+                  <img
+                    alt={tile.name}
+                    src={`${SERVER_ROOT_URL}/upload/themes/${
+                      tile.template
+                    }/screenshot.png`}
                     onError={() => this.handleError(errorName)}
                   />
-                }
+                )}
                 <GridListTileBar
                   title={tile.name}
                   subtitle={<span>by: {tile.author}</span>}
                   actionIcon={
-                    <Button variant="outlined" className={classes.button}
+                    <Button
+                      variant="outlined"
+                      className={classes.button}
                       disabled={isCurrentTemplate || activating}
                       onClick={() => this.handleClick(tile)}
                     >
-                      Activat{isCurrentTemplate ? 'ed' :
-                        isTileActivating ? 'ing' : 'e'}
+                      Activat
+                      {isCurrentTemplate
+                        ? 'ed'
+                        : isTileActivating
+                        ? 'ing'
+                        : 'e'}
                     </Button>
                   }
                 />
               </GridListTile>
             );
-          } )}
+          })}
         </GridList>
       </div>
     );
@@ -98,13 +121,14 @@ class Themes extends Component {
 Themes.propTypes = {
   classes: PropTypes.object.isRequired,
   site: PropTypes.object.isRequired,
-  switchTheme: PropTypes.func.isRequired,
+  switchTheme: PropTypes.func.isRequired
 };
 
 function mapStateToProps({ sites, info: { domain } }) {
   return { site: sites[domain] };
 }
 
-export default connect(mapStateToProps, { switchTheme })(
-  withStyles(styles)(Themes)
-);
+export default connect(
+  mapStateToProps,
+  { switchTheme }
+)(withStyles(styles)(Themes));

@@ -4,38 +4,47 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { withStyles } from '@material-ui/core/styles';
 import { Paper, Button, Typography, Input } from '@material-ui/core';
-import { Email, Security, VerifiedUser, AccountCircle } from '@material-ui/icons';
-import { signinWithEmail, signinAsyncValidate as asyncValidate, setCurrentUserByToken } from '../../actions/signin';
+import {
+  Email,
+  Security,
+  VerifiedUser,
+  AccountCircle
+} from '@material-ui/icons';
+import {
+  signinWithEmail,
+  signinAsyncValidate as asyncValidate,
+  setCurrentUserByToken
+} from '../../actions/signin';
 import { renderTextField } from '../../utils';
 import Head from '../Parts/Head';
 
 const styles = theme => ({
   header: {
     textAlign: 'center',
-    margin: `${theme.spacing.unit * 5}px 0`,
+    margin: `${theme.spacing.unit * 5}px 0`
   },
   paper: {
     margin: `0 auto`,
     padding: theme.spacing.unit * 6,
-    maxWidth: 600,
+    maxWidth: 600
   },
   form: {
     display: 'flex',
-    flexWrap: 'wrap',
+    flexWrap: 'wrap'
   },
   button: {
-    margin: theme.spacing.unit,
-  },
+    margin: theme.spacing.unit
+  }
 });
 
 function validate(values) {
   const { email, username, password, code } = values;
   const errors = {};
 
-  if ( !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email) ) {
+  if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
     errors.email = 'Invalid email address';
   }
-  if ( !username || !/^[A-Z0-9_-]+$/i.test(username) ) {
+  if (!username || !/^[A-Z0-9_-]+$/i.test(username)) {
     errors.username = 'Invalid username';
   }
   if (!password) {
@@ -48,9 +57,7 @@ function validate(values) {
   return errors;
 }
 
-const Container = (
-  { Icon, title, description, form, classes }
-) => {
+const Container = ({ Icon, title, description, form, classes }) => {
   return (
     <div>
       <Head name={title} description={description} />
@@ -59,26 +66,33 @@ const Container = (
         <Typography variant="subtitle1" gutterBottom>
           {title}
         </Typography>
-        <Typography variant="caption">
-          {description}
-        </Typography>
+        <Typography variant="caption">{description}</Typography>
       </div>
       <Paper className={classes.paper} elevation={4}>
         {form}
       </Paper>
     </div>
   );
-}
+};
 
-const Submit = (
-  { label, props: { pristine, submitting, invalid, classes } }
-) => {
+const Submit = ({
+  label,
+  props: { pristine, submitting, invalid, classes }
+}) => {
   return (
-    <Button type="submit" disabled={pristine || submitting || invalid} variant="contained" size="large" color="primary" className={classes.button} fullWidth>
+    <Button
+      type="submit"
+      disabled={pristine || submitting || invalid}
+      variant="contained"
+      size="large"
+      color="primary"
+      className={classes.button}
+      fullWidth
+    >
       {label}
     </Button>
   );
-}
+};
 
 class Signin extends Component {
   state = {
@@ -125,9 +139,24 @@ class Signin extends Component {
             title="Please enter your password"
             description={`Sign in with your email: ${email}`}
             form={
-              <form className={classes.form} onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-                <Input defaultValue={email} autoComplete="email" style={{display: 'none'}} />
-                <Field name="password" type="password" component={renderTextField} label="Password" autoComplete="new-password" fullWidth required />
+              <form
+                className={classes.form}
+                onSubmit={handleSubmit(this.onSubmit.bind(this))}
+              >
+                <Input
+                  defaultValue={email}
+                  autoComplete="email"
+                  style={{ display: 'none' }}
+                />
+                <Field
+                  name="password"
+                  type="password"
+                  component={renderTextField}
+                  label="Password"
+                  autoComplete="new-password"
+                  fullWidth
+                  required
+                />
                 <Submit label="Sign in" props={this.props} />
               </form>
             }
@@ -141,9 +170,22 @@ class Signin extends Component {
             title="Create an account or sign in"
             description="Use a new email to create an account or log in with your existing one."
             form={
-              <form className={classes.form} onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-                <Field name="collectionPrefix" type="hidden" component={Input} />
-                <Field name="email" component={renderTextField} label="Email" fullWidth required />
+              <form
+                className={classes.form}
+                onSubmit={handleSubmit(this.onSubmit.bind(this))}
+              >
+                <Field
+                  name="collectionPrefix"
+                  type="hidden"
+                  component={Input}
+                />
+                <Field
+                  name="email"
+                  component={renderTextField}
+                  label="Email"
+                  fullWidth
+                  required
+                />
                 <Submit label="Next" props={this.props} />
               </form>
             }
@@ -159,8 +201,17 @@ class Signin extends Component {
             title="Check your inbox"
             description={`Please enter the 4 digit code sent to: ${email}`}
             form={
-              <form className={classes.form} onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-                <Field name="code" component={renderTextField} label="Verification code" fullWidth required />
+              <form
+                className={classes.form}
+                onSubmit={handleSubmit(this.onSubmit.bind(this))}
+              >
+                <Field
+                  name="code"
+                  component={renderTextField}
+                  label="Verification code"
+                  fullWidth
+                  required
+                />
                 <Submit label="Confirm" props={this.props} />
               </form>
             }
@@ -174,9 +225,27 @@ class Signin extends Component {
             title="Finish your registration"
             description={`Complete your registration by filling up this form.`}
             form={
-              <form className={classes.form} onSubmit={handleSubmit(this.onSubmit.bind(this))}>
-                <Field name="username" component={renderTextField} label="Username" autoComplete="username" fullWidth required />
-                <Field name="password" type="password" component={renderTextField} label="Password" autoComplete="current-password" fullWidth required />
+              <form
+                className={classes.form}
+                onSubmit={handleSubmit(this.onSubmit.bind(this))}
+              >
+                <Field
+                  name="username"
+                  component={renderTextField}
+                  label="Username"
+                  autoComplete="username"
+                  fullWidth
+                  required
+                />
+                <Field
+                  name="password"
+                  type="password"
+                  component={renderTextField}
+                  label="Password"
+                  autoComplete="current-password"
+                  fullWidth
+                  required
+                />
                 <Submit label="Register" props={this.props} />
               </form>
             }
@@ -197,19 +266,21 @@ Signin.propTypes = {
   invalid: PropTypes.bool.isRequired,
   initialize: PropTypes.func.isRequired,
   info: PropTypes.object.isRequired,
-  setCurrentUserByToken: PropTypes.func.isRequired,
+  setCurrentUserByToken: PropTypes.func.isRequired
 };
 
 function mapStateToProps({ info }) {
   return { info };
 }
 
-export default reduxForm({
+const wrappedForm = reduxForm({
   form: 'Signin',
   validate,
   asyncValidate
-})(
-  connect(mapStateToProps, { setCurrentUserByToken } )(
-    withStyles(styles)(Signin)
-  )
-);
+})(Signin);
+const wrappedConnect = connect(
+  mapStateToProps,
+  { setCurrentUserByToken }
+)(wrappedForm);
+
+export default withStyles(styles)(wrappedConnect);

@@ -1,6 +1,5 @@
 import { includes } from 'lodash';
-import { slashDomain, POST_STATUSES, capitalizeFirstLetter } from './';
-import store from '../';
+import { slashDomain, POST_STATUSES } from './';
 
 import {
   MANAGE_CATEGORIES,
@@ -152,15 +151,4 @@ export function getPostStatuses(type, user, post) {
     filtered = filtered.filter(o => o.value !== 'trash');
 
   return filtered;
-}
-
-export function documentTitle(name) {
-  const {
-    sites,
-    info: { domain }
-  } = store.getState();
-  const title = sites[domain].title;
-  if (name) name = capitalizeFirstLetter(name);
-
-  document.title = name ? `${name} - ${title}` : title;
 }

@@ -4,28 +4,35 @@ import { connect } from 'react-redux';
 import { Field, reduxForm } from 'redux-form';
 import { withStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
-import { renderTextField, slashDomain, toSlug, idNameToValueLabel, hasBeenText, newCreatedText, getPermalink } from '../../../utils';
-import { documentTitle } from '../../../utils/reactcms';
+import { omit } from 'lodash';
+import {
+  renderTextField,
+  slashDomain,
+  toSlug,
+  idNameToValueLabel,
+  hasBeenText,
+  newCreatedText,
+  getPermalink
+} from '../../../utils';
 import { addPost, editPost } from '../../../actions/addPosts';
 import { addStateValues, fetchPosts } from '../../../actions/fetchPosts';
 import { openSnackbar } from '../../../actions/openSnackbar';
-import { omit } from 'lodash';
 
+import Head from '../../Parts/Head';
 import Loading from '../../../components/Loading';
 import SelectField from '../../../components/Selections/SelectField';
 
 import { textFieldStyle } from '../../../assets/jss/styles';
 
 const styles = theme => ({
-  ...textFieldStyle(theme),
+  ...textFieldStyle(theme)
 });
 
 function validate(values) {
   const { name } = values;
   const errors = {};
 
-  if ( !name || !name.match(/[a-z]/i) )
-    errors.name = 'Please enter some name.';
+  if (!name || !name.match(/[a-z]/i)) errors.name = 'Please enter some name.';
 
   return errors;
 }
@@ -48,17 +55,17 @@ class Tag extends Component {
     const isCategory = type === 'category';
 
     if (isCategory) {
-      const { info: { collectionPrefix } } = this.props;
-      this.props.fetchPosts( type, { collectionPrefix },
-        () => {
-          if (this._isMounted) this.setState({ categoriesInitialized: true });
-        }
-      );
+      const {
+        info: { collectionPrefix }
+      } = this.props;
+      this.props.fetchPosts(type, { collectionPrefix }, () => {
+        if (this._isMounted) this.setState({ categoriesInitialized: true });
+      });
     }
 
     // Fetch existing tag
     if (_id) {
-      editPost( type, _id, tag => {
+      editPost(type, _id, tag => {
         const { name, slug, description } = tag;
         const init = { name, slug, description };
 
@@ -67,10 +74,10 @@ class Tag extends Component {
         if (this._isMounted) {
           this.props.initialize(init);
           this.setState({ tagInitialized: true });
-          documentTitle(`Edit ${isCategory ? 'category' : 'tag'}`);
         }
       });
-    } else { // Add new
+    } else {
+      // Add new
       const init = {};
 
       if (isCategory) init.parent = '';
@@ -81,25 +88,33 @@ class Tag extends Component {
   }
 
   onSubmit = values => {
-    const { type, history, match, info: { domain } } = this.props;
+    const {
+      type,
+      history,
+      match,
+      info: { domain }
+    } = this.props;
     values._id = match ? match.params._id : null;
 
-    return addPost( type, values, res => {
+    return addPost(type, values, res => {
       if (res) {
         const text = values._id
           ? hasBeenText(type, values.name, 'updated')
           : newCreatedText(type, values.name);
 
         this.props.openSnackbar(text);
-        this.props.addStateValues( type, res );
+        this.props.addStateValues(type, res);
 
         if (history)
-          history.push(`${slashDomain(domain)}/admin/posts/${type === 'category' ? 'categorie' : type}s`);
-        else
-          this.props.reset();
+          history.push(
+            `${slashDomain(domain)}/admin/posts/${
+              type === 'category' ? 'categorie' : type
+            }s`
+          );
+        else this.props.reset();
       }
     });
-  }
+  };
 
   onNameChange(e) {
     this.props.change('slug', toSlug(e.target.value));
@@ -107,15 +122,26 @@ class Tag extends Component {
 
   render() {
     const {
-      type, categories, match, handleSubmit, pristine, submitting, invalid, classes,
+      type,
+      noHead,
+      categories,
+      match,
+      handleSubmit,
+      pristine,
+      submitting,
+      invalid,
+      classes,
       info: { domain }
     } = this.props;
     const _id = match ? match.params._id : null;
     const { tagInitialized, categoriesInitialized } = this.state;
     const isCategory = type === 'category';
 
-    return !tagInitialized || ( isCategory && !categoriesInitialized ) ? <Loading /> : (
+    return !tagInitialized || (isCategory && !categoriesInitialized) ? (
+      <Loading />
+    ) : (
       <form onSubmit={handleSubmit(this.onSubmit)}>
+        {!noHead && <Head name={`Edit ${isCategory ? 'category' : 'tag'}`} />}
         <Field
           name="name"
           component={renderTextField}
@@ -143,20 +169,25 @@ class Tag extends Component {
           className={classes.textField}
           fullWidth
         />
-        {isCategory && <Field
-          name="parent"
-          component={SelectField}
-          label="Parent"
-          options={[{
-            value: '',
-            label: '(no parent)'
-          }, ...idNameToValueLabel(omit(categories, _id)) ]}
-          className={classes.textField}
-          fullWidth
-        />}
+        {isCategory && (
+          <Field
+            name="parent"
+            component={SelectField}
+            label="Parent"
+            options={[
+              {
+                value: '',
+                label: '(no parent)'
+              },
+              ...idNameToValueLabel(omit(categories, _id))
+            ]}
+            className={classes.textField}
+            fullWidth
+          />
+        )}
         <Button
           type="submit"
-          disabled={pristine || submitting || invalid }
+          disabled={pristine || submitting || invalid}
           variant="contained"
           size="large"
           color="primary"
@@ -171,6 +202,7 @@ class Tag extends Component {
 Tag.propTypes = {
   classes: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
+  noHead: PropTypes.bool,
   match: PropTypes.object,
   history: PropTypes.object,
 
@@ -186,18 +218,20 @@ Tag.propTypes = {
   info: PropTypes.object.isRequired,
   openSnackbar: PropTypes.func.isRequired,
   addStateValues: PropTypes.func.isRequired,
-  fetchPosts: PropTypes.func.isRequired,
+  fetchPosts: PropTypes.func.isRequired
 };
 
 function mapStateToProps({ categories, info }) {
   return { categories, info };
 }
 
-export default reduxForm({
+const wrappedForm = reduxForm({
   form: 'Tag',
   validate
-})(
-  connect(mapStateToProps, { openSnackbar, addStateValues, fetchPosts })(
-    withStyles(styles)(Tag)
-  )
-);
+})(Tag);
+const wrappedConnect = connect(
+  mapStateToProps,
+  { openSnackbar, addStateValues, fetchPosts }
+)(wrappedForm);
+
+export default withStyles(styles)(wrappedConnect);

@@ -7,26 +7,31 @@ import PostsTable from './PostsTable';
 import { fetchPosts } from '../../../actions/fetchPosts';
 import { omitBy } from 'lodash';
 import { slugNameToValueLabel, slugTitleToValueLabel } from '../../../utils';
-import { documentTitle } from '../../../utils/reactcms';
+import Head from '../../Parts/Head';
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
-  },
+    flexGrow: 1
+  }
 });
 
 const postsColumns = [
   { id: 'title', numeric: false, disablePadding: true, label: 'Title' },
   { id: 'author', numeric: false, disablePadding: true, label: 'Author' },
-  { id: 'categories', numeric: false, disablePadding: true, label: 'Categories' },
+  {
+    id: 'categories',
+    numeric: false,
+    disablePadding: true,
+    label: 'Categories'
+  },
   { id: 'tags', numeric: false, disablePadding: true, label: 'Tags' },
-  { id: 'date', numeric: false, disablePadding: true, label: 'Date' },
+  { id: 'date', numeric: false, disablePadding: true, label: 'Date' }
 ];
 const pagesColumns = [
   { id: 'title', numeric: false, disablePadding: true, label: 'Title' },
   { id: 'author', numeric: false, disablePadding: true, label: 'Author' },
   { id: 'ancestors', numeric: false, disablePadding: true, label: 'Ancestors' },
-  { id: 'date', numeric: false, disablePadding: true, label: 'Date' },
+  { id: 'date', numeric: false, disablePadding: true, label: 'Date' }
 ];
 
 class Posts extends Component {
@@ -36,9 +41,7 @@ class Posts extends Component {
 
     const { collectionPrefix, type } = props;
     props.fetchPosts(type, { collectionPrefix });
-    if ( type === 'post' ) props.fetchPosts('category', { collectionPrefix });
-
-    documentTitle(`${type}s`);
+    if (type === 'post') props.fetchPosts('category', { collectionPrefix });
   }
 
   handleChange = (event, value) => {
@@ -61,13 +64,14 @@ class Posts extends Component {
         filterList = slugTitleToValueLabel(posts);
         break;
 
-      default: break;
+      default:
+        break;
     }
 
-    const all = omitBy(posts, (value, key) => ( value.status === 'trash' ));
-    const published = omitBy(posts, (value, key) => ( value.status !== 'publish' ));
-    const draft = omitBy(posts, (value, key) => ( value.status !== 'draft' ));
-    const bin = omitBy(posts, (value, key) => ( value.status !== 'trash' ));
+    const all = omitBy(posts, (value, key) => value.status === 'trash');
+    const published = omitBy(posts, (value, key) => value.status !== 'publish');
+    const draft = omitBy(posts, (value, key) => value.status !== 'draft');
+    const bin = omitBy(posts, (value, key) => value.status !== 'trash');
 
     let tabTitle, tabPosts;
     switch (value) {
@@ -91,11 +95,13 @@ class Posts extends Component {
         tabPosts = bin;
         break;
 
-      default: break;
+      default:
+        break;
     }
 
     return (
       <Paper className={classes.root}>
+        <Head name={`${type}s`} />
         <Tabs
           value={this.state.value}
           onChange={this.handleChange}
@@ -131,16 +137,19 @@ Posts.propTypes = {
   categories: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   collectionPrefix: PropTypes.string.isRequired,
-  fetchPosts: PropTypes.func.isRequired,
+  fetchPosts: PropTypes.func.isRequired
 };
 
-function mapStateToProps({ posts, pages, categories, info: { collectionPrefix } }, { type }) {
-  if ( type === 'page' )
-    posts = pages;
+function mapStateToProps(
+  { posts, pages, categories, info: { collectionPrefix } },
+  { type }
+) {
+  if (type === 'page') posts = pages;
 
   return { posts, categories, collectionPrefix };
 }
 
-export default connect(mapStateToProps, { fetchPosts })(
-  withStyles(styles)(Posts)
-);
+export default connect(
+  mapStateToProps,
+  { fetchPosts }
+)(withStyles(styles)(Posts));

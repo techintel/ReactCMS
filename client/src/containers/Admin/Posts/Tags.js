@@ -6,41 +6,55 @@ import { Grid } from '@material-ui/core';
 import Tag from './Tag';
 import PostsTable from './PostsTable';
 import { fetchPosts } from '../../../actions/fetchPosts';
-import { documentTitle } from '../../../utils/reactcms';
+import Head from '../../Parts/Head';
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
-  },
+    flexGrow: 1
+  }
 });
 
 class Tags extends Component {
   constructor(props) {
     super(props);
-    const { type, collectionPrefix, title } = props;
+    const { type, collectionPrefix } = props;
     props.fetchPosts(type, { collectionPrefix });
-
-    documentTitle(title);
   }
 
   render() {
     const { type, title, tags, history, classes } = this.props;
     let columnData = [
       { id: 'name', numeric: false, disablePadding: true, label: 'Name' },
-      { id: 'description', numeric: false, disablePadding: true, label: 'Description' },
-      { id: 'slug', numeric: false, disablePadding: true, label: 'Slug' },
+      {
+        id: 'description',
+        numeric: false,
+        disablePadding: true,
+        label: 'Description'
+      },
+      { id: 'slug', numeric: false, disablePadding: true, label: 'Slug' }
     ];
 
     if (type === 'category')
-      columnData.push({ id: 'ancestors', numeric: false, disablePadding: true, label: 'Ancestors' });
+      columnData.push({
+        id: 'ancestors',
+        numeric: false,
+        disablePadding: true,
+        label: 'Ancestors'
+      });
 
-    columnData.push({ id: 'count', numeric: false, disablePadding: true, label: 'Count' });
+    columnData.push({
+      id: 'count',
+      numeric: false,
+      disablePadding: true,
+      label: 'Count'
+    });
 
     return (
       <div className={classes.root}>
+        <Head name={title} />
         <Grid container>
           <Grid item xs={12} md={4}>
-            <Tag type={type} />
+            <Tag type={type} noHead />
           </Grid>
           <Grid item xs={12} md={8}>
             <PostsTable
@@ -65,14 +79,20 @@ Tags.propTypes = {
   history: PropTypes.object.isRequired,
   collectionPrefix: PropTypes.string.isRequired,
   tags: PropTypes.object.isRequired,
-  fetchPosts: PropTypes.func.isRequired,
+  fetchPosts: PropTypes.func.isRequired
 };
 
-function mapStateToProps({ categories, tags, info: { collectionPrefix } }, { type }) {
-  tags = (type === 'tag') ? tags : categories;
+function mapStateToProps(
+  { categories, tags, info: { collectionPrefix } },
+  { type }
+) {
+  tags = type === 'tag' ? tags : categories;
   return { collectionPrefix, tags };
 }
 
-export default connect(mapStateToProps, { fetchPosts })(
-  withStyles(styles)(Tags)
-);
+const wrappedConnect = connect(
+  mapStateToProps,
+  { fetchPosts }
+)(Tags);
+
+export default withStyles(styles)(wrappedConnect);

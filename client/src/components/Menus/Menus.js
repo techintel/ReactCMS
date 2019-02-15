@@ -2,22 +2,18 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { Paper, Tabs, Tab } from '@material-ui/core';
-import { documentTitle } from '../../utils/reactcms';
 
+import Head from '../../containers/Parts/Head';
 import EditMenus from '../../containers/Admin/Appearance/EditMenus';
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
-  },
+    flexGrow: 1
+  }
 });
 
 class Menus extends Component {
   state = { value: 0 };
-
-  componentDidMount() {
-    documentTitle('Menus');
-  }
 
   handleChange = (event, value) => {
     this.setState({ value });
@@ -29,6 +25,7 @@ class Menus extends Component {
 
     return (
       <Paper className={classes.root}>
+        <Head name="Menus" />
         <Tabs
           value={value}
           onChange={this.handleChange}
@@ -44,7 +41,7 @@ class Menus extends Component {
 }
 
 Menus.propTypes = {
-  classes: PropTypes.object.isRequired,
+  classes: PropTypes.object.isRequired
 };
 
 export default withStyles(styles)(Menus);

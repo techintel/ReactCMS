@@ -5,35 +5,35 @@ import { Field, reduxForm } from 'redux-form';
 import { withStyles } from '@material-ui/core/styles';
 import { Paper, Typography, Grid, Button } from '@material-ui/core';
 import { renderTextField, hasBeenText } from '../../../utils';
-import { documentTitle } from '../../../utils/reactcms';
 import { configureSettings } from '../../../actions/fetchSite';
 import { openSnackbar } from '../../../actions/openSnackbar';
 
+import Head from '../../Parts/Head';
 import CheckboxGroup from '../../../components/Selections/CheckboxGroup';
 
 const ENABLED_ON_CHOICES = [
   { value: 'posts', label: 'Posts' },
-  { value: 'pages', label: 'Pages' },
+  { value: 'pages', label: 'Pages' }
 ];
 
 const styles = theme => ({
   paper: {
     ...theme.mixins.gutters(),
     paddingTop: theme.spacing.unit * 2,
-    paddingBottom: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 2
   },
   form: {
-    padding: theme.spacing.unit,
+    padding: theme.spacing.unit
   },
   shortnameLabel: {
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing.unit * 3
   },
   enabledOnLabel: {
-    marginTop: theme.spacing.unit * 2,
+    marginTop: theme.spacing.unit * 2
   },
   button: {
-    margin: theme.spacing.unit,
-  },
+    margin: theme.spacing.unit
+  }
 });
 
 class Disqus extends Component {
@@ -44,15 +44,15 @@ class Disqus extends Component {
 
     if (disqus) this.props.initialize(disqus);
     this.setState({ formInitialized: true });
-
-    documentTitle('Disqus Comment System');
   }
 
   submit = values => {
-    return this.props.configureSettings( 'disqus', values, () => {
-      this.props.openSnackbar(hasBeenText('Disqus', 'site configuration', 'updated'));
-    } );
-  }
+    return this.props.configureSettings('disqus', values, () => {
+      this.props.openSnackbar(
+        hasBeenText('Disqus', 'site configuration', 'updated')
+      );
+    });
+  };
 
   render() {
     const { handleSubmit, pristine, submitting, classes } = this.props;
@@ -60,16 +60,18 @@ class Disqus extends Component {
 
     return (
       <div>
+        <Head name="Disqus Comment System" />
         <Typography variant="h5" component="h3">
           Disqus Comment System
         </Typography>
         <Typography paragraph>
-          Install Disqus manually on this ReactCMS site by entering your site's shortname and enabling Disqus comment system on specific types of posts.
+          Install Disqus manually on this ReactCMS site by entering your site's
+          shortname and enabling Disqus comment system on specific types of
+          posts.
         </Typography>
 
         <Paper className={classes.paper}>
           <form onSubmit={handleSubmit(this.submit)} className={classes.form}>
-
             <Grid container>
               <Grid item xs={12} sm={3}>
                 <Typography noWrap className={classes.shortnameLabel}>
@@ -77,7 +79,12 @@ class Disqus extends Component {
                 </Typography>
               </Grid>
               <Grid item xs={12} sm={9}>
-                <Field name="shortname" component={renderTextField} label="Shortname" fullWidth />
+                <Field
+                  name="shortname"
+                  component={renderTextField}
+                  label="Shortname"
+                  fullWidth
+                />
               </Grid>
             </Grid>
 
@@ -89,18 +96,25 @@ class Disqus extends Component {
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={9}>
-                  <Field name="enabled_on" component={CheckboxGroup} options={ENABLED_ON_CHOICES} />
+                  <Field
+                    name="enabled_on"
+                    component={CheckboxGroup}
+                    options={ENABLED_ON_CHOICES}
+                  />
                 </Grid>
               </Grid>
             )}
 
             <Button
-              type="submit" disabled={pristine || submitting}
-              variant="contained" size="large" color="secondary" className={classes.button}
+              type="submit"
+              disabled={pristine || submitting}
+              variant="contained"
+              size="large"
+              color="secondary"
+              className={classes.button}
             >
               Save
             </Button>
-
           </form>
         </Paper>
       </div>
@@ -116,19 +130,21 @@ Disqus.propTypes = {
   submitting: PropTypes.bool.isRequired,
   site: PropTypes.object.isRequired,
   configureSettings: PropTypes.func.isRequired,
-  openSnackbar: PropTypes.func.isRequired,
+  openSnackbar: PropTypes.func.isRequired
 };
 
 function mapStateToProps({ sites, info: { domain } }) {
   return {
-    site: sites[domain],
+    site: sites[domain]
   };
 }
 
-export default reduxForm({
+const wrappedForm = reduxForm({
   form: 'Disqus'
-})(
-  connect(mapStateToProps, { configureSettings, openSnackbar })(
-    withStyles(styles)(Disqus)
-  )
-);
+})(Disqus);
+const wrappedConnect = connect(
+  mapStateToProps,
+  { configureSettings, openSnackbar }
+)(wrappedForm);
+
+export default withStyles(styles)(wrappedConnect);
