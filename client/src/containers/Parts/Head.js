@@ -20,7 +20,7 @@ const Head = ({ name, description, children, title }) => {
 
 Head.propTypes = {
   name: PropTypes.string,
-  description: PropTypes.string.isRequired,
+  description: PropTypes.string,
   children: PropTypes.node,
   title: PropTypes.string
 };
