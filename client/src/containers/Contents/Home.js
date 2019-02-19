@@ -27,7 +27,6 @@ import { EditorState, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { CommentCount } from 'disqus-react';
 
-import Head from '../Parts/Head';
 import CategoryChips from '../../components/Lists/CategoryChips';
 import TagChips from '../../components/Lists/TagChips';
 
@@ -279,15 +278,10 @@ class Home extends Component {
 
   render() {
     const { isLoading, isEndResult } = this.state;
-    const {
-      type,
-      classes,
-      site: { description }
-    } = this.props;
+    const { classes } = this.props;
 
     return (
       <div>
-        {!type && <Head description={description} />}
         {this.renderPosts()}
         {isLoading && (
           <Card className={classes.loading} align="center">

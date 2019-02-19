@@ -4,15 +4,18 @@ import { connect } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import { capitalizeFirstLetter } from '../../utils';
 
-const Head = ({ name, description, children, title }) => {
+const Head = ({ name, description, children, site }) => {
   const titleContent = name
-    ? `${capitalizeFirstLetter(name)} - ${title}`
-    : title;
+    ? `${capitalizeFirstLetter(name)} - ${site.title}`
+    : site.title;
 
   return (
     <Helmet>
       <title>{titleContent}</title>
-      {description && <meta name="description" content={description} />}
+      <meta
+        name="description"
+        content={description ? description : site.description}
+      />
       {children}
     </Helmet>
   );
@@ -22,11 +25,11 @@ Head.propTypes = {
   name: PropTypes.string,
   description: PropTypes.string,
   children: PropTypes.node,
-  title: PropTypes.string
+  site: PropTypes.object.isRequired
 };
 
 function mapStateToProps({ sites, info: { domain } }) {
-  return { title: sites[domain].title };
+  return { site: sites[domain] };
 }
 
 export default connect(mapStateToProps)(Head);

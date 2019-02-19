@@ -8,6 +8,7 @@ import { Snackbar } from '@material-ui/core';
 import { setCurrentUserByToken } from '../actions/signin';
 import { openSnackbar } from '../actions/openSnackbar';
 
+import Head from './Parts/Head';
 import SnackbarContentWrapper from '../components/SnackbarContentWrapper';
 import Header from './Parts/Header';
 import Admin from './Admin';
@@ -23,13 +24,13 @@ const styles = theme => ({
     zIndex: 1,
     overflow: 'visible',
     position: 'relative',
-    display: 'flex',
+    display: 'flex'
   },
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
-  },
+    padding: theme.spacing.unit * 3
+  }
 });
 
 class Site extends Component {
@@ -54,21 +55,27 @@ class Site extends Component {
 
     return (
       <div className={classes.root}>
+        <Head />
         <Header drawerOpen={drawerOpen} onDrawerToggle={this.onDrawerToggle} />
-        <main className={classNames(classes.content, isAuthenticated && classes.contentLogged, drawerOpen && classes.appBarShift)}>
+        <main
+          className={classNames(
+            classes.content,
+            isAuthenticated && classes.contentLogged,
+            drawerOpen && classes.appBarShift
+          )}
+        >
           <div className={classes.toolbar} />
 
           <Switch>
             <Route path={`${slashDomainParam}/admin`} component={Admin} />
             <Route path={`${slashDomainParam}`} component={Contents} />
           </Switch>
-
         </main>
 
         <Snackbar
           anchorOrigin={{
             vertical: 'bottom',
-            horizontal: 'right',
+            horizontal: 'right'
           }}
           open={snackbar.open}
           onClose={() => this.props.openSnackbar(false)}
@@ -90,15 +97,20 @@ Site.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
   domain: PropTypes.string.isRequired,
   setCurrentUserByToken: PropTypes.func.isRequired,
-  openSnackbar: PropTypes.func.isRequired,
+  openSnackbar: PropTypes.func.isRequired
 };
 
-function mapStateToProps({ snackbar, auth: { isAuthenticated }, info: { domain } }) {
+function mapStateToProps({
+  snackbar,
+  auth: { isAuthenticated },
+  info: { domain }
+}) {
   return { snackbar, isAuthenticated, domain };
 }
 
 export default withRouter(
-  connect(mapStateToProps, { setCurrentUserByToken, openSnackbar })(
-    withStyles(styles)(Site)
-  )
+  connect(
+    mapStateToProps,
+    { setCurrentUserByToken, openSnackbar }
+  )(withStyles(styles)(Site))
 );
